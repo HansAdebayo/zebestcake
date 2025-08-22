@@ -6,7 +6,42 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSmoothScroll();
     initializeDateValidation();
     createFloatingParticles();
+    initializeImageFallbacks();
 });
+
+// Gestion des fallbacks d'images
+function initializeImageFallbacks() {
+    const images = document.querySelectorAll('.product-image img, .about-image img');
+    
+    images.forEach(img => {
+        // Gestion des erreurs de chargement
+        img.addEventListener('error', function() {
+            this.style.display = 'none';
+            const fallback = this.nextElementSibling;
+            if (fallback && fallback.classList.contains('emoji-fallback')) {
+                fallback.style.display = 'block';
+            }
+        });
+        
+        // Vérifier si l'image est déjà en erreur
+        if (img.complete && img.naturalHeight === 0) {
+            img.style.display = 'none';
+            const fallback = img.nextElementSibling;
+            if (fallback && fallback.classList.contains('emoji-fallback')) {
+                fallback.style.display = 'block';
+            }
+        }
+        
+        // Animation de chargement
+        img.addEventListener('load', function() {
+            this.style.opacity = '0';
+            this.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                this.style.opacity = '1';
+            }, 100);
+        });
+    });
+}
 
 // Navigation mobile
 function initializeNavigation() {

@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Configuration des formulaires
 const FORM_CONFIG = {
     // Remplacez par votre URL Google Apps Script
-    ORDER_ENDPOINT: 'https://script.google.com/macros/s/AKfycbzIwWYxXiV_uzfQA5HZSPFh6RsqxYEDKSjaCNgtPDYAV6JYlmpf3TCaHuD7YB3XpOzFNA/exec',
-    CONTACT_ENDPOINT: 'https://script.google.com/macros/s/AKfycbzIwWYxXiV_uzfQA5HZSPFh6RsqxYEDKSjaCNgtPDYAV6JYlmpf3TCaHuD7YB3XpOzFNA/exec'
+    ORDER_ENDPOINT:'https://script.google.com/macros/s/AKfycbx1Ad8fqKV543C-M2hBzyq7KQk_mNInoye5S6EKgUJkIRZW0Kg0idG0I1qklqaxqQuUQA/exec',
+    CONTACT_ENDPOINT: 'https://script.google.com/macros/s/AKfycbx1Ad8fqKV543C-M2hBzyq7KQk_mNInoye5S6EKgUJkIRZW0Kg0idG0I1qklqaxqQuUQA/exec'
 };
 
 // Initialisation du formulaire de commande

@@ -39,6 +39,10 @@
         font-size: 4rem;
     }
     
+    .about-image .emoji-fallback {
+        font-size: 4rem;
+    }
+    
     .order-options {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -149,6 +153,10 @@
     .product-image {
         width: 150px;
         height: 150px;
+        font-size: 3rem;
+    }
+    
+    .product-image .emoji-fallback {
         font-size: 3rem;
     }
 
