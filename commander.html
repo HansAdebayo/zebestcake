@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander - ZeBestCake</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.jpg" alt="ZeBestCake Logo" class="logo-img">
+                <span class="logo-text">ZeBestCake</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="gateaux.html">Nos Gâteaux</a></li>
+                <li><a href="commander.html">Commander</a></li>
+                <li><a href="a-propos.html">À propos</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="burger-menu" id="burger-menu">
+                <span class="burger-bar"></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="order-form-section">
+            <h1 class="section-title">Passez Votre Commande</h1>
+
+            <div class="info-box-container">
+                <div class="info-box">
+                    <p>Vous pouvez remplir ce formulaire pour une demande de devis, et nous vous recontacterons dans les 2h pour valider la commande. Vous pouvez aussi nous contacter directement sur <a href="https://www.instagram.com/zebestcake/" target="_blank">notre page Instagram</a>.</p>
+                </div>
+                <div class="info-box warning">
+                    <p><strong>Important :</strong> Un acompte de 20% vous sera demandé pour confirmer définitivement votre commande avant le début de la préparation.</p>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-step active" data-step="1">Votre Gâteau</div>
+                <div class="progress-step" data-step="2">Livraison</div>
+                <div class="progress-step" data-step="3">Contact</div>
+            </div>
+
+            <form id="order-form" class="order-form">
+
+                <!-- Étape 1: Sélection produit -->
+                <fieldset id="step-1" class="active">
+                    <legend>Étape 1 : Votre Gâteau</legend>
+                    <div class="form-group">
+                        <label for="cake-type">Choisissez votre gâteau :</label>
+                        <select id="cake-type" name="cake-type" required>
+                            <option value="">Chargement...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cake-size">Taille :</label>
+                        <select id="cake-size" name="cake-size" required disabled>
+                            <option value="">Veuillez d'abord choisir un gâteau</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="custom-requests">Demandes particulières (optionnel) :</label>
+                        <textarea id="custom-requests" name="custom-requests" rows="4" placeholder="Décrivez ici vos souhaits de personnalisation (couleurs, message, thème...). Nous ferons de notre mieux pour les réaliser sans frais supplémentaires."></textarea>
+                    </div>
+                </fieldset>
+
+                <!-- Étape 2: Livraison -->
+                <fieldset id="step-2">
+                    <legend>Étape 2 : Livraison ou Retrait</legend>
+                    <div class="form-group">
+                        <label for="delivery-date">Date de livraison/retrait (48h minimum) :</label>
+                        <input type="date" id="delivery-date" name="delivery-date" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="delivery-type">Mode de livraison :</label>
+                        <select id="delivery-type" name="delivery-type" required>
+                            <option value="retrait">Retrait en magasin (gratuit)</option>
+                            <option value="livraison-centre">Livraison Toulouse Centre (8€)</option>
+                            <option value="livraison-peripherie">Livraison Périphérie (12€)</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <!-- Étape 3: Informations client -->
+                <fieldset id="step-3">
+                    <legend>Étape 3 : Vos Informations</legend>
+                    <div class="form-group">
+                        <label for="first-name">Prénom :</label>
+                        <input type="text" id="first-name" name="first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Nom :</label>
+                        <input type="text" id="last-name" name="last-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email :</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Téléphone :</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                </fieldset>
+
+                <div id="order-summary">
+                    <h3>Récapitulatif</h3>
+                    <p id="summary-cake">Gâteau : -</p>
+                    <p id="summary-delivery">Livraison : -</p>
+                    <p id="summary-total" class="total-price">Total : 0.00 €</p>
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" id="prev-btn" class="cta-button secondary-btn hidden">Précédent</button>
+                    <button type="button" id="next-btn" class="cta-button">Suivant</button>
+                    <button type="submit" class="cta-button hidden">Valider la Commande</button>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+             <div class="contact-info">
+                <p><strong>Téléphone :</strong> 05.61.23.45.67</p>
+                <p><strong>Email :</strong> contact@zebestcake.fr</p>
+            </div>
+            <div class="horaires">
+                <p><strong>Horaires :</strong></p>
+                <p>Mar-Sam : 9h-18h</p>
+                <p>Dim : 10h-16h</p>
+                <p>Fermé le lundi</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ZeBestCake - Tous droits réservés - <a href="#mentions-legales">Mentions Légales</a></p>
+            <div class="social-links">
+                <a href="https://www.instagram.com/__zebest__cake?igsh=a2RwM3g2YzdkYXFy&utm_source=qr" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/order.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

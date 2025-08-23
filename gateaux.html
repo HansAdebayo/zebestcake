@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZeBestCake - Pâtisserie artisanale</title>
+    <title>Nos Gâteaux - ZeBestCake</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,9 +13,12 @@
 
     <header>
         <nav class="navbar">
-            <a href="index.html" class="logo"><img src="assets/images/logo.jpg" alt="ZeBestCake Logo" class="logo-img"></a>
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.jpg" alt="ZeBestCake Logo" class="logo-img">
+                <span class="logo-text">ZeBestCake</span>
+            </a>
             <ul class="nav-links">
-                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="index.html">Accueil</a></li>
                 <li><a href="gateaux.html">Nos Gâteaux</a></li>
                 <li><a href="commander.html">Commander</a></li>
                 <li><a href="a-propos.html">À propos</a></li>
@@ -28,32 +31,17 @@
     </header>
 
     <main>
-        <section id="hero">
-            <div class="hero-container">
-                <div class="hero-text">
-                    <h1>Vos moments de joie, nos créations gourmandes</h1>
-                    <p class="hero-subtitle">Pâtisserie artisanale, pour toutes vos occasions.</p>
-                    <a href="gateaux.html" class="cta-button">Découvrir nos créations</a>
-                </div>
-                <div class="hero-image">
-                    <img src="assets/images/gateau.jpg" alt="Un magnifique gâteau d'anniversaire">
-                </div>
+        <section id="catalogue">
+            <h1 class="section-title">Tous Nos Gâteaux</h1>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Tous</button>
+                <button class="filter-btn" data-filter="standard">Standards</button>
+                <button class="filter-btn" data-filter="personnalise">Personnalisés</button>
+                <!-- D'autres filtres peuvent être ajoutés ici -->
             </div>
-        </section>
-
-                <section id="specialites">
-            <h2 class="section-title">Nos Créations</h2>
-            <div class="specialites-grid" id="specialites-grid">
+            <div class="products-grid" id="products-grid">
                 <!-- Les produits seront chargés ici par JavaScript -->
-                <p>Chargement des produits...</p>
-            </div>
-        </section>
-
-        <section id="temoignages">
-            <h2 class="section-title">Ce que nos clients disent</h2>
-            <div class="temoignages-grid" id="temoignages-grid">
-                <!-- Les témoignages seront chargés ici par JavaScript -->
-                <p>Chargement des témoignages...</p>
+                <p>Chargement des gâteaux...</p>
             </div>
         </section>
     </main>
@@ -79,7 +67,7 @@
         </div>
     </footer>
 
-    <script type="module" src="js/app.js"></script>
-    <script type="module" src="js/home.js"></script>
+    <script type="module" src="js/gateaux.js"></script>
+    <script type="module" src="js/app.js"></script> <!-- Pour le menu burger partagé -->
 </body>
 </html>

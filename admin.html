@@ -3,581 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZeBestCake - Tableau de Bord</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            min-height: 100vh;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .title {
-            color: #FF69B4;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #FF69B4;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 1rem;
-        }
-
-        .orders-section {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            color: #333;
-            font-size: 1.8rem;
-        }
-
-        .refresh-btn {
-            padding: 0.8rem 1.5rem;
-            background: #FF69B4;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .refresh-btn:hover {
-            background: #e60d7c;
-            transform: translateY(-2px);
-        }
-
-        .search-filter {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 250px;
-            padding: 0.8rem;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .filter-select {
-            padding: 0.8rem;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            min-width: 150px;
-        }
-
-        .orders-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .orders-table th,
-        .orders-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .orders-table th {
-            background: #f8f9fa;
-            font-weight: bold;
-            color: #333;
-            position: sticky;
-            top: 0;
-        }
-
-        .orders-table tr:hover {
-            background: #f8f9fa;
-        }
-
-        .status-select {
-            padding: 0.4rem;
-            border: 1px solid #e9ecef;
-            border-radius: 5px;
-            font-size: 0.85rem;
-            background: white;
-            cursor: pointer;
-        }
-
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .status-nouveau { background: #fff3cd; color: #856404; }
-        .status-en-cours { background: #cce5ff; color: #004085; }
-        .status-termine { background: #d4edda; color: #155724; }
-        .status-livre { background: #e7f3ff; color: #0c5460; }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-            font-size: 1.2rem;
-        }
-
-        .error {
-            text-align: center;
-            padding: 2rem;
-            color: #dc3545;
-            background: #f8d7da;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-
-        .recent-orders {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-        }
-
-        .recent-title {
-            color: #333;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .recent-list {
-            display: grid;
-            gap: 0.5rem;
-        }
-
-        .recent-item {
-            background: white;
-            padding: 0.8rem;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            border-left: 4px solid #FF69B4;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .title {
-                font-size: 2rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .search-filter {
-                flex-direction: column;
-            }
-
-            .orders-table {
-                font-size: 0.9rem;
-            }
-
-            .orders-table th,
-            .orders-table td {
-                padding: 0.5rem;
-            }
-        }
-    </style>
+    <title>Admin - ZeBestCake</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1 class="title">ZeBestCake - Tableau de Bord</h1>
-            <p class="subtitle">Aperçu de toutes vos commandes</p>
-        </div>
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.jpg" alt="ZeBestCake Logo" class="logo-img">
+                <span class="logo-text">ZeBestCake - Admin</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#" id="logout-btn">Déconnexion</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <!-- Statistiques -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalOrders">-</div>
-                <div class="stat-label">Total Commandes</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="todayOrders">-</div>
-                <div class="stat-label">Aujourd'hui</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="weekOrders">-</div>
-                <div class="stat-label">Cette Semaine</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="monthOrders">-</div>
-                <div class="stat-label">Ce Mois</div>
-            </div>
-        </div>
+    <main>
+        <div id="notification-container"></div>
+        <section id="admin-dashboard">
+            <h1 class="section-title">Tableau de Bord des Commandes</h1>
 
-        <!-- Commandes récentes -->
-        <div class="recent-orders">
-            <h3 class="recent-title">Dernières Commandes</h3>
-            <div class="recent-list" id="recentList">
-                <div class="loading">Chargement...</div>
-            </div>
-        </div>
-
-        <!-- Section principale -->
-        <div class="orders-section">
-            <div class="section-header">
-                <h2 class="section-title">Toutes les Commandes</h2>
-                <button class="refresh-btn" onclick="loadOrders()">Actualiser</button>
+            <div class="filters">
+                <button class="filter-btn active" data-status="all">Toutes</button>
+                <button class="filter-btn" data-status="Non traitée">Non traitées</button>
+                <button class="filter-btn" data-status="En cours">En cours</button>
+                <button class="filter-btn" data-status="Terminée">Terminées</button>
             </div>
 
-            <div class="search-filter">
-                <input type="text" class="search-box" id="searchBox" placeholder="Rechercher par nom, email ou téléphone...">
-                <select class="filter-select" id="statusFilter">
-                    <option value="">Tous les statuts</option>
-                    <option value="Nouveau">Nouveau</option>
-                    <option value="En cours">En cours</option>
-                    <option value="Terminé">Terminé</option>
-                    <option value="Livré">Livré</option>
-                </select>
-                <select class="filter-select" id="cakeFilter">
-                    <option value="">Tous les gâteaux</option>
-                    <option value="bento">Bento Cake</option>
-                    <option value="layer">Layer Cake</option>
-                    <option value="cupcakes">Cupcakes</option>
-                </select>
-            </div>
-
-            <div id="ordersContainer">
-                <div class="loading">Chargement des commandes...</div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Configuration - Utilisez l'URL de votre feuille Google Sheets en CSV
-        const SHEET_CONFIG = {
-            // Remplacez par l'ID de votre feuille
-            SHEET_ID: '1bQ6lN-DtUFx6KMsW_nlyGMnwkbSFeMmklpjBsPMnKa4',
-            // URL CSV publique
-            get CSV_URL() {
-                return `https://docs.google.com/spreadsheets/d/${this.SHEET_ID}/export?format=csv&gid=0`;
-            }
-        };
-
-        let allOrders = [];
-        let filteredOrders = [];
-
-        // Charger les données au démarrage
-        window.addEventListener('load', loadOrders);
-
-        // Charger les commandes depuis Google Sheets CSV
-        async function loadOrders() {
-            try {
-                console.log('Chargement des commandes...');
-                
-                const response = await fetch(SHEET_CONFIG.CSV_URL);
-                const csvText = await response.text();
-                
-                // Parser le CSV
-                const orders = parseCSV(csvText);
-                allOrders = orders;
-                filteredOrders = orders;
-                
-                // Mettre à jour l'interface
-                updateStats(orders);
-                updateRecentOrders(orders);
-                displayOrders(orders);
-                
-                console.log(`${orders.length} commandes chargées`);
-                
-            } catch (error) {
-                console.error('Erreur chargement:', error);
-                document.getElementById('ordersContainer').innerHTML = 
-                    '<div class="error">Erreur de chargement des données. Vérifiez que votre feuille Google Sheets est accessible publiquement.</div>';
-            }
-        }
-
-        // Parser CSV simple
-        function parseCSV(csvText) {
-            const lines = csvText.split('\n');
-            const orders = [];
-            
-            // Ignorer la première ligne (en-têtes)
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
-                
-                const values = parseCSVLine(line);
-                if (values.length >= 10) {
-                    orders.push({
-                        id: values[0],           // ID Commande
-                        date: values[1],         // Date
-                        name: values[2],         // Nom
-                        phone: values[3],        // Téléphone
-                        email: values[4],        // Email
-                        deliveryDate: values[5], // Date livraison
-                        cakeType: values[6],     // Type gâteau
-                        quantity: values[7],     // Quantité
-                        flavor: values[8],       // Parfum
-                        message: values[9],      // Message
-                        status: values[10] || 'Nouveau' // Statut
-                    });
-                }
-            }
-            
-            return orders;
-        }
-
-        // Parser une ligne CSV (gestion des virgules dans les guillemets)
-        function parseCSVLine(line) {
-            const values = [];
-            let current = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    values.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            
-            values.push(current.trim());
-            return values;
-        }
-
-        // Mettre à jour les statistiques
-        function updateStats(orders) {
-            const now = new Date();
-            const today = now.toDateString();
-            const thisWeek = getWeekStart(now);
-            const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-            const todayCount = orders.filter(order => {
-                const orderDate = new Date(order.date);
-                return orderDate.toDateString() === today;
-            }).length;
-
-            const weekCount = orders.filter(order => {
-                const orderDate = new Date(order.date);
-                return orderDate >= thisWeek;
-            }).length;
-
-            const monthCount = orders.filter(order => {
-                const orderDate = new Date(order.date);
-                return orderDate >= thisMonth;
-            }).length;
-
-            document.getElementById('totalOrders').textContent = orders.length;
-            document.getElementById('todayOrders').textContent = todayCount;
-            document.getElementById('weekOrders').textContent = weekCount;
-            document.getElementById('monthOrders').textContent = monthCount;
-        }
-
-        // Mettre à jour les commandes récentes
-        function updateRecentOrders(orders) {
-            const recent = orders
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 5);
-
-            const recentList = document.getElementById('recentList');
-            recentList.innerHTML = recent.map(order => `
-                <div class="recent-item">
-                    <strong>${order.id}</strong> - ${order.name} - ${order.cakeType} 
-                    <small>(${formatDate(order.date)})</small>
-                </div>
-            `).join('') || '<div class="recent-item">Aucune commande récente</div>';
-        }
-
-        // Afficher les commandes
-        function displayOrders(orders) {
-            const container = document.getElementById('ordersContainer');
-            
-            if (orders.length === 0) {
-                container.innerHTML = '<div class="loading">Aucune commande trouvée</div>';
-                return;
-            }
-
-            const table = `
-                <table class="orders-table">
+            <div class="table-container">
+                <table id="orders-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Date</th>
+                            <th>ID Commande</th>
                             <th>Client</th>
-                            <th>Contact</th>
-                            <th>Produit</th>
-                            <th>Livraison</th>
-                            <th>Statut</th>
+                            <th>Gâteau</th>
+                            <th>Date de livraison</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ${orders.map((order, index) => `
-                            <tr>
-                                <td><strong>${order.id}</strong></td>
-                                <td>${formatDate(order.date)}</td>
-                                <td><strong>${order.name}</strong></td>
-                                <td>
-                                    ${order.email}<br>
-                                    <small>${order.phone}</small>
-                                </td>
-                                <td>
-                                    ${order.cakeType}<br>
-                                    <small>Qté: ${order.quantity || 'N/A'}</small><br>
-                                    <small>Parfum: ${order.flavor || 'N/A'}</small>
-                                </td>
-                                <td>${formatDate(order.deliveryDate)}</td>
-                                <td>
-                                    <span class="status-badge status-${(order.status || 'nouveau').toLowerCase().replace(' ', '-')}">${order.status || 'Nouveau'}</span>
-                                </td>
-                                <td>
-                                    <select class="status-select" onchange="showStatusInfo(this, '${order.id}', '${order.name}')">
-                                        <option value="">Changer statut</option>
-                                        <option value="Nouveau">Nouveau</option>
-                                        <option value="En cours">En cours</option>
-                                        <option value="Terminé">Terminé</option>
-                                        <option value="Livré">Livré</option>
-                                        <option value="Annulé">Annulé</option>
-                                    </select>
-                                    <br>
-                                    <details style="margin-top: 0.5rem;">
-                                        <summary>Détails</summary>
-                                        <small>${order.message || 'Aucun détail'}</small>
-                                    </details>
-                                </td>
-                            </tr>
-                        `).join('')}
+                    <tbody id="orders-tbody">
+                        <!-- Les commandes seront chargées ici par JavaScript -->
                     </tbody>
                 </table>
-            `;
-            
-            container.innerHTML = table;
-        }
+            </div>
+        </section>
 
-        // Recherche et filtres
-        document.getElementById('searchBox').addEventListener('input', applyFilters);
-        document.getElementById('statusFilter').addEventListener('change', applyFilters);
-        document.getElementById('cakeFilter').addEventListener('change', applyFilters);
+        <!-- Modal for order details -->
+        <div id="order-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Détails de la commande</h2>
+                <div id="modal-order-details"></div>
+                <button id="print-ticket-btn" class="cta-button">Imprimer / Télécharger le ticket</button>
+            </div>
+        </div>
+    </main>
 
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
-            const cakeFilter = document.getElementById('cakeFilter').value;
-
-            filteredOrders = allOrders.filter(order => {
-                const matchesSearch = !searchTerm || 
-                    order.name.toLowerCase().includes(searchTerm) ||
-                    order.email.toLowerCase().includes(searchTerm) ||
-                    order.phone.toLowerCase().includes(searchTerm);
-
-                const matchesStatus = !statusFilter || order.status === statusFilter;
-                const matchesCake = !cakeFilter || order.cakeType === cakeFilter;
-
-                return matchesSearch && matchesStatus && matchesCake;
-            });
-
-            displayOrders(filteredOrders);
-        }
-
-        // Utilitaires
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR');
-        }
-
-        function getWeekStart(date) {
-            const d = new Date(date);
-            const day = d.getDay();
-            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-            return new Date(d.setDate(diff));
-        }
-
-        // Fonction pour gérer le changement de statut
-        function showStatusInfo(selectElement, orderId, orderName) {
-            const newStatus = selectElement.value;
-            
-            if (newStatus) {
-                const confirmMessage = `Voulez-vous vraiment changer le statut de la commande ${orderId} (${orderName}) vers "${newStatus}" ?\n\nNote: Pour appliquer ce changement, vous devrez modifier manuellement le statut dans votre feuille Google Sheets.`;
-                
-                if (confirm(confirmMessage)) {
-                    alert(`Instructions pour modifier le statut :\n\n1. Ouvrez votre feuille Google Sheets\n2. Trouvez la commande ${orderId}\n3. Changez le statut vers "${newStatus}"\n4. Actualisez cette page pour voir les changements`);
-                    
-                    // Ouvrir la feuille Google Sheets dans un nouvel onglet
-                    window.open(`https://docs.google.com/spreadsheets/d/${SHEET_CONFIG.SHEET_ID}/edit`, '_blank');
-                }
-                
-                // Reset du sélecteur
-                selectElement.value = '';
-            }
-        }
-    </script>
+    <script type="module" src="js/admin.js"></script>
 </body>
 </html>
