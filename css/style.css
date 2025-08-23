@@ -869,3 +869,180 @@ footer {
         opacity: 0;
     }
 }
+/* Corrections pour les problèmes mobiles */
+
+/* Fix pour l'animation hero sur mobile */
+@media (max-width: 768px) {
+    .hero::before {
+        display: none; /* Désactiver l'animation de particules sur mobile */
+    }
+    
+    .hero {
+        /* Simplifier l'animation hero sur mobile */
+        background: linear-gradient(135deg, #FFB6C1, #FFC0CB, #FF69B4);
+        position: relative;
+        overflow: visible; /* Changer de hidden à visible */
+    }
+    
+    .hero-content {
+        animation: none; /* Désactiver fadeInUp sur mobile */
+        opacity: 1;
+        transform: none;
+    }
+    
+    /* Réduire les animations sur mobile */
+    * {
+        animation-duration: 0.2s !important;
+        transition-duration: 0.2s !important;
+    }
+    
+    /* Fix spécifique pour les champs de date sur mobile */
+    input[type="date"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: white;
+        border: 2px solid #FFE4E1;
+        border-radius: 15px;
+        padding: 1rem;
+        font-size: 16px; /* Important pour éviter le zoom sur iOS */
+        font-family: inherit;
+        width: 100%;
+        position: relative;
+        z-index: 10;
+        /* Forcer l'affichage du calendrier natif */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        background: transparent;
+        bottom: 0;
+        color: transparent;
+        cursor: pointer;
+        height: auto;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: auto;
+        z-index: 1;
+    }
+    
+    /* Améliorer la visibilité du sélecteur de date */
+    input[type="date"]:focus {
+        outline: 2px solid var(--primary-color);
+        border-color: var(--primary-color);
+        z-index: 1000;
+        position: relative;
+    }
+    
+    /* Fix pour le scroll animation sur mobile */
+    .fade-in {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    
+    /* Désactiver le parallax sur mobile */
+    .hero {
+        transform: none !important;
+    }
+    
+    /* Optimiser les cartes produits pour mobile */
+    .product-card {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    
+    .product-card:hover {
+        transform: none;
+    }
+    
+    /* Fix pour la navigation mobile */
+    .nav-links {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+    }
+    
+    .nav-links.active {
+        transform: translateX(0);
+    }
+    
+    /* Éviter le layout shift */
+    .menu-toggle {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        touch-action: manipulation;
+    }
+}
+
+/* Fix pour iOS Safari spécifiquement */
+@supports (-webkit-touch-callout: none) {
+    input[type="date"] {
+        min-height: 44px; /* Taille minimum tactile iOS */
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Fix pour le zoom iOS */
+    input, textarea, select {
+        font-size: 16px !important;
+    }
+    
+    /* Fix pour le viewport iOS */
+    .hero {
+        height: 100vh;
+        height: calc(var(--vh, 1vh) * 100);
+    }
+}
+
+/* Améliorer les performances sur mobile */
+@media (max-width: 768px) {
+    /* Utiliser transform au lieu de modifier les propriétés layout */
+    .product-card:hover .product-image {
+        transform: none; /* Désactiver sur mobile */
+    }
+    
+    /* Optimiser les transitions */
+    .cta-button, .product-button, .submit-button {
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    
+    /* Désactiver les animations coûteuses */
+    .hero::before,
+    [class*="float"],
+    .loading-spinner {
+        animation-play-state: paused;
+    }
+}
+
+/* Fix pour les écrans tactiles */
+@media (hover: none) and (pointer: coarse) {
+    /* Désactiver les effets hover sur tactile */
+    .product-card:hover,
+    .order-option:hover,
+    .contact-item:hover {
+        transform: none;
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .cta-button:hover,
+    .product-button:hover,
+    .submit-button:hover {
+        transform: none;
+    }
+    
+    /* Améliorer les zones tactiles */
+    button, .cta-button, .product-button {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+    }
+}

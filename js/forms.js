@@ -649,3 +649,397 @@ Object.assign(window.ZeBestCake, {
     handleOrderSubmission,
     handleContactSubmission
 });
+// Fix spécifique pour le problème du date picker mobile
+// À ajouter dans forms.js ou comme script séparé
+
+document.addEventListener('DOMContentLoaded', function() {
+    fixMobileDatePicker();
+});
+
+function fixMobileDatePicker() {
+    const dateInputs = document.querySelectorAll('input[type="date"]');
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    
+    if (!isMobile) return; // Pas besoin du fix sur desktop
+    
+    dateInputs.forEach(dateInput => {
+        // Fix spécial pour le problème de fermeture immédiate
+        let isPickerOpen = false;
+        let touchStartTime = 0;
+        
+        // Méthode 1: Empêcher la fermeture immédiate sur iOS
+        if (isIOS) {
+            // Supprimer tous les événements existants sur le champ
+            const newDateInput = dateInput.cloneNode(true);
+            dateInput.parentNode.replaceChild(newDateInput, dateInput);
+            
+            // Réappliquer les attributs nécessaires
+            const today = new Date();
+            const minDate = new Date(today.getTime() + 48 * 60 * 60 * 1000);
+            const minDateString = minDate.toISOString().split('T')[0];
+            newDateInput.min = minDateString;
+            
+            // Nouvelle approche pour iOS
+            newDateInput.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                touchStartTime = Date.now();
+                isPickerOpen = true;
+                
+                // Focus avec délai pour iOS
+                setTimeout(() => {
+                    this.focus();
+                    this.click();
+                }, 50);
+            }, { passive: false });
+            
+            newDateInput.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                const touchDuration = Date.now() - touchStartTime;
+                
+                if (touchDuration < 300 && isPickerOpen) {
+                    // Touch rapide, ouvrir le picker
+                    setTimeout(() => {
+                        this.focus();
+                        if (this.showPicker) {
+                            this.showPicker();
+                        } else {
+                            this.click();
+                        }
+                    }, 100);
+                }
+            }, { passive: false });
+            
+            // Empêcher le blur immédiat
+            newDateInput.addEventListener('blur', function(e) {
+                if (isPickerOpen) {
+                    setTimeout(() => {
+                        if (document.activeElement !== this) {
+                            isPickerOpen = false;
+                        }
+                    }, 300);
+                }
+            });
+            
+            // Détecter quand la valeur change (picker fermé)
+            newDateInput.addEventListener('change', function(e) {
+                isPickerOpen = false;
+                // Validation de la date
+                validateSelectedDate(this);
+            });
+        } 
+        // Méthode 2: Fix pour Android et autres mobiles
+        else {
+            // Wrapper pour améliorer l'interaction
+            const wrapper = document.createElement('div');
+            wrapper.className = 'date-input-wrapper';
+            wrapper.style.cssText = `
+                position: relative;
+                width: 100%;
+                display: block;
+            `;
+            
+            dateInput.parentNode.insertBefore(wrapper, dateInput);
+            wrapper.appendChild(dateInput);
+            
+            // Ajouter un overlay tactile pour Android
+            const touchOverlay = document.createElement('div');
+            touchOverlay.className = 'date-touch-overlay';
+            touchOverlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 5;
+                cursor: pointer;
+                background: transparent;
+            `;
+            
+            wrapper.appendChild(touchOverlay);
+            
+            // Gérer l'interaction via l'overlay
+            touchOverlay.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                touchStartTime = Date.now();
+            }, { passive: false });
+            
+            touchOverlay.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                const touchDuration = Date.now() - touchStartTime;
+                
+                if (touchDuration < 500) {
+                    dateInput.focus();
+                    setTimeout(() => {
+                        dateInput.click();
+                        if (dateInput.showPicker) {
+                            dateInput.showPicker();
+                        }
+                    }, 50);
+                }
+            }, { passive: false });
+            
+            // Validation quand la valeur change
+            dateInput.addEventListener('change', function(e) {
+                validateSelectedDate(this);
+            });
+        }
+        
+        // Méthode 3: Fallback avec un input text personnalisé
+        createDatePickerFallback(dateInput);
+    });
+}
+
+// Validation de la date sélectionnée
+function validateSelectedDate(dateInput) {
+    const selectedDate = new Date(dateInput.value);
+    const today = new Date();
+    const minDate = new Date(today.getTime() + 48 * 60 * 60 * 1000);
+    
+    if (selectedDate < minDate) {
+        alert('Veuillez sélectionner une date au moins 48h à l\'avance.');
+        dateInput.value = '';
+        setTimeout(() => {
+            dateInput.focus();
+        }, 100);
+        return false;
+    }
+    
+    // Feedback visuel positif
+    dateInput.style.borderColor = '#4CAF50';
+    dateInput.style.backgroundColor = '#f8fff8';
+    
+    return true;
+}
+
+// Fallback avec un input text et sélection manuelle
+function createDatePickerFallback(originalInput) {
+    // Cette fonction crée une alternative si le date picker natif ne fonctionne pas
+    
+    const fallbackButton = document.createElement('button');
+    fallbackButton.type = 'button';
+    fallbackButton.className = 'date-fallback-button';
+    fallbackButton.textContent = '📅 Choisir une date';
+    fallbackButton.style.cssText = `
+        display: none;
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #FFE4E1;
+        border-radius: 15px;
+        background: white;
+        font-size: 16px;
+        font-family: inherit;
+        color: var(--primary-color);
+        cursor: pointer;
+        margin-top: 0.5rem;
+    `;
+    
+    originalInput.parentNode.appendChild(fallbackButton);
+    
+    // Si le date picker natif ne fonctionne pas après 3 tentatives
+    let failCount = 0;
+    
+    originalInput.addEventListener('focus', function() {
+        setTimeout(() => {
+            if (!this.value) {
+                failCount++;
+                if (failCount >= 3) {
+                    // Montrer le fallback
+                    this.style.display = 'none';
+                    fallbackButton.style.display = 'block';
+                }
+            }
+        }, 1000);
+    });
+    
+    fallbackButton.addEventListener('click', function() {
+        showDatePickerModal(originalInput);
+    });
+}
+
+// Modal de sélection de date personnalisée
+function showDatePickerModal(dateInput) {
+    const modal = document.createElement('div');
+    modal.className = 'date-picker-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: 1rem;
+    `;
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        max-width: 350px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = 'Choisir une date de livraison';
+    title.style.cssText = `
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 1rem;
+    `;
+    
+    modalContent.appendChild(title);
+    
+    // Créer un sélecteur simple
+    const today = new Date();
+    const datesContainer = document.createElement('div');
+    datesContainer.style.cssText = `
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    `;
+    
+    // Générer les 14 prochains jours (en commençant par après-demain)
+    for (let i = 2; i <= 15; i++) {
+        const date = new Date(today.getTime() + i * 24 * 60 * 60 * 1000);
+        const dateButton = document.createElement('button');
+        dateButton.type = 'button';
+        dateButton.textContent = date.toLocaleDateString('fr-FR', { 
+            weekday: 'short', 
+            day: 'numeric', 
+            month: 'short' 
+        });
+        dateButton.style.cssText = `
+            padding: 0.8rem;
+            border: 2px solid #FFE4E1;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        `;
+        
+        dateButton.addEventListener('click', function() {
+            dateInput.value = date.toISOString().split('T')[0];
+            validateSelectedDate(dateInput);
+            document.body.removeChild(modal);
+        });
+        
+        dateButton.addEventListener('touchstart', function() {
+            this.style.background = 'var(--accent-color)';
+        });
+        
+        dateButton.addEventListener('touchend', function() {
+            this.style.background = 'white';
+        });
+        
+        datesContainer.appendChild(dateButton);
+    }
+    
+    modalContent.appendChild(datesContainer);
+    
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.textContent = 'Annuler';
+    closeButton.style.cssText = `
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 8px;
+        background: white;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-weight: bold;
+    `;
+    
+    closeButton.addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+    
+    modalContent.appendChild(closeButton);
+    modal.appendChild(modalContent);
+    
+    // Fermer en cliquant en dehors
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    document.body.appendChild(modal);
+}
+
+// CSS supplémentaire pour les fixes
+const datePickerStyles = document.createElement('style');
+datePickerStyles.textContent = `
+    /* Améliorer la visibilité des date inputs sur mobile */
+    @media (max-width: 768px) {
+        input[type="date"] {
+            position: relative;
+            z-index: 1;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: white;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23FF69B4' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 3rem;
+        }
+        
+        input[type="date"]:focus {
+            outline: 3px solid var(--primary-color);
+            outline-offset: 2px;
+            border-color: var(--primary-color);
+            z-index: 999;
+        }
+        
+        /* Style pour le wrapper */
+        .date-input-wrapper {
+            position: relative;
+            isolation: isolate;
+        }
+        
+        .date-touch-overlay {
+            border-radius: 15px;
+        }
+        
+        /* Animation pour le feedback tactile */
+        input[type="date"]:active,
+        .date-touch-overlay:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+        
+        /* Style pour les boutons de la modal */
+        .date-picker-modal button:hover {
+            background: var(--accent-color) !important;
+            transform: scale(1.02);
+        }
+    }
+    
+    /* Améliorer la lisibilité sur tous les appareils */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+    
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+`;
+
+document.head.appendChild(datePickerStyles);
+
+// Export pour utilisation dans d'autres modules
+window.ZeBestCake = window.ZeBestCake || {};
+window.ZeBestCake.fixMobileDatePicker = fixMobileDatePicker;
