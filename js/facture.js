@@ -94,11 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const invoiceElement = document.querySelector(".invoice-container");
         const actions = document.querySelector(".actions-container");
 
+        // Store original width and hide actions
+        const originalWidth = invoiceElement.style.width;
         actions.style.display = 'none';
+        
+        // Set a fixed width for PDF generation to avoid truncation on mobile
+        invoiceElement.style.width = '900px';
 
         html2canvas(invoiceElement, { 
             scale: 2,
-            useCORS: true
+            useCORS: true,
+            windowWidth: 900 // Ensure the canvas is rendered at this width
         }).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF({
@@ -114,6 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erreur lors de la génération du PDF:", error);
             alert("Une erreur est survenue lors de la création du PDF. Veuillez vérifier la console pour plus de détails.");
         }).finally(() => {
+            // Restore original width and show actions
+            invoiceElement.style.width = originalWidth;
             actions.style.display = 'flex';
         });
     }
