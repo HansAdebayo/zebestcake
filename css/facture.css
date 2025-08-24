@@ -204,3 +204,56 @@ body {
         width: 100%;
     }
 }
+
+/* --- New Styles for PDF/Email Actions --- */
+
+.paid-stamp {
+    position: absolute;
+    bottom: 80px;
+    right: 40px;
+    border: 5px solid #28a745;
+    color: #28a745;
+    font-size: 28px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transform: rotate(-15deg);
+    opacity: 0.7;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+.paid-stamp .date {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.invoice-footer {
+    position: relative; /* Needed for stamp positioning */
+}
+
+.actions-container {
+    text-align: center;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.actions-container .secondary {
+    background-color: #6c757d;
+}
+.actions-container .secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Adjust for print */
+@media print {
+    .actions-container {
+        display: none;
+    }
+    .paid-stamp {
+        display: block !important; /* Ensure stamp is visible when printing */
+    }
+}

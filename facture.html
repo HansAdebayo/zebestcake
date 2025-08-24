@@ -65,15 +65,19 @@
         </section>
 
         <footer class="invoice-footer">
+            <div id="paid-stamp" class="paid-stamp" style="display: none;"></div>
             <p>Merci pour votre commande !</p>
             <p>ZeBestCake - 123 Rue de la Gourmandise, 75001 Paris</p>
         </footer>
 
-        <div class="print-button-container">
-            <button onclick="window.print()" class="cta-button">Imprimer la facture</button>
+        <div class="actions-container">
+            <button id="download-pdf-btn" class="cta-button">Télécharger en PDF</button>
+            <button id="send-email-btn" class="cta-button secondary">Envoyer par Email</button>
         </div>
     </div>
 
+    <script defer src="js/lib/html2canvas.min.js"></script>
+    <script defer src="js/lib/jspdf.umd.min.js"></script>
     <script type="module" src="js/facture.js"></script>
 </body>
 </html>

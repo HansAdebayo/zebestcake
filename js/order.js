@@ -69,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Fonctions du formulaire à étapes ---
     function showStep(stepNumber) {
+        // Scroll to the top of the form for better UX on mobile
+        const formSection = document.getElementById('order-form-section');
+        if (formSection) {
+            formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         steps.forEach((step, index) => {
             step.classList.toggle('active', index + 1 === stepNumber);
         });
@@ -183,15 +189,9 @@ function setupDatePicker() {
     const dateInput = document.getElementById('delivery-date');
     const today = new Date();
     
-    // Calculer la date minimum (aujourd'hui + 48h)
-    const minDate = new Date(today);
-    minDate.setDate(today.getDate() + 2);
-    
-    // Formatter pour l'attribut min (YYYY-MM-DD)
-    const minDateString = minDate.toISOString().split('T')[0];
+    // Empêcher la sélection de dates passées
+    const minDateString = today.toISOString().split('T')[0];
     dateInput.setAttribute('min', minDateString);
-
-    
 }
 
 /**

@@ -1049,6 +1049,8 @@ footer {
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     margin-top: 1rem;
+    height: 400px; /* Set fixed height for chart */
+    position: relative;
 }
 
 .chart-container.hidden {
@@ -1081,6 +1083,12 @@ footer {
     color: #155724;
     background-color: #d4edda;
     border-color: #c3e6cb;
+}
+
+.status-annulée {
+    color: #6c757d;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
 }
 
 .status-cell .edit-status-btn {

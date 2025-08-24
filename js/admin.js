@@ -95,8 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const pendingOrdersEl = document.getElementById('stats-pending-orders');
         const deliveryTypesEl = document.getElementById('stats-delivery-types');
 
-        const totalRevenue = orders.reduce((sum, order) => sum + (order.pricing?.totalPrice || 0), 0);
-        const totalOrders = orders.length;
+        const activeOrders = orders.filter(order => order.status !== 'Annulée');
+
+        // Exclude cancelled orders from revenue calculation
+        const totalRevenue = activeOrders.reduce((sum, order) => sum + (order.pricing?.totalPrice || 0), 0);
+        const totalOrders = activeOrders.length;
+
         const completedOrders = orders.filter(order => order.status === 'Terminée').length;
         const pendingOrders = orders.filter(order => order.status === 'Non traitée' || order.status === 'En cours').length;
         
@@ -119,13 +123,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Display Delivery Chart ---
     function displayDeliveryChart(orders) {
+        // Exclude cancelled orders from the chart
+        const activeOrders = orders.filter(order => order.status !== 'Annulée');
+
         const ctx = document.getElementById('delivery-chart');
         if (!ctx) return;
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const deliveryDates = orders
+        const deliveryDates = activeOrders
             .filter(order => order.delivery?.date?.toDate() >= today)
             .reduce((acc, order) => {
                 const dateStr = order.delivery.date.toDate().toLocaleDateString('fr-FR');
@@ -153,9 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Livraisons prévues',
                     data: data,
-                    backgroundColor: 'rgba(255, 105, 180, 0.5)',
+                    backgroundColor: 'rgba(255, 105, 180, 0.6)',
                     borderColor: 'rgba(255, 105, 180, 1)',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
                 }]
             },
             options: {
@@ -168,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 },
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false
@@ -255,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <option value="Non traitée" ${currentStatus === 'Non traitée' ? 'selected' : ''}>Non traitée</option>
                 <option value="En cours" ${currentStatus === 'En cours' ? 'selected' : ''}>En cours</option>
                 <option value="Terminée" ${currentStatus === 'Terminée' ? 'selected' : ''}>Terminée</option>
+                <option value="Annulée" ${currentStatus === 'Annulée' ? 'selected' : ''}>Annulée</option>
             </select>
             <button class="validate-status-btn cta-button">Valider</button>
             <button class="cancel-status-btn secondary-btn">Annuler</button>
