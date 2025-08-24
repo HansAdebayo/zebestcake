@@ -58,9 +58,9 @@ function displayProducts(filter = 'all') {
         // Simplification de l'affichage du prix
         let priceDisplay = '';
         if (product.prices) {
-            // Affiche le premier prix trouvé pour la simplicité
-            const firstPrice = Object.values(product.prices)[0];
-            priceDisplay = `<p class="price">À partir de ${firstPrice}€</p>`;
+            // Trouve le prix le plus bas pour l'affichage "À partir de"
+            const lowestPrice = Math.min(...Object.values(product.prices));
+            priceDisplay = `<p class="price">À partir de ${lowestPrice}€</p>`;
         }
 
         productElement.innerHTML = `
