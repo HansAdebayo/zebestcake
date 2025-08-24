@@ -922,6 +922,13 @@ footer {
     position: relative;
 }
 
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
 .close-button {
     color: #aaa;
     float: right;
@@ -943,4 +950,140 @@ footer {
     margin: 1rem 0;
     border: 0;
     border-top: 1px solid var(--gris-clair);
+}
+
+/* --- Stats -- */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: var(--gris-clair);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--rose-principal);
+}
+
+.stat-card h4 {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--marron-chocolat);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.stat-card p {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gris-texte);
+}
+
+#stats-delivery-types {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.invoice-btn {
+    display: inline-block;
+    background: var(--marron-chocolat);
+    color: var(--blanc-pur);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    text-decoration: none;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.invoice-btn:hover {
+    background: #6a3610; /* A darker brown */
+    color: var(--blanc-pur);
+    text-decoration: none;
+}
+
+/* --- Chart Section --- */
+.chart-section {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.chart-container {
+    background-color: var(--blanc-pur);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-top: 1rem;
+}
+
+.chart-container.hidden {
+    display: none;
+}
+
+/* --- Status Styles --- */
+.current-status {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid transparent;
+}
+
+.status-non-traitée {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+.status-en-cours {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+}
+
+.status-terminée {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.status-cell .edit-status-btn {
+    margin-left: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--rose-principal);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.status-cell .status-select {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-right: 0.5rem;
+}
+
+.status-cell .validate-status-btn,
+.status-cell .cancel-status-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.status-cell .validate-status-btn {
+    background-color: var(--rose-principal);
+    color: #fff;
+}
+
+.status-cell .cancel-status-btn {
+    background-color: var(--gris-clair);
+    color: var(--gris-texte);
 }

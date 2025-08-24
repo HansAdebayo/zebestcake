@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - ZeBestCake</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
@@ -23,6 +24,36 @@
         <div id="notification-container"></div>
         <section id="admin-dashboard">
             <h1 class="section-title">Tableau de Bord des Commandes</h1>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h4>Revenu Total</h4>
+                    <p id="stats-total-revenue">0 €</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Commandes Totales</h4>
+                    <p id="stats-total-orders">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Commandes Terminées</h4>
+                    <p id="stats-completed-orders">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Commandes en Attente</h4>
+                    <p id="stats-pending-orders">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Types de Livraison</h4>
+                    <p id="stats-delivery-types">-</p>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <button id="toggle-chart-btn" class="cta-button secondary-btn">Afficher le graphique des livraisons</button>
+                <div class="chart-container hidden">
+                    <canvas id="delivery-chart"></canvas>
+                </div>
+            </div>
 
             <div class="filters">
                 <button class="filter-btn active" data-status="all">Toutes</button>
@@ -56,7 +87,10 @@
                 <span class="close-button">&times;</span>
                 <h2>Détails de la commande</h2>
                 <div id="modal-order-details"></div>
-                <button id="print-ticket-btn" class="cta-button">Imprimer / Télécharger le ticket</button>
+                                <div class="modal-actions">
+                    <button id="send-confirmation-btn" class="cta-button">Confirmer au Client</button>
+                    <button id="print-ticket-btn" class="secondary-btn">Imprimer le Ticket</button>
+                </div>
             </div>
         </div>
     </main>

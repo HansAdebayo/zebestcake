@@ -3,6 +3,14 @@ import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/
 import { collection, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 let allOrders = [];
+let deliveryChart = null;
+
+// Helper function to generate a CSS class from a status string
+const getStatusClass = (status) => {
+    if (!status) return '';
+    // Converts "Non traitée" to "status-non-traitée"
+    return 'status-' + status.toLowerCase().replace(/\s+/g, '-');
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     const ordersTbody = document.getElementById('orders-tbody');
@@ -10,15 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const modal = document.getElementById('order-modal');
     const closeModalBtn = document.querySelector('.close-button');
-    const printTicketBtn = document.getElementById('print-ticket-btn');
+    const toggleChartBtn = document.getElementById('toggle-chart-btn');
+    const chartContainer = document.querySelector('.chart-container');
+
+    // --- Chart Toggle ---
+    if (toggleChartBtn && chartContainer) {
+        toggleChartBtn.addEventListener('click', () => {
+            chartContainer.classList.toggle('hidden');
+        });
+    }
 
     // --- Authentication Check ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // User is signed in, load the dashboard
             loadOrders();
         } else {
-            // User is signed out, redirect to login
             window.location.href = 'login.html';
         }
     });
@@ -28,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             signOut(auth).then(() => {
-                console.log('User signed out');
                 window.location.href = 'index.html';
             }).catch((error) => {
                 console.error('Sign out error:', error);
@@ -67,9 +80,105 @@ document.addEventListener('DOMContentLoaded', () => {
             const querySnapshot = await getDocs(collection(db, "orders"));
             allOrders = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             displayOrders('all');
+            displayStats(allOrders);
+            displayDeliveryChart(allOrders);
         } catch (error) {
             console.error("Error loading orders: ", error);
         }
+    }
+
+    // --- Display Stats ---
+    function displayStats(orders) {
+        const totalRevenueEl = document.getElementById('stats-total-revenue');
+        const totalOrdersEl = document.getElementById('stats-total-orders');
+        const completedOrdersEl = document.getElementById('stats-completed-orders');
+        const pendingOrdersEl = document.getElementById('stats-pending-orders');
+        const deliveryTypesEl = document.getElementById('stats-delivery-types');
+
+        const totalRevenue = orders.reduce((sum, order) => sum + (order.pricing?.totalPrice || 0), 0);
+        const totalOrders = orders.length;
+        const completedOrders = orders.filter(order => order.status === 'Terminée').length;
+        const pendingOrders = orders.filter(order => order.status === 'Non traitée' || order.status === 'En cours').length;
+        
+        const deliveryTypes = orders.reduce((acc, order) => {
+            const type = order.delivery?.type || 'Inconnu';
+            acc[type] = (acc[type] || 0) + 1;
+            return acc;
+        }, {});
+
+        const deliveryTypesString = Object.entries(deliveryTypes)
+            .map(([type, count]) => `${type}: ${count}`)
+            .join('<br>');
+
+        if(totalRevenueEl) totalRevenueEl.textContent = `${totalRevenue.toFixed(2)} €`;
+        if(totalOrdersEl) totalOrdersEl.textContent = totalOrders;
+        if(completedOrdersEl) completedOrdersEl.textContent = completedOrders;
+        if(pendingOrdersEl) pendingOrdersEl.textContent = pendingOrders;
+        if(deliveryTypesEl) deliveryTypesEl.innerHTML = deliveryTypesString || '-';
+    }
+
+    // --- Display Delivery Chart ---
+    function displayDeliveryChart(orders) {
+        const ctx = document.getElementById('delivery-chart');
+        if (!ctx) return;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const deliveryDates = orders
+            .filter(order => order.delivery?.date?.toDate() >= today)
+            .reduce((acc, order) => {
+                const dateStr = order.delivery.date.toDate().toLocaleDateString('fr-FR');
+                acc[dateStr] = (acc[dateStr] || 0) + 1;
+                return acc;
+            }, {});
+
+        const sortedDates = Object.entries(deliveryDates).sort((a, b) => {
+            const dateA = new Date(a[0].split('/').reverse().join('-'));
+            const dateB = new Date(b[0].split('/').reverse().join('-'));
+            return dateA - dateB;
+        });
+
+        const labels = sortedDates.map(entry => entry[0]);
+        const data = sortedDates.map(entry => entry[1]);
+
+        if (deliveryChart) {
+            deliveryChart.destroy();
+        }
+
+        deliveryChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Livraisons prévues',
+                    data: data,
+                    backgroundColor: 'rgba(255, 105, 180, 0.5)',
+                    borderColor: 'rgba(255, 105, 180, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Nombre de livraisons prévues par jour'
+                    }
+                }
+            }
+        });
     }
 
     // --- Display Orders ---
@@ -83,23 +192,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filteredOrders.forEach(order => {
             const tr = document.createElement('tr');
+            const statusClass = getStatusClass(order.status);
             tr.innerHTML = `
                 <td>${order.id}</td>
                 <td>${order.customerInfo ? order.customerInfo.firstName : 'N/A'} ${order.customerInfo ? order.customerInfo.lastName : 'N/A'}</td>
                 <td>${order.product ? order.product.name : 'N/A'}</td>
                 <td>${order.delivery && order.delivery.date ? order.delivery.date.toDate().toLocaleDateString() : 'N/A'}</td>
                 <td class="status-cell" data-order-id="${order.id}">
-                    <span class="current-status">${order.status}</span>
+                    <span class="current-status ${statusClass}">${order.status}</span>
                     <button class="edit-status-btn">Modifier</button>
                 </td>
                 <td>
                     <button class="view-details-btn" data-order-id="${order.id}">Voir</button>
+                    <a href="facture.html?orderId=${order.id}" target="_blank" class="invoice-btn">Facture</a>
                 </td>
             `;
             ordersTbody.appendChild(tr);
         });
 
-        // Add event listeners for status change and view details
         document.querySelectorAll('.edit-status-btn').forEach(btn => {
             btn.addEventListener('click', enterEditMode);
         });
@@ -120,8 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <option value="En cours" ${currentStatus === 'En cours' ? 'selected' : ''}>En cours</option>
                 <option value="Terminée" ${currentStatus === 'Terminée' ? 'selected' : ''}>Terminée</option>
             </select>
-            <button class="validate-status-btn">Valider</button>
-            <button class="cancel-status-btn">Annuler</button>
+            <button class="validate-status-btn cta-button">Valider</button>
+            <button class="cancel-status-btn secondary-btn">Annuler</button>
         `;
 
         statusCell.querySelector('.validate-status-btn').addEventListener('click', updateOrderStatus);
@@ -135,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const order = allOrders.find(o => o.id === orderId);
 
         statusCell.innerHTML = `
-            <span class="current-status">${order.status}</span>
+            <span class="current-status ${getStatusClass(order.status)}">${order.status}</span>
             <button class="edit-status-btn">Modifier</button>
         `;
         statusCell.querySelector('.edit-status-btn').addEventListener('click', enterEditMode);
@@ -149,34 +259,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const orderRef = doc(db, "orders", orderId);
-            await updateDoc(orderRef, {
-                status: newStatus
-            });
-            // Update local data to avoid reloading from Firestore
-            const orderToUpdate = allOrders.find(order => order.id === orderId);
-            if (orderToUpdate) {
-                orderToUpdate.status = newStatus;
-            }
-            console.log(`Order ${orderId} status updated to ${newStatus}`);
-            showNotification(`Statut de la commande ${orderId} mis à jour à "${newStatus}" !`, 'success');
+            await updateDoc(orderRef, { status: newStatus });
             
-            // Revert to display mode after successful update
+            const orderToUpdate = allOrders.find(order => order.id === orderId);
+            if (orderToUpdate) orderToUpdate.status = newStatus;
+
+            showNotification(`Statut de la commande mis à jour !`, 'success');
+            
             statusCell.innerHTML = `
-                <span class="current-status">${newStatus}</span>
+                <span class="current-status ${getStatusClass(newStatus)}">${newStatus}</span>
                 <button class="edit-status-btn">Modifier</button>
             `;
             statusCell.querySelector('.edit-status-btn').addEventListener('click', enterEditMode);
 
         } catch (error) {
             console.error("Error updating order status: ", error);
-            showNotification(`Erreur lors de la mise à jour du statut de la commande ${orderId}.`, 'error');
-            // Revert to display mode on error
-            const order = allOrders.find(o => o.id === orderId);
-            statusCell.innerHTML = `
-                <span class="current-status">${order.status}</span>
-                <button class="edit-status-btn">Modifier</button>
-            `;
-            statusCell.querySelector('.edit-status-btn').addEventListener('click', enterEditMode);
+            showNotification(`Erreur lors de la mise à jour.`, 'error');
+            cancelEditMode(event); // Revert on error
         }
     }
 
@@ -189,35 +288,71 @@ document.addEventListener('DOMContentLoaded', () => {
         if (order && modalDetails) {
             modalDetails.innerHTML = `
                 <p><strong>ID Commande:</strong> ${order.id}</p>
-                <p><strong>Client:</strong> ${order.customerInfo ? order.customerInfo.firstName : 'N/A'} ${order.customerInfo ? order.customerInfo.lastName : 'N/A'}</p>
-                <p><strong>Email:</strong> ${order.customerInfo ? order.customerInfo.email : 'N/A'}</p>
-                <p><strong>Téléphone:</strong> ${order.customerInfo ? order.customerInfo.phone : 'N/A'}</p>
+                <p><strong>Client:</strong> ${order.customerInfo?.firstName || 'N/A'} ${order.customerInfo?.lastName || 'N/A'}</p>
+                <p><strong>Email:</strong> ${order.customerInfo?.email || 'N/A'}</p>
+                <p><strong>Téléphone:</strong> ${order.customerInfo?.phone || 'N/A'}</p>
                 <hr>
-                <p><strong>Gâteau:</strong> ${order.product ? order.product.name : 'N/A'} (${order.product ? order.product.size : 'N/A'})</p>
-                <p><strong>Prix de base:</strong> ${order.product ? order.product.basePrice.toFixed(2) : 'N/A'} €</p>
-                <p><strong>Demandes spéciales:</strong> ${order.customization ? order.customization.specialRequests : 'Aucune'}</p>
+                <p><strong>Gâteau:</strong> ${order.product?.name || 'N/A'} (${order.product?.size || 'N/A'})</p>
+                <p><strong>Demandes spéciales:</strong> ${order.customization?.specialRequests || 'Aucune'}</p>
                 <hr>
-                <p><strong>Livraison:</strong> ${order.delivery.type}</p>
-                <p><strong>Date:</strong> ${order.delivery.date.toDate().toLocaleDateString()}</p>
-                <p><strong>Prix livraison:</strong> ${order.pricing.deliveryPrice.toFixed(2)} €</p>
+                <p><strong>Livraison:</strong> ${order.delivery?.type}</p>
+                <p><strong>Date:</strong> ${order.delivery?.date.toDate().toLocaleDateString('fr-FR')}</p>
                 <hr>
-                <p><strong>Total:</strong> ${order.pricing.totalPrice.toFixed(2)} €</p>
+                <p><strong>Total:</strong> ${order.pricing?.totalPrice.toFixed(2)} €</p>
             `;
             modal.style.display = 'block';
 
+            // Attach event listeners for modal buttons
+            const printTicketBtn = document.getElementById('print-ticket-btn');
             if (printTicketBtn) {
                 printTicketBtn.onclick = () => {
                     printTicket(modalDetails.innerHTML);
                 };
             }
+
+            const sendConfirmationBtn = document.getElementById('send-confirmation-btn');
+            if (sendConfirmationBtn) {
+                sendConfirmationBtn.onclick = () => {
+                    sendConfirmationEmail(order);
+                };
+            }
         }
+    }
+
+    // --- Send Confirmation Email via Gmail ---
+    function sendConfirmationEmail(order) {
+        if (!order.customerInfo?.email) {
+            alert("L'adresse e-mail du client n'est pas disponible.");
+            return;
+        }
+
+        const recipient = order.customerInfo.email;
+        const subject = `Confirmation de votre commande ZeBestCake #${order.id}`;
+        const deliveryDate = order.delivery?.date?.toDate().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        const body = `Bonjour ${order.customerInfo.firstName || 'client(e)'},
+
+Nous avons le plaisir de vous confirmer que votre commande #${order.id} a bien été reçue et est en cours de traitement.
+
+Voici les détails pour la récupération de votre gâteau :
+
+Mode de récupération : ${order.delivery.type}
+Date : ${deliveryDate}
+
+Nous vous remercions pour votre confiance.
+
+Cordialement,
+L'équipe ZeBestCake`;
+
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(gmailUrl, '_blank');
     }
 
     // --- Print Ticket ---
     function printTicket(content) {
         const printWindow = window.open('', '', 'height=600,width=800');
         printWindow.document.write('<html><head><title>Ticket de commande</title>');
-        printWindow.document.write('<link rel="stylesheet" href="css/style.css">'); // Optional: for styling
+        printWindow.document.write('<link rel="stylesheet" href="css/style.css">');
         printWindow.document.write('</head><body>');
         printWindow.document.write(content);
         printWindow.document.write('</body></html>');
@@ -241,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         notificationContainer.appendChild(notification);
 
-        // Automatically remove the notification after a few seconds
         setTimeout(() => {
             notification.remove();
         }, 3000);
