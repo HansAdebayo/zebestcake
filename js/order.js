@@ -191,17 +191,7 @@ function setupDatePicker() {
     const minDateString = minDate.toISOString().split('T')[0];
     dateInput.setAttribute('min', minDateString);
 
-    // Ajouter une validation pour les jours de fermeture (dimanche/lundi)
-    dateInput.addEventListener('input', (e) => {
-        const selectedDate = new Date(e.target.value);
-        // getUTCDay() est utilisé pour éviter les pbs de fuseau horaire : 0=Dim, 1=Lun
-        const dayOfWeek = selectedDate.getUTCDay(); 
-
-        if (dayOfWeek === 0 || dayOfWeek === 1) {
-            alert("Désolé, nous sommes fermés les dimanches et lundis. Veuillez choisir une autre date.");
-            e.target.value = ''; // Réinitialiser la date
-        }
-    });
+    
 }
 
 /**

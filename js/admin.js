@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-import { collection, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+import { collection, getDocs, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 let allOrders = [];
 let deliveryChart = null;
@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>
                     <button class="view-details-btn" data-order-id="${order.id}">Voir</button>
                     <a href="facture.html?orderId=${order.id}" target="_blank" class="invoice-btn">Facture</a>
+                    <button class="delete-order-btn" data-order-id="${order.id}">Supprimer</button>
                 </td>
             `;
             ordersTbody.appendChild(tr);
@@ -216,6 +217,31 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.view-details-btn').forEach(btn => {
             btn.addEventListener('click', showOrderDetails);
         });
+        document.querySelectorAll('.delete-order-btn').forEach(btn => {
+            btn.addEventListener('click', deleteOrder);
+        });
+    }
+
+    // --- Delete Order ---
+    async function deleteOrder(event) {
+        const orderId = event.target.dataset.orderId;
+        if (confirm(`Êtes-vous sûr de vouloir supprimer la commande ${orderId} ? Cette action est irréversible.`)) {
+            try {
+                const orderRef = doc(db, "orders", orderId);
+                await deleteDoc(orderRef);
+
+                allOrders = allOrders.filter(order => order.id !== orderId);
+                const activeFilter = document.querySelector('.filter-btn.active').dataset.status;
+                displayOrders(activeFilter);
+                displayStats(allOrders);
+                displayDeliveryChart(allOrders);
+
+                showNotification('Commande supprimée avec succès.', 'success');
+            } catch (error) {
+                console.error("Error deleting order: ", error);
+                showNotification('Erreur lors de la suppression de la commande.', 'error');
+            }
+        }
     }
 
     // --- Enter Edit Mode ---
