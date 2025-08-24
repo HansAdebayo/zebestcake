@@ -829,6 +829,36 @@ footer {
         transform: rotate(-90deg) translate(7px, -9px);
         opacity: 0;
     }
+
+    /* Admin Dashboard Responsive */
+    #admin-dashboard {
+        padding: 1rem;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr; /* Stack stats cards */
+    }
+
+    .filters {
+        flex-wrap: wrap; /* Allow filter buttons to wrap */
+        justify-content: flex-start;
+    }
+
+    #orders-table {
+        display: block; /* Make table a block element to allow overflow */
+        white-space: nowrap; /* Prevent text wrapping inside cells */
+    }
+    
+    #orders-table th, #orders-table td {
+        padding: 0.75rem 0.5rem; /* Reduce padding on table cells */
+        font-size: 0.9rem; /* Reduce font size in table */
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 1.5rem;
+    }
 }
 /* --- ADMIN & LOGIN --- */
 .login-container {
