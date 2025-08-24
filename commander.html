@@ -34,6 +34,10 @@
         <section id="order-form-section">
             <h1 class="section-title">Passez Votre Commande</h1>
 
+            <div class="guide-button-container">
+                <a href="guide-tailles.html" class="cta-button">GUIDE DES TAILLES</a>
+            </div>
+
             <div class="info-box-container">
                 <div class="info-box">
                     <p>Vous pouvez remplir ce formulaire pour une demande de devis, et nous vous recontacterons dans les 2h pour valider la commande. Vous pouvez aussi nous contacter directement sur <a href="https://www.instagram.com/__zebest__cake?igsh=a2RwM3g2YzdkYXFy&utm_source=qr" target="_blank">notre page Instagram</a>.</p>
@@ -78,6 +82,7 @@
                     <div class="form-group">
                         <label for="delivery-date">Date de livraison/retrait (48h minimum) :</label>
                         <input type="date" id="delivery-date" name="delivery-date" required>
+                        <span id="delivery-date-error" class="error-message"></span>
                     </div>
                      <div class="form-group">
                         <label for="delivery-type">Mode de livraison :</label>
