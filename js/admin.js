@@ -5,10 +5,15 @@ import { collection, getDocs, doc, updateDoc, deleteDoc } from 'https://www.gsta
 let allOrders = [];
 let deliveryChart = null;
 
+// Admin emails
+const ADMIN_EMAILS = {
+    hans: 'hansordenbada@gmail.com',
+    malika: 'aboudoumalika@gmail.com'
+};
+
 // Helper function to generate a CSS class from a status string
 const getStatusClass = (status) => {
     if (!status) return '';
-    // Converts "Non traitée" to "status-non-traitée"
     return 'status-' + status.toLowerCase().replace(/\s+/g, '-');
 };
 
@@ -18,24 +23,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const modal = document.getElementById('order-modal');
     const closeModalBtn = document.querySelector('.close-button');
-    const toggleChartBtn = document.getElementById('toggle-chart-btn');
-    const chartContainer = document.querySelector('.chart-container');
-
-    // --- Chart Toggle ---
-    if (toggleChartBtn && chartContainer) {
-        toggleChartBtn.addEventListener('click', () => {
-            chartContainer.classList.toggle('hidden');
-        });
-    }
 
     // --- Authentication Check ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            updateAdminStatus(user);
             loadOrders();
         } else {
             window.location.href = 'login.html';
         }
     });
+
+    // --- Update Admin Status Display ---
+    function updateAdminStatus(currentUser) {
+        const hansStatus = document.getElementById('status-dot-hans');
+        const malikaStatus = document.getElementById('status-dot-malika');
+
+        if (!currentUser || !currentUser.email) return;
+
+        // Reset both to offline initially
+        if(hansStatus) {
+            hansStatus.classList.remove('online');
+            hansStatus.classList.add('offline');
+        }
+        if(malikaStatus) {
+            malikaStatus.classList.remove('online');
+            malikaStatus.classList.add('offline');
+        }
+
+        // Set the current user to online
+        if (currentUser.email.toLowerCase() === ADMIN_EMAILS.hans.toLowerCase()) {
+            if(hansStatus) {
+                hansStatus.classList.add('online');
+                hansStatus.classList.remove('offline');
+            }
+        } else if (currentUser.email.toLowerCase() === ADMIN_EMAILS.malika.toLowerCase()) {
+            if(malikaStatus) {
+                malikaStatus.classList.add('online');
+                malikaStatus.classList.remove('offline');
+            }
+        }
+    }
 
     // --- Logout ---
     if (logoutBtn) {
@@ -64,13 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Modal ---
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
+            modal.classList.remove('is-open');
         });
     }
 
     window.addEventListener('click', (event) => {
         if (event.target == modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('is-open');
         }
     });
 
@@ -97,35 +125,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const activeOrders = orders.filter(order => order.status !== 'Annulée');
 
-        // Exclude cancelled orders from revenue calculation
         const totalRevenue = activeOrders.reduce((sum, order) => sum + (order.pricing?.totalPrice || 0), 0);
         const totalOrders = activeOrders.length;
-
         const completedOrders = orders.filter(order => order.status === 'Terminée').length;
         const pendingOrders = orders.filter(order => order.status === 'Non traitée' || order.status === 'En cours').length;
-        
-        const deliveryTypes = orders.reduce((acc, order) => {
-            const type = order.delivery?.type || 'Inconnu';
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-        }, {});
 
-        const deliveryTypesString = Object.entries(deliveryTypes)
-            .map(([type, count]) => `${type}: ${count}`)
-            .join('<br>');
+        // Corrected delivery type tracking
+        const deliveryCounts = {
+            'retrait': 0,
+            'livraison-centre': 0,
+            'livraison-peripherie': 0
+        };
+
+        activeOrders.forEach(order => {
+            const type = order.delivery?.type;
+            if (type && deliveryCounts.hasOwnProperty(type)) {
+                deliveryCounts[type]++;
+            }
+        });
+
+        const deliveryTypesHTML = `
+            <div class="delivery-type-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                <span class="delivery-name">Retrait en magasin</span>
+                <span class="count">${deliveryCounts['retrait']}</span>
+            </div>
+            <div class="delivery-type-item">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                <span class="delivery-name">Toulouse Centre</span>
+                <span class="count">${deliveryCounts['livraison-centre']}</span>
+            </div>
+            <div class="delivery-type-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16.5V8.28a2 2 0 0 0-.6-1.42L12 5.4l-1.4 1.46a2 2 0 0 0-.6 1.42V16.5m5.5 0v-1.8a2 2 0 0 0-1-1.72l-1.4-.82a2 2 0 0 1-1-1.72V8.5m-10 8V9.8a2 2 0 0 1 1-1.72l1.4-.82a2 2 0 0 0 1-1.72V4.5"></path><path d="M2 16.5h20"></path></svg>
+                <span class="delivery-name">Périphérie</span>
+                <span class="count">${deliveryCounts['livraison-peripherie']}</span>
+            </div>
+        `;
 
         if(totalRevenueEl) totalRevenueEl.textContent = `${totalRevenue.toFixed(2)} €`;
         if(totalOrdersEl) totalOrdersEl.textContent = totalOrders;
         if(completedOrdersEl) completedOrdersEl.textContent = completedOrders;
         if(pendingOrdersEl) pendingOrdersEl.textContent = pendingOrders;
-        if(deliveryTypesEl) deliveryTypesEl.innerHTML = deliveryTypesString || '-';
+        if(deliveryTypesEl) deliveryTypesEl.innerHTML = deliveryTypesHTML;
     }
 
     // --- Display Delivery Chart ---
     function displayDeliveryChart(orders) {
-        // Exclude cancelled orders from the chart
         const activeOrders = orders.filter(order => order.status !== 'Annulée');
-
         const ctx = document.getElementById('delivery-chart');
         if (!ctx) return;
 
@@ -160,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Livraisons prévues',
                     data: data,
-                    backgroundColor: 'rgba(255, 105, 180, 0.6)',
-                    borderColor: 'rgba(255, 105, 180, 1)',
+                    backgroundColor: 'rgba(108, 92, 231, 0.6)',
+                    borderColor: 'rgba(108, 92, 231, 1)',
                     borderWidth: 1,
                     borderRadius: 5,
                     barPercentage: 0.6,
@@ -169,24 +215,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }]
             },
             options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: 'Nombre de livraisons prévues par jour'
-                    }
+                    legend: { display: false },
+                    title: { display: true, text: 'Nombre de livraisons prévues par jour' }
                 }
             }
         });
@@ -338,9 +372,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <hr>
                 <p><strong>Total:</strong> ${order.pricing?.totalPrice.toFixed(2)} €</p>
             `;
-            modal.style.display = 'block';
+            modal.classList.add('is-open');
 
-            // Attach event listeners for modal buttons
             const printTicketBtn = document.getElementById('print-ticket-btn');
             if (printTicketBtn) {
                 printTicketBtn.onclick = () => {

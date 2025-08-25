@@ -4,34 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - ZeBestCake</title>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- New Admin Stylesheet -->
+    <link rel="stylesheet" href="css/admin.css">
+    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <a href="index.html" class="logo">
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
                 <img src="assets/images/logo.jpg" alt="ZeBestCake Logo" class="logo-img">
-                <span class="logo-text">ZeBestCake - Admin</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#" id="logout-btn">Déconnexion</a></li>
-            </ul>
-        </nav>
-    </header>
+                <span class="logo-text">ZeBestCake</span>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" class="active">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-    <main>
-        <div id="notification-container"></div>
-        <section id="admin-dashboard">
-            <h1 class="section-title">Tableau de Bord des Commandes</h1>
+            <div class="sidebar-section">
+                <h5 class="sidebar-section-title">Admins Connectés</h5>
+                <div class="admin-users">
+                    <div class="admin-user" id="admin-malika">
+                        <img src="assets/images/profil.jpg" alt="Admin Malika" class="avatar">
+                        <span class="admin-name">Malika</span>
+                        <span class="status-dot offline" id="status-dot-malika"></span>
+                    </div>
+                    <div class="admin-user" id="admin-hans">
+                        <img src="assets/images/profil.jpg" alt="Admin Hans" class="avatar">
+                        <span class="admin-name">Hans</span>
+                        <span class="status-dot offline" id="status-dot-hans"></span>
+                    </div>
+                </div>
+            </div>
 
+            <div class="sidebar-footer">
+                 <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" id="logout-btn">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            <span>Déconnexion</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Tableau de Bord</h1>
+            </header>
+
+            <!-- Stats Cards -->
             <div class="stats-container">
                 <div class="stat-card">
                     <h4>Revenu Total</h4>
                     <p id="stats-total-revenue">0 €</p>
                 </div>
                 <div class="stat-card">
-                    <h4>Commandes (Non Annulées)</h4>
+                    <h4>Commandes Actives</h4>
                     <p id="stats-total-orders">0</p>
                 </div>
                 <div class="stat-card">
@@ -42,60 +85,74 @@
                     <h4>Commandes en Attente</h4>
                     <p id="stats-pending-orders">0</p>
                 </div>
+            </div>
+
+            <!-- Charts & Other Info -->
+            <div class="stats-container">
+                 <div class="chart-section">
+                    <div class="chart-header">
+                        <h3>Livraisons prévues</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="delivery-chart"></canvas>
+                    </div>
+                </div>
                 <div class="stat-card">
                     <h4>Types de Livraison</h4>
-                    <p id="stats-delivery-types">-</p>
+                    <div id="stats-delivery-types" class="delivery-stats"></div>
                 </div>
             </div>
 
-            <div class="chart-section">
-                <button id="toggle-chart-btn" class="cta-button secondary-btn">Afficher le graphique des livraisons</button>
-                <div class="chart-container hidden">
-                    <canvas id="delivery-chart"></canvas>
+            <!-- Orders Table -->
+            <section class="orders-section">
+                <div class="orders-header">
+                    <h3>Toutes les commandes</h3>
+                    <div class="filters">
+                        <button class="filter-btn active" data-status="all">Toutes</button>
+                        <button class="filter-btn" data-status="Non traitée">Non traitées</button>
+                        <button class="filter-btn" data-status="En cours">En cours</button>
+                        <button class="filter-btn" data-status="Terminée">Terminées</button>
+                        <button class="filter-btn" data-status="Annulée">Annulées</button>
+                    </div>
                 </div>
-            </div>
-
-            <div class="filters">
-                <button class="filter-btn active" data-status="all">Toutes</button>
-                <button class="filter-btn" data-status="Non traitée">Non traitées</button>
-                <button class="filter-btn" data-status="En cours">En cours</button>
-                <button class="filter-btn" data-status="Terminée">Terminées</button>
-                <button class="filter-btn" data-status="Annulée">Annulées</button>
-            </div>
-
-            <div class="table-container">
-                <table id="orders-table">
-                    <thead>
-                        <tr>
-                            <th>ID Commande</th>
-                            <th>Client</th>
-                            <th>Gâteau</th>
-                            <th>Date de livraison</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-tbody">
-                        <!-- Les commandes seront chargées ici par JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Modal for order details -->
-        <div id="order-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <h2>Détails de la commande</h2>
-                <div id="modal-order-details"></div>
-                                <div class="modal-actions">
-                    <button id="send-confirmation-btn" class="cta-button">Confirmer au Client</button>
-                    <button id="print-ticket-btn" class="secondary-btn">Imprimer le Ticket</button>
+                <div class="table-container">
+                    <table id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>ID Commande</th>
+                                <th>Client</th>
+                                <th>Gâteau</th>
+                                <th>Date de livraison</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <!-- Les commandes seront chargées ici par JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for order details -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Détails de la commande</h2>
+            <div id="modal-order-details"></div>
+            <div class="modal-actions">
+                <button id="send-confirmation-btn" class="cta-button">Confirmer au Client</button>
+                <button id="print-ticket-btn" class="secondary-btn">Imprimer le Ticket</button>
             </div>
         </div>
-    </main>
+    </div>
 
+    <!-- Notification container -->
+    <div id="notification-container"></div>
+
+    <!-- Main Admin Script -->
     <script type="module" src="js/admin.js"></script>
 </body>
 </html>
