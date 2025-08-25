@@ -26,7 +26,7 @@ body {
     color: var(--text-color);
     display: flex;
     height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden; /* Prevent horizontal scroll on body */
 }
 
 /* Import Google Font */
@@ -37,6 +37,7 @@ body {
     display: flex;
     width: 100%;
     height: 100%;
+    position: relative;
 }
 
 .sidebar {
@@ -46,7 +47,8 @@ body {
     display: flex;
     flex-direction: column;
     padding: 24px;
-    transition: width 0.3s ease;
+    transition: transform 0.3s ease, width 0.3s ease;
+    z-index: 1100; /* Ensure sidebar is above content */
 }
 
 .main-content {
@@ -123,14 +125,24 @@ body {
 /* Main Content Header */
 .main-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: center; /* Align items vertically */
+    gap: 16px; /* Add gap between button and title */
     margin-bottom: 24px;
 }
 
 .main-header h1 {
     font-size: 28px;
     font-weight: 700;
+    flex-grow: 1; /* Allow title to take up space */
+}
+
+.mobile-menu-btn {
+    display: none; /* Hidden by default on desktop */
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
 }
 
 /* Stats Cards */
@@ -205,6 +217,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap; /* Allow filters to wrap on mobile */
+    gap: 16px;
 }
 
 .orders-header h3 {
@@ -462,4 +476,46 @@ body {
 .delivery-type-item .count {
     font-weight: 600;
     font-size: 18px;
+}
+
+/* --- Responsive Styles --- */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    body.sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .mobile-menu-btn {
+        display: block; /* Show the button on mobile */
+    }
+
+    .main-header h1 {
+        font-size: 22px;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr; /* Stack cards vertically */
+        gap: 16px;
+    }
+
+    .orders-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

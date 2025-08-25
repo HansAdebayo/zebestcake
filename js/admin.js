@@ -18,6 +18,15 @@ const getStatusClass = (status) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (mobileMenuBtn && sidebar) {
+        mobileMenuBtn.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-open');
+        });
+    }
+
     const ordersTbody = document.getElementById('orders-tbody');
     const logoutBtn = document.getElementById('logout-btn');
     const filterBtns = document.querySelectorAll('.filter-btn');
