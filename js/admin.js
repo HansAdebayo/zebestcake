@@ -1,6 +1,7 @@
-import { auth, db } from './firebase-config.js';
+import { auth, db, storage } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js';
 
 let allOrders = [];
 let deliveryChart = null;
@@ -27,17 +28,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const sidebarCloseBtn = document.querySelector('.sidebar-close-btn');
+
+    if (sidebarCloseBtn) {
+        sidebarCloseBtn.addEventListener('click', () => {
+            document.body.classList.remove('sidebar-open');
+        });
+    }
+
     const ordersTbody = document.getElementById('orders-tbody');
     const logoutBtn = document.getElementById('logout-btn');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const modal = document.getElementById('order-modal');
-    const closeModalBtn = document.querySelector('.close-button');
+    const closeModalBtn = document.querySelector('#order-modal .close-button');
 
     // --- Authentication Check ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
             updateAdminStatus(user);
             loadOrders();
+            initProductManagement(); // Initialize product management
         } else {
             window.location.href = 'login.html';
         }
@@ -459,5 +469,239 @@ L'équipe ZeBestCake`;
         setTimeout(() => {
             notification.remove();
         }, 3000);
+    }
+
+    // =================================================================
+    // ================= PRODUCT MANAGEMENT ============================
+    // =================================================================
+
+    function initProductManagement() {
+        const productModal = document.getElementById('product-modal');
+        const productModalClose = document.getElementById('product-modal-close');
+        const addProductBtn = document.getElementById('add-product-btn');
+        const productForm = document.getElementById('product-form');
+        const addPriceBtn = document.getElementById('add-price-btn');
+        const productImageInput = document.getElementById('product-image');
+
+        // --- Tab Navigation ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const adminPanels = document.querySelectorAll('.admin-panel');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.dataset.target;
+                
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                adminPanels.forEach(panel => {
+                    if (panel.id === targetId) {
+                        panel.classList.add('active');
+                    } else {
+                        panel.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // --- Modal Handling ---
+        if (addProductBtn) addProductBtn.addEventListener('click', () => showProductForm());
+        if (productModalClose) productModalClose.addEventListener('click', closeProductModal);
+        window.addEventListener('click', (event) => {
+            if (event.target == productModal) {
+                closeProductModal();
+            }
+        });
+
+        // --- Form Handling ---
+        if(productForm) productForm.addEventListener('submit', saveProduct);
+        if(addPriceBtn) addPriceBtn.addEventListener('click', () => addPriceField());
+        if(productImageInput) {
+            productImageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        document.getElementById('product-image-preview').src = event.target.result;
+                        document.getElementById('product-image-preview').style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // --- Initial Load ---
+        loadProducts();
+    }
+
+    async function loadProducts() {
+        const productListTbody = document.getElementById('product-list-tbody');
+        if (!productListTbody) return;
+        productListTbody.innerHTML = '<tr><td colspan="5">Chargement...</td></tr>';
+        try {
+            const querySnapshot = await getDocs(collection(db, "products"));
+            let products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            displayProducts(products);
+        } catch (error) {
+            console.error("Error loading products: ", error);
+            productListTbody.innerHTML = '<tr><td colspan="5">Erreur de chargement des produits.</td></tr>';
+        }
+    }
+
+    function displayProducts(products) {
+        const productListTbody = document.getElementById('product-list-tbody');
+        productListTbody.innerHTML = '';
+        if (products.length === 0) {
+            productListTbody.innerHTML = '<tr><td colspan="5">Aucun produit trouvé.</td></tr>';
+            return;
+        }
+        products.forEach(product => {
+            const tr = document.createElement('tr');
+            const basePrice = product.prices ? Object.values(product.prices)[0] : 'N/A';
+            tr.innerHTML = `
+                <td><img src="${product.imageUrl || 'assets/images/gateau.jpg'}" alt="${product.name}"></td>
+                <td data-label="Nom">${product.name}</td>
+                <td data-label="Prix de base">${basePrice} €</td>
+                <td data-label="Disponible">${product.available ? 'Oui' : 'Non'}</td>
+                <td data-label="Actions" class="actions">
+                    <a href="#" class="edit-product-btn" data-id="${product.id}">Modifier</a>
+                    <a href="#" class="delete-product-btn" data-id="${product.id}">Supprimer</a>
+                </td>
+            `;
+            productListTbody.appendChild(tr);
+        });
+
+        document.querySelectorAll('.edit-product-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productId = e.target.dataset.id;
+                const product = products.find(p => p.id === productId);
+                showProductForm(product);
+            });
+        });
+        document.querySelectorAll('.delete-product-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productId = e.target.dataset.id;
+                deleteProduct(productId);
+            });
+        });
+    }
+
+    function showProductForm(product = null) {
+        const productForm = document.getElementById('product-form');
+        const pricesContainer = document.getElementById('product-prices-container');
+        const productImagePreview = document.getElementById('product-image-preview');
+        
+        productForm.reset();
+        pricesContainer.innerHTML = '';
+        document.getElementById('product-id').value = '';
+        productImagePreview.style.display = 'none';
+
+        if (product) {
+            document.getElementById('product-form-title').textContent = 'Modifier le Produit';
+            document.getElementById('product-id').value = product.id;
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('product-description').value = product.description;
+            document.getElementById('product-available').checked = product.available;
+            if (product.imageUrl) {
+                productImagePreview.src = product.imageUrl;
+                productImagePreview.style.display = 'block';
+            }
+            if (product.prices) {
+                Object.entries(product.prices).forEach(([size, price]) => {
+                    addPriceField(size, price);
+                });
+            }
+        } else {
+            document.getElementById('product-form-title').textContent = 'Ajouter un Produit';
+            addPriceField();
+        }
+        document.getElementById('product-modal').classList.add('is-open');
+    }
+
+    function closeProductModal() {
+        document.getElementById('product-modal').classList.remove('is-open');
+    }
+
+    function addPriceField(size = '', price = '') {
+        const pricesContainer = document.getElementById('product-prices-container');
+        const priceInputDiv = document.createElement('div');
+        priceInputDiv.className = 'price-input';
+        priceInputDiv.innerHTML = `
+            <input type="text" placeholder="Ex: 8-10 parts" value="${size}">
+            <input type="number" placeholder="Prix" value="${price}">
+            <button type="button" class="remove-price-btn secondary-btn">-</button>
+        `;
+        pricesContainer.appendChild(priceInputDiv);
+        priceInputDiv.querySelector('.remove-price-btn').addEventListener('click', () => {
+            priceInputDiv.remove();
+        });
+    }
+
+    async function saveProduct(e) {
+        e.preventDefault();
+        const productId = document.getElementById('product-id').value;
+        const name = document.getElementById('product-name').value;
+        const description = document.getElementById('product-description').value;
+        const available = document.getElementById('product-available').checked;
+        const imageFile = document.getElementById('product-image').files[0];
+        const pricesContainer = document.getElementById('product-prices-container');
+
+        const prices = {};
+        const priceInputs = pricesContainer.querySelectorAll('.price-input');
+        priceInputs.forEach(input => {
+            const size = input.querySelector('input[type="text"]').value;
+            const price = input.querySelector('input[type="number"]').value;
+            if (size && price) {
+                prices[size] = parseFloat(price);
+            }
+        });
+
+        if (!name || !description || Object.keys(prices).length === 0) {
+            showNotification('Veuillez remplir tous les champs obligatoires.', 'error');
+            return;
+        }
+
+        try {
+            let imageUrl = document.getElementById('product-image-preview').src;
+            if (imageFile) {
+                const storageRef = ref(storage, `products/${Date.now()}_${imageFile.name}`);
+                const snapshot = await uploadBytes(storageRef, imageFile);
+                imageUrl = await getDownloadURL(snapshot.ref);
+            }
+
+            const productData = { name, description, prices, available, imageUrl };
+
+            if (productId) {
+                const productRef = doc(db, "products", productId);
+                await updateDoc(productRef, productData);
+                showNotification('Produit mis à jour avec succès.', 'success');
+            } else {
+                await addDoc(collection(db, "products"), productData);
+                showNotification('Produit ajouté avec succès.', 'success');
+            }
+
+            closeProductModal();
+            loadProducts();
+
+        } catch (error) {
+            console.error("Error saving product: ", error);
+            showNotification('Erreur lors de la sauvegarde du produit.', 'error');
+        }
+    }
+
+    async function deleteProduct(productId) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+            try {
+                await deleteDoc(doc(db, "products", productId));
+                showNotification('Produit supprimé.', 'success');
+                loadProducts();
+            } catch (error) {
+                console.error("Error deleting product: ", error);
+                showNotification('Erreur lors de la suppression.', 'error');
+            }
+        }
     }
 });

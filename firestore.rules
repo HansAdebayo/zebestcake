@@ -1,21 +1,30 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Les produits sont lisibles par tous, mais modifiables uniquement par un admin
+
+    // Allow public read access to products and testimonials
     match /products/{productId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null; // Only authenticated users can write
     }
 
-    // Les commandes ne sont accessibles qu'aux administrateurs connectés
-    match /orders/{orderId} {
-      allow read, write, create, update, delete: if request.auth != null;
-    }
-
-    // Les commentaires sont lisibles par tous, mais modifiables uniquement par un utilisateur connecté
-    match /comments/{commentId} {
+    match /testimonials/{testimonialId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null; // Or be more specific for admins
+    }
+
+    // Rules for the orders collection
+    match /orders/{orderId} {
+      // Allow anyone to create an order
+      allow create: if true;
+      
+      // Allow only authenticated users to read, update, or delete single orders
+      allow get, update, delete: if request.auth != null;
+    }
+    
+    // Allow authenticated users to LIST all orders for the dashboard
+    match /orders {
+        allow list: if request.auth != null;
     }
   }
 }
