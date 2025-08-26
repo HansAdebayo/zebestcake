@@ -955,6 +955,22 @@ footer {
         align-self: center; /* Centre le bouton sur mobile */
     }
 
+    /* Fix for buttons on mobile */
+    .hero-text .cta-button {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+
+    .form-navigation {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-navigation .cta-button {
+        width: 100%;
+        text-align: center;
+    }
+
     /* Admin Dashboard Responsive */
     #admin-dashboard {
         padding: 1rem;
