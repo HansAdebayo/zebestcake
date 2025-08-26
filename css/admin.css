@@ -613,4 +613,45 @@ body {
     .sidebar-close-btn {
         display: block; /* Show on mobile */
     }
+
+    /* Responsive Product Table */
+    #product-list-table {
+        border: none;
+    }
+    #product-list-table thead {
+        display: none; /* Hide headers on mobile */
+    }
+    #product-list-table tr {
+        display: block;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 16px;
+        padding: 16px;
+    }
+    #product-list-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right; /* Align content to the right */
+    }
+    #product-list-table td:last-child {
+        border-bottom: none;
+    }
+    #product-list-table td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: 16px;
+        text-align: left; /* Align label to the left */
+    }
+    #product-list-table td img {
+        max-width: 50px; /* Smaller image in card view */
+    }
+    #product-list-table .actions {
+        justify-content: flex-end; /* Align actions to the right */
+    }
+    #product-list-table .actions a {
+        padding: 4px 8px;
+    }
 }
