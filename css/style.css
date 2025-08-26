@@ -1,16 +1,27 @@
+/*
+  MODERNISATION THEME - ZeBestCake
+  Palette de couleurs "Rose Poudré & Gourmand"
+*/
 :root {
-    --rose-principal: #FF69B4;
-    --rose-secondaire: #FFB6C1;
-    --creme-beige: #FFF8DC;
-    --marron-chocolat: #8B4513;
+    /* Palette de couleurs */
+    --rose-principal: #D94F7A;      /* Un rose framboise, vibrant mais élégant */
+    --rose-secondaire: #F2C4CE;    /* Un rose poudré, doux et accueillant */
+    --creme-fond: #FCF7F8;         /* Un fond très clair avec une touche de rose */
+    --texte-sombre: #4A2C2A;       /* Un marron profond pour le texte, plus doux que le noir */
     --blanc-pur: #FFFFFF;
-    --gris-texte: #333333;
-    --gris-clair: #F8F8F8;
+    --gris-delicat: #EFEFEF;       /* Un gris très léger pour les bordures ou fonds secondaires */
 
+    /* Police */
     --font-titres: 'Playfair Display', serif;
     --font-texte: 'Raleway', sans-serif;
-    --border-radius: 15px;
-    --shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+    /* UI Elements */
+    --border-radius: 20px; /* Arrondi plus généreux pour un look plus doux */
+    --shadow: 0 8px 25px rgba(217, 79, 122, 0.1); /* Ombre subtile et colorée */
+    --shadow-hover: 0 12px 35px rgba(217, 79, 122, 0.18); /* Ombre plus prononcée au survol */
+
+    /* Transitions */
+    --transition-rapide: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* --- RESET & BASE --- */
@@ -27,9 +38,11 @@ html {
 
 body {
     font-family: var(--font-texte);
-    color: var(--gris-texte);
-    background-color: var(--blanc-pur);
-    line-height: 1.6;
+    color: var(--texte-sombre);
+    background-color: var(--creme-fond); /* Utilisation du nouveau fond */
+    line-height: 1.7; /* Légèrement plus d'espace pour la lisibilité */
+    -webkit-font-smoothing: antialiased; /* Améliore le rendu des polices */
+    -moz-osx-font-smoothing: grayscale;
 }
 
 img {
@@ -40,35 +53,40 @@ img {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-titres);
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
     font-weight: 700;
+    line-height: 1.3;
 }
 
 a {
     color: var(--rose-principal);
     text-decoration: none;
+    transition: var(--transition-rapide);
 }
 
 a:hover {
-    text-decoration: underline;
+    text-decoration: none; /* On évite le soulignement pour un look plus moderne */
+    opacity: 0.8;
 }
 
 .section-title {
     text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
-    color: var(--marron-chocolat);
+    font-size: clamp(2.2rem, 5vw, 3rem); /* Taille de police responsive */
+    margin-bottom: 4rem;
+    color: var(--texte-sombre);
+    font-weight: 800;
 }
 
 /* --- HEADER & NAVIGATION --- */
 header {
     position: fixed;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(252, 247, 248, 0.85); /* Utilise --creme-fond avec transparence */
     backdrop-filter: blur(10px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     z-index: 1000;
-    transition: top 0.3s;
+    transition: var(--transition-rapide);
 }
 
 .navbar {
@@ -76,7 +94,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    max-width: 1200px;
+    max-width: 1300px; /* Un peu plus large */
     margin: 0 auto;
 }
 
@@ -85,34 +103,55 @@ header {
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--rose-principal);
-    text-decoration: none; /* Ajout pour s'assurer que le lien de l'image n'est pas souligné */
+    text-decoration: none;
 }
 
 .logo-img {
-    height: 50px;
-    width: 50px;
+    height: 55px; /* Légèrement plus grand */
+    width: 55px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--rose-secondaire);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    display: block; /* S'assurer que c'est un élément bloc pour éviter les espaces indésirables */
+    border: 2px solid var(--rose-principal); /* Bordure plus affirmée */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: var(--transition-rapide);
+}
+.logo:hover .logo-img {
+    transform: scale(1.05) rotate(5deg); /* Animation au survol */
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 2.5rem;
+    gap: 3rem; /* Plus d'espace */
 }
 
 .nav-links a {
     font-weight: 600;
     font-size: 1rem;
-    transition: color 0.3s;
+    transition: var(--transition-rapide);
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+/* Effet de soulignement moderne */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--rose-principal);
+    transition: var(--transition-rapide);
 }
 
 .nav-links a:hover {
-    color: var(--marron-chocolat);
-    text-decoration: none;
+    color: var(--rose-principal); /* La couleur reste rose */
+    opacity: 1;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .burger-menu {
@@ -121,6 +160,7 @@ header {
     border: none;
     cursor: pointer;
     padding: 0.5rem;
+    z-index: 1001; /* S'assurer qu'il est au-dessus des autres éléments */
 }
 
 .burger-bar, .burger-bar::before, .burger-bar::after {
@@ -128,7 +168,7 @@ header {
     display: block;
     width: 25px;
     height: 3px;
-    background-color: var(--gris-texte);
+    background-color: var(--texte-sombre);
     border-radius: 3px;
     transition: transform 0.3s, opacity 0.3s;
 }
@@ -143,42 +183,47 @@ header {
 
 /* --- HERO SECTION --- */
 #hero {
-    padding-top: 80px; /* Offset for fixed header */
-    background-color: var(--creme-beige);
+    padding-top: 120px; /* Plus d'espace pour le header */
+    padding-bottom: 60px;
+    /* Dégradé subtil pour un effet "wow" */
+    background: linear-gradient(170deg, var(--creme-fond) 0%, #FADADD 100%);
+    overflow: hidden; /* Pour les animations */
 }
 
 .hero-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 4rem 2rem;
-    gap: 2rem;
+    gap: 3rem;
 }
 
 .hero-text {
     flex: 1;
     padding-right: 2rem;
+    animation: slideInFromLeft 0.8s ease-out; /* Animation d'entrée */
 }
 
 .hero-text h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    color: var(--marron-chocolat);
-    line-height: 1.2;
+    font-size: clamp(2.8rem, 6vw, 4.5rem); /* Plus grand et plus impactant */
+    line-height: 1.15;
     margin-bottom: 1.5rem;
+    font-weight: 800;
 }
 
 .hero-subtitle {
-    font-size: 1.2rem;
-    color: var(--gris-texte);
+    font-size: 1.25rem;
+    color: var(--texte-sombre);
     margin-bottom: 2.5rem;
-    line-height: 1.6;
+    line-height: 1.7;
+    max-width: 500px; /* Limite la largeur pour une meilleure lisibilité */
 }
 
 .hero-text .cta-button {
     font-size: 1.2rem;
-    padding: 1rem 2.5rem;
+    padding: 1.2rem 3rem; /* Bouton plus grand */
 }
 
 .hero-image {
@@ -186,13 +231,30 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: slideInFromRight 0.8s ease-out; /* Animation d'entrée */
 }
 
 .hero-image img {
     max-width: 100%;
     height: auto;
     border-radius: var(--border-radius);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
+    transition: var(--transition-rapide);
+}
+.hero-image img:hover {
+    transform: scale(1.03);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Keyframe animations for hero section */
+@keyframes slideInFromLeft {
+    from { transform: translateX(-50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+    from { transform: translateX(50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
 
 /* Responsive Hero Section */
@@ -218,99 +280,147 @@ header {
     font-family: var(--font-titres);
     border-radius: 50px;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+    transition: var(--transition-rapide);
+    box-shadow: 0 4px 15px rgba(217, 79, 122, 0.3); /* Use new pink for shadow */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
 }
 
 .cta-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 105, 180, 0.6);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(217, 79, 122, 0.4); /* Use new pink for shadow */
 }
 
 /* --- SPECIALITES SECTION --- */
 #specialites {
-    padding: 5rem 2rem;
-    background-color: var(--gris-clair);
+    padding: 6rem 2rem;
+    background-color: var(--creme-fond);
 }
 
 .specialites-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
+    grid-template-columns: 1fr; /* Une seule colonne pour les items */
+    gap: 4rem; /* Plus d'espace entre les items */
+    max-width: 1000px; /* Limiter la largeur pour un meilleur effet */
     margin: 0 auto;
 }
 
 .specialite-item {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
     background: var(--blanc-pur);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    text-align: center;
     padding: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: var(--transition-rapide);
+    overflow: hidden; /* Pour contenir l'image au survol */
 }
 
 .specialite-item:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--shadow-hover);
 }
 
-.specialite-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+/* Alternating layout */
+.specialite-item:nth-child(even) {
+    flex-direction: row-reverse; /* Inverse l'ordre pour les items pairs */
+}
+
+.specialite-image-container {
+    flex: 1 1 50%; /* Prend 50% de la largeur */
     border-radius: var(--border-radius);
-    margin-bottom: 1.5rem;
+    overflow: hidden;
 }
 
-.specialite-item h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+.specialite-image-container img {
+    width: 100%;
+    height: 350px; /* Image plus grande */
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.specialite-item:hover .specialite-image-container img {
+    transform: scale(1.1);
+}
+
+.specialite-text-container {
+    flex: 1 1 50%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch; /* S'assure que le conteneur prend toute la hauteur */
+}
+
+.specialite-text-container h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.specialite-text-container p {
+    margin-bottom: 2rem;
+    flex-grow: 1; /* Pousse le bouton vers le bas */
+}
+
+.specialite-text-container .cta-button {
+    align-self: flex-start; /* Aligne le bouton à gauche */
 }
 
 /* --- TEMOIGNAGES SECTION --- */
 #temoignages {
-    padding: 5rem 2rem;
+    padding: 6rem 2rem;
+    background-color: var(--blanc-pur); /* A clean white background for this section */
 }
 
 .temoignages-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    max-width: 1300px;
     margin: 0 auto;
 }
 
 .temoignage-card {
-    background: var(--creme-beige);
-    border-left: 5px solid var(--rose-principal);
-    padding: 2rem;
+    background: var(--creme-fond); /* Use the light pinkish cream for the card */
+    border-left: 4px solid var(--rose-principal);
+    padding: 2.5rem;
     border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    transition: var(--transition-rapide);
+}
+
+.temoignage-card:hover {
+    transform: translateX(5px);
     box-shadow: var(--shadow);
 }
 
 .temoignage-card .rating {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Smaller stars */
     color: var(--rose-principal);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px; /* Spaced out stars */
 }
 
 .temoignage-card .comment {
     font-style: italic;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
 
 .temoignage-card .author {
     font-weight: 700;
     text-align: right;
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
+    font-family: var(--font-titres);
 }
 
 /* --- FOOTER --- */
 footer {
-    background-color: var(--gris-texte);
-    color: var(--gris-clair);
-    padding: 3rem 2rem;
+    background-color: var(--texte-sombre);
+    color: var(--creme-fond);
+    padding: 4rem 2rem 2rem;
+    margin-top: 4rem;
 }
 
 /* --- CATALOGUE PAGE --- */
@@ -330,7 +440,7 @@ footer {
 .filter-btn {
     background: none;
     border: 2px solid var(--rose-secondaire);
-    color: var(--gris-texte);
+    color: var(--texte-sombre);
     padding: 0.5rem 1.5rem;
     border-radius: 50px;
     cursor: pointer;
@@ -341,7 +451,7 @@ footer {
 
 .filter-btn:hover {
     background-color: var(--rose-secondaire);
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
 }
 
 .filter-btn.active {
@@ -368,7 +478,7 @@ footer {
 
 .product-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    box-shadow: var(--shadow-hover);
 }
 
 .product-card img {
@@ -413,7 +523,7 @@ footer {
 }
 
 .order-form fieldset {
-    border: 2px solid var(--gris-clair);
+    border: 2px solid var(--gris-delicat);
     border-radius: var(--border-radius);
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -423,7 +533,7 @@ footer {
     font-family: var(--font-titres);
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
     padding: 0 0.5rem;
 }
 
@@ -452,7 +562,7 @@ footer {
 }
 
 .form-group select:disabled {
-    background-color: var(--gris-clair);
+    background-color: var(--gris-delicat);
 }
 
 .checkbox-group label {
@@ -464,7 +574,7 @@ footer {
 }
 
 #order-summary {
-    background-color: var(--creme-beige);
+    background-color: var(--creme-fond);
     padding: 1.5rem;
     border-radius: var(--border-radius);
     margin-top: 2rem;
@@ -473,7 +583,7 @@ footer {
 
 #order-summary h3 {
     margin-top: 0;
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
 }
 
 .checkbox-group .hidden {
@@ -592,8 +702,8 @@ footer {
 }
 
 .secondary-btn {
-    background-color: var(--gris-clair);
-    color: var(--gris-texte);
+    background-color: var(--gris-delicat);
+    color: var(--texte-sombre);
     box-shadow: none;
 }
 
@@ -604,8 +714,14 @@ footer {
 .order-confirmation {
     text-align: center;
     padding: 4rem 2rem;
-    background-color: var(--creme-beige);
+    background-color: var(--creme-fond);
     border-radius: var(--border-radius);
+    /* Ajouts pour le centrage vertical */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px); /* Hauteur minimale pour centrer, en tenant compte du header/footer */
 }
 
 .order-confirmation h2 {
@@ -615,14 +731,14 @@ footer {
 
 /* --- ABOUT PAGE --- */
 #about-hero {
-    background-color: var(--creme-beige);
+    background-color: var(--creme-fond);
     padding: 4rem 2rem;
     text-align: center;
 }
 
 #about-hero .subtitle {
     font-size: 1.2rem;
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
 }
 
 #about-content {
@@ -680,7 +796,7 @@ footer {
 }
 
 .values-section li {
-    background: var(--gris-clair);
+    background: var(--gris-delicat);
     padding: 1.5rem;
     border-radius: var(--border-radius);
     border-left: 4px solid var(--rose-principal);
@@ -701,7 +817,7 @@ footer {
 }
 
 .info-box {
-    background-color: var(--creme-beige);
+    background-color: var(--creme-fond);
     border-left: 5px solid var(--rose-principal);
     padding: 1.5rem;
     border-radius: 8px;
@@ -731,7 +847,7 @@ footer {
 
 .contact-form-container h3, .contact-info-container h3 {
     font-size: 1.8rem;
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
     margin-bottom: 1.5rem;
 }
 
@@ -830,6 +946,15 @@ footer {
         opacity: 0;
     }
 
+    /* Spécialités section on mobile */
+    .specialite-item, .specialite-item:nth-child(even) {
+        flex-direction: column;
+        text-align: center;
+    }
+    .specialite-text-container .cta-button {
+        align-self: center; /* Centre le bouton sur mobile */
+    }
+
     /* Admin Dashboard Responsive */
     #admin-dashboard {
         padding: 1rem;
@@ -901,16 +1026,16 @@ footer {
 
 #orders-table th, #orders-table td {
     padding: 1rem;
-    border-bottom: 1px solid var(--gris-clair);
+    border-bottom: 1px solid var(--gris-delicat);
 }
 
 #orders-table th {
-    background-color: var(--gris-clair);
+    background-color: var(--gris-delicat);
     font-family: var(--font-titres);
 }
 
 #orders-table tbody tr:hover {
-    background-color: var(--creme-beige);
+    background-color: var(--creme-fond);
 }
 
 .status-select {
@@ -921,7 +1046,7 @@ footer {
 
 .view-details-btn {
     background: var(--rose-secondaire);
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
     padding: 0.5rem 1rem;
     border-radius: 50px;
     border: none;
@@ -979,7 +1104,7 @@ footer {
 #modal-order-details hr {
     margin: 1rem 0;
     border: 0;
-    border-top: 1px solid var(--gris-clair);
+    border-top: 1px solid var(--gris-delicat);
 }
 
 /* --- Stats -- */
@@ -991,7 +1116,7 @@ footer {
 }
 
 .stat-card {
-    background-color: var(--gris-clair);
+    background-color: var(--gris-delicat);
     padding: 1.5rem;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -1002,7 +1127,7 @@ footer {
     font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--marron-chocolat);
+    color: var(--texte-sombre);
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
@@ -1010,7 +1135,7 @@ footer {
 .stat-card p {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--gris-texte);
+    color: var(--texte-sombre);
 }
 
 #stats-delivery-types {
@@ -1021,7 +1146,7 @@ footer {
 
 .invoice-btn {
     display: inline-block;
-    background: var(--marron-chocolat);
+    background: var(--texte-sombre);
     color: var(--blanc-pur);
     padding: 0.5rem 1rem;
     border-radius: 50px;
@@ -1122,6 +1247,6 @@ footer {
 }
 
 .status-cell .cancel-status-btn {
-    background-color: var(--gris-clair);
-    color: var(--gris-texte);
+    background-color: var(--gris-delicat);
+    color: var(--texte-sombre);
 }

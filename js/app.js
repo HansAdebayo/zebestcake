@@ -34,4 +34,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
+
+    // --- ANIMATIONS AU SCROLL ---
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+
+    if (animatedElements.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { 
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px" // Déclenche un peu avant que l'élément soit totalement visible
+        });
+
+        animatedElements.forEach(element => {
+            observer.observe(element);
+        });
+    }
 });

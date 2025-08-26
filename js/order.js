@@ -69,15 +69,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Fonctions du formulaire à étapes ---
     function showStep(stepNumber) {
-        // Scroll to the top of the form for better UX on mobile
-        const formSection = document.getElementById('order-form-section');
-        if (formSection) {
-            formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        const activeStepElement = steps[stepNumber - 1];
 
         steps.forEach((step, index) => {
-            step.classList.toggle('active', index + 1 === stepNumber);
+            const isActive = index + 1 === stepNumber;
+            step.classList.toggle('active', isActive);
         });
+
+        // Après avoir rendu le fieldset visible, on scrolle dessus.
+        if (activeStepElement) {
+            // On utilise un petit délai pour s'assurer que le DOM est à jour, surtout sur les navigateurs plus lents.
+            setTimeout(() => {
+                activeStepElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100); 
+        }
+
         updateProgress(stepNumber);
         updateNavButtons(stepNumber);
     }

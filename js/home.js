@@ -21,9 +21,14 @@ async function loadHomeProducts() {
             const productElement = document.createElement('div');
             productElement.className = 'specialite-item';
             productElement.innerHTML = `
-                <img src="${product.imageUrl}" alt="${product.name}">
-                <h3>${product.name}</h3>
-                <p>${product.description}</p>
+                <a href="commander.html?cakeId=${doc.id}" class="specialite-image-container">
+                    <img src="${product.imageUrl}" alt="${product.name}">
+                </a>
+                <div class="specialite-text-container">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <a href="commander.html?cakeId=${doc.id}" class="cta-button">Commander</a>
+                </div>
             `;
             productsGrid.appendChild(productElement);
         });
