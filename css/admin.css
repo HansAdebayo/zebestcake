@@ -306,7 +306,11 @@ body {
 .current-status.status-terminée { background-color: #E5F9F4; color: var(--success-color); }
 .current-status.status-annulée { background-color: #FDE2E4; color: var(--danger-color); }
 
-.edit-status-btn, .view-details-btn, .invoice-btn, .delete-order-btn {
+.actions .cta-button, .actions .secondary-btn {
+    margin-right: 8px;
+}
+
+.edit-status-btn, .view-details-btn, .invoice-btn, .delete-order-btn, .acompte-btn, .paid-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -315,7 +319,7 @@ body {
     text-decoration: none;
     color: var(--text-light);
 }
-.edit-status-btn:hover, .view-details-btn:hover, .invoice-btn:hover, .delete-order-btn:hover {
+.edit-status-btn:hover, .view-details-btn:hover, .invoice-btn:hover, .delete-order-btn:hover, .acompte-btn:hover, .paid-btn:hover {
     color: var(--primary-color);
 }
 
@@ -567,6 +571,60 @@ body {
 }
 .price-input input:last-child {
     flex: 1; /* Less space for price */
+}
+
+/* --- Dropdown Menu for Actions --- */
+.actions-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.actions-menu-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 5px); /* Position below the button */
+    background-color: var(--card-bg);
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+    z-index: 10;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.dropdown-menu.active {
+    display: block;
+}
+
+.dropdown-menu a {
+    color: var(--text-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown-menu a.delete-order-btn {
+    color: var(--danger-color);
+}
+.dropdown-menu a.delete-order-btn:hover {
+    background-color: rgba(234, 84, 85, 0.1);
 }
 
 /* --- Responsive Styles --- */
