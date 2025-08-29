@@ -5,6 +5,7 @@ import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/fireba
 
 let allOrders = [];
 let deliveryChart = null;
+let currentAlertIndex = 0;
 
 // Admin emails
 const ADMIN_EMAILS = {
@@ -128,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayOrders('all');
             displayStats(allOrders);
             displayDeliveryChart(allOrders);
+            displayDeliveryAlerts(allOrders);
         } catch (error) {
             console.error("Error loading orders: ", error);
         }
@@ -136,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Display Stats ---
     function displayStats(orders) {
         const totalRevenueEl = document.getElementById('stats-total-revenue');
+        const realRevenueEl = document.getElementById('stats-real-revenue');
         const totalOrdersEl = document.getElementById('stats-total-orders');
         const completedOrdersEl = document.getElementById('stats-completed-orders');
         const pendingOrdersEl = document.getElementById('stats-pending-orders');
@@ -144,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeOrders = orders.filter(order => order.status !== 'Annulée');
 
         const totalRevenue = activeOrders.reduce((sum, order) => sum + (order.pricing?.totalPrice || 0), 0);
+        const realRevenue = activeOrders.reduce((sum, order) => sum + (order.acompte?.amount || 0), 0);
         const totalOrders = activeOrders.length;
         const completedOrders = orders.filter(order => order.status === 'Terminée').length;
         const pendingOrders = orders.filter(order => order.status === 'Non traitée' || order.status === 'En cours').length;
@@ -157,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if(totalRevenueEl) totalRevenueEl.textContent = `${totalRevenue.toFixed(2)} €`;
+        if(realRevenueEl) realRevenueEl.textContent = `${realRevenue.toFixed(2)} €`;
         if(totalOrdersEl) totalOrdersEl.textContent = totalOrders;
         if(completedOrdersEl) completedOrdersEl.textContent = completedOrders;
         if(pendingOrdersEl) pendingOrdersEl.textContent = pendingOrders;
@@ -239,6 +244,71 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Display Delivery Alerts ---
+    function displayDeliveryAlerts(orders, index = 0) {
+        const alertText = document.getElementById('delivery-alert-text');
+        const prevBtn = document.getElementById('prev-alert-btn');
+        const nextBtn = document.getElementById('next-alert-btn');
+
+        if (!alertText || !prevBtn || !nextBtn) return;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const upcomingOrders = orders
+            .filter(order => order.status !== 'Annulée' && order.delivery?.date?.toDate() >= today)
+            .sort((a, b) => a.delivery.date.toDate() - b.delivery.date.toDate());
+
+        if (upcomingOrders.length === 0) {
+            alertText.innerHTML = 'Aucune livraison à venir.';
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            return;
+        }
+
+        currentAlertIndex = index;
+
+        const nextDelivery = upcomingOrders[currentAlertIndex];
+        const nextDeliveryDate = nextDelivery.delivery.date.toDate();
+        const timeDiff = nextDeliveryDate.getTime() - today.getTime();
+        const daysDiff = Math.round(timeDiff / (1000 * 3600 * 24));
+
+        const ordersOnSameDay = upcomingOrders.filter(order => 
+            order.delivery.date.toDate().toLocaleDateString() === nextDeliveryDate.toLocaleDateString()
+        ).length;
+
+        let alertMessage = ``;
+        if (daysDiff === 0) {
+            alertMessage = `<strong>Aujourd'hui :</strong> ${ordersOnSameDay} commande(s) à livrer.`;
+        } else if (daysDiff === 1) {
+            alertMessage = `<strong>Demain :</strong> ${ordersOnSameDay} commande(s) à livrer.`;
+        } else {
+            alertMessage = `<strong>Prochaine livraison dans ${daysDiff} jours :</strong> ${ordersOnSameDay} commande(s) à livrer.`;
+        }
+
+        alertText.innerHTML = alertMessage;
+
+        prevBtn.disabled = currentAlertIndex === 0;
+        nextBtn.disabled = currentAlertIndex === upcomingOrders.length - 1;
+
+        prevBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'inline-block';
+    }
+
+    document.getElementById('prev-alert-btn').addEventListener('click', () => {
+        if (currentAlertIndex > 0) {
+            displayDeliveryAlerts(allOrders, currentAlertIndex - 1);
+        }
+    });
+
+    document.getElementById('next-alert-btn').addEventListener('click', () => {
+        const upcomingOrders = allOrders
+            .filter(order => order.status !== 'Annulée' && order.delivery?.date?.toDate() >= new Date());
+        if (currentAlertIndex < upcomingOrders.length - 1) {
+            displayDeliveryAlerts(allOrders, currentAlertIndex + 1);
+        }
+    });
+
     // --- Display Orders (MODIFIED for Dropdown) ---
     function displayOrders(statusFilter = 'all') {
         if (!ordersTbody) return;
@@ -251,13 +321,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalPrice = order.pricing?.totalPrice || 0;
             const acompteAmount = order.acompte?.amount || 0;
             const remainingBalance = totalPrice - acompteAmount;
+            const isPaid = remainingBalance <= 0;
+
+            let paymentStatusHtml = '';
+            if (order.status === 'Annulée') {
+                paymentStatusHtml = '<span class="cancelled-badge">Annulée</span>';
+            } else if (isPaid) {
+                paymentStatusHtml = '<span class="paid-badge">Payé</span>';
+            }
 
             tr.innerHTML = `
                 <td data-label="ID Commande">${order.id}</td>
                 <td data-label="Client">${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}</td>
                 <td data-label="Gâteau">${order.product?.name || 'N/A'}</td>
                 <td data-label="Date de livraison">${order.delivery?.date ? order.delivery.date.toDate().toLocaleDateString() : 'N/A'}</td>
+                <td data-label="Acompte">${acompteAmount.toFixed(2)} €</td>
                 <td data-label="Solde Restant">${remainingBalance.toFixed(2)} €</td>
+                <td data-label="Paiement">${paymentStatusHtml}</td>
                 <td data-label="Status" class="status-cell" data-order-id="${order.id}">
                     <span class="current-status ${statusClass}">${order.status}</span>
                     <button class="edit-status-btn">Modifier</button>

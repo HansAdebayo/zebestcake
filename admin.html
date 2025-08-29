@@ -7,7 +7,7 @@
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- New Admin Stylesheet -->
     <link rel="stylesheet" href="css/admin.css">
     <!-- Chart.js Library -->
@@ -78,22 +78,34 @@
                     <h1>Tableau de Bord</h1>
                 </header>
 
+                <!-- Delivery Alert Section -->
+                <div id="delivery-alert-section" class="delivery-alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="delivery-icon"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <button id="prev-alert-btn" class="alert-nav-btn">&lt;</button>
+                    <p id="delivery-alert-text"></p>
+                    <button id="next-alert-btn" class="alert-nav-btn">&gt;</button>
+                </div>
+
                 <!-- Stats Cards -->
                 <div class="stats-container">
-                    <div class="stat-card">
-                        <h4>Revenu Total</h4>
+                    <div class="stat-card stat-card-revenue">
+                        <h4>Revenu Total Estimé</h4>
                         <p id="stats-total-revenue">0 €</p>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card stat-card-real-revenue">
+                        <h4>Revenu Total Réel</h4>
+                        <p id="stats-real-revenue">0 €</p>
+                    </div>
+                    <div class="stat-card stat-card-orders">
                         <h4>Commandes Actives</h4>
                         <p id="stats-total-orders">0</p>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card stat-card-completed">
                         <h4>Commandes Terminées</h4>
                         <p id="stats-completed-orders">0</p>
                     </div>
-                    <div class="stat-card">
-                        <h4>Commandes en Attente</h4>
+                    <div class="stat-card stat-card-pending">
+                        <h4>Commandes en Cours</h4>
                         <p id="stats-pending-orders">0</p>
                     </div>
                 </div>
@@ -134,7 +146,9 @@
                                     <th>Client</th>
                                     <th>Gâteau</th>
                                     <th>Date de livraison</th>
+                                    <th>Acompte</th>
                                     <th>Solde Restant</th>
+                                    <th>Paiement</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>

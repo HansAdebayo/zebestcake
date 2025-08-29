@@ -8,9 +8,10 @@
     --text-light: #6C757D;
     --border-color: #E9ECEF;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    --font-family: 'Inter', sans-serif;
+    --font-family: 'Poppins', sans-serif;
     --success-color: #28C76F;
     --danger-color: #EA5455;
+    --warning-color: #FF9F43;
 }
 
 /* Basic Reset & Font Import */
@@ -29,8 +30,7 @@ body {
     overflow-x: hidden; /* Prevent horizontal scroll on body */
 }
 
-/* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 
 /* Main Layout */
 .admin-layout {
@@ -143,6 +143,53 @@ body {
     margin-bottom: 24px;
 }
 
+.delivery-alert {
+    background-color: #000000;
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.delivery-icon {
+    flex-shrink: 0;
+}
+
+.delivery-alert p {
+    margin: 0;
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.delivery-alert strong {
+    font-weight: 700;
+}
+
+.alert-nav-btn {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.alert-nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.alert-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .main-header h1 {
     font-size: 28px;
     font-weight: 700;
@@ -187,6 +234,31 @@ body {
     font-size: 24px;
     font-weight: 600;
     color: var(--text-color);
+}
+
+.stat-card-revenue {
+    background-color: #e7f3ff;
+    border-left: 5px solid #2e90fa;
+}
+
+.stat-card-real-revenue {
+    background-color: #e5f9f4;
+    border-left: 5px solid var(--success-color);
+}
+
+.stat-card-orders {
+    background-color: #fff4e5;
+    border-left: 5px solid var(--warning-color);
+}
+
+.stat-card-completed {
+    background-color: #e5f9f4;
+    border-left: 5px solid var(--success-color);
+}
+
+.stat-card-pending {
+    background-color: #fde2e4;
+    border-left: 5px solid var(--danger-color);
 }
 
 /* Chart Section */
@@ -305,6 +377,24 @@ body {
 .current-status.status-en-cours { background-color: #E7F3FF; color: #2E90FA; }
 .current-status.status-terminée { background-color: #E5F9F4; color: var(--success-color); }
 .current-status.status-annulée { background-color: #FDE2E4; color: var(--danger-color); }
+
+.paid-badge {
+    background-color: var(--success-color);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.cancelled-badge {
+    background-color: var(--danger-color);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 12px;
+}
 
 .actions .cta-button, .actions .secondary-btn {
     margin-right: 8px;
