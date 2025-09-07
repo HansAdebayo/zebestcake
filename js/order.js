@@ -317,7 +317,7 @@ async function handleOrderSubmit(event) {
         document.getElementById('order-form-section').innerHTML = `
             <div class="order-confirmation">
                 <h2>Merci pour votre commande !</h2>
-                <p>Votre commande a bien été enregistrée. Nous vous enverrons un email de confirmation très prochainement.</p>
+                <p>Votre demande a bien été reçue ! Nous l'étudions avec la plus grande attention et revenons vers vous très vite pour confirmer les détails de votre future gourmandise.</p>
                 <p>Référence de votre commande : <strong>${docRef.id}</strong></p>
             </div>
         `;
