@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- New Admin Stylesheet -->
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/comments.css">
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -35,6 +36,12 @@
                         <a href="#" class="nav-link" data-target="products-section">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                             <span>Gestion Produits</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-target="comments-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <span>Gestion Commentaires</span>
                         </a>
                     </li>
                 </ul>
@@ -189,6 +196,34 @@
                     </table>
                 </div>
             </section>
+
+            <section id="comments-section" class="admin-panel">
+                <header class="main-header">
+                    <h1>Gestion des Commentaires</h1>
+                </header>
+                <div class="toolbar">
+                    <button id="add-comment-btn" class="cta-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Ajouter un Commentaire</span>
+                    </button>
+                </div>
+                <div id="comment-list-container" class="table-container">
+                    <table id="comment-list-table">
+                        <thead>
+                            <tr>
+                                <th>Auteur</th>
+                                <th>Commentaire</th>
+                                <th>Note</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comment-list-tbody">
+                            <!-- Comments will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -265,10 +300,40 @@
         </div>
     </div>
 
+    <!-- Modal for Add/Edit Comment -->
+    <div id="comment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="comment-modal-close">&times;</span>
+            <h3 id="comment-form-title">Ajouter un Commentaire</h3>
+            <form id="comment-form">
+                <input type="hidden" id="comment-id">
+                <div class="form-group">
+                    <label for="comment-author">Nom du client</label>
+                    <input type="text" id="comment-author" required>
+                </div>
+                <div class="form-group">
+                    <label for="comment-text">Témoignage</label>
+                    <textarea id="comment-text" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="comment-rating">Note</label>
+                    <input type="number" id="comment-rating" min="1" max="5" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="cta-button">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Notification container -->
     <div id="notification-container"></div>
 
+    
+    <script type="module" src="js/firebase-config.js"></script>
+
     <!-- Main Admin Script -->
     <script type="module" src="js/admin.js"></script>
+    <script type="module" src="js/comments.js"></script>
 </body>
 </html>
