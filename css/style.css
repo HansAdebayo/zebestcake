@@ -1378,3 +1378,22 @@ footer {
     background-color: #c82333;
     box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
 }
+
+@media (max-width: 768px) {
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .cta-button {
+        width: 100%;
+    }
+
+    .order-id-box {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .order-confirmation {
+        padding: 2rem 1rem;
+    }
+}
