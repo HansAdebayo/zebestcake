@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/fireba
 let allOrders = [];
 let deliveryChart = null;
 let currentAlertIndex = 0;
+let currentSort = { key: 'createdAt', direction: 'desc' };
 
 // Admin emails
 const ADMIN_EMAILS = {
@@ -17,6 +18,11 @@ const ADMIN_EMAILS = {
 const getStatusClass = (status) => {
     if (!status) return '';
     return 'status-' + status.toLowerCase().replace(/\s+/g, '-');
+};
+
+// Helper to get nested property
+const getNestedProperty = (obj, path) => {
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadOrders();
             initProductManagement();
             initAcompteManagement(); // Initialize acompte management
+            initSorting();
         } else {
             window.location.href = 'login.html';
         }
@@ -126,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const querySnapshot = await getDocs(collection(db, "orders"));
             allOrders = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            displayOrders('all');
+            sortAndDisplayOrders();
             displayStats(allOrders);
             displayDeliveryChart(allOrders);
             displayDeliveryAlerts(allOrders);
@@ -311,11 +318,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Display Orders (MODIFIED for Dropdown) ---
-    function displayOrders(statusFilter = 'all') {
+    // --- Sorting ---
+    function initSorting() {
+        const headers = document.querySelectorAll('#orders-table th[data-sort-key]');
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const sortKey = header.dataset.sortKey;
+                if (currentSort.key === sortKey) {
+                    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort.key = sortKey;
+                    currentSort.direction = 'asc';
+                }
+                sortAndDisplayOrders();
+            });
+        });
+    }
+
+    function sortAndDisplayOrders() {
+        const { key, direction } = currentSort;
+
+        const sortedOrders = [...allOrders].sort((a, b) => {
+            let valA = getNestedProperty(a, key);
+            let valB = getNestedProperty(b, key);
+
+            // Handle special case for remainingBalance
+            if (key === 'remainingBalance') {
+                valA = (a.pricing?.totalPrice || 0) - (a.acompte?.amount || 0);
+                valB = (b.pricing?.totalPrice || 0) - (b.acompte?.amount || 0);
+            }
+
+            // Handle Timestamps
+            if (valA && typeof valA.toDate === 'function') valA = valA.toDate();
+            if (valB && typeof valB.toDate === 'function') valB = valB.toDate();
+
+            if (valA < valB) return direction === 'asc' ? -1 : 1;
+            if (valA > valB) return direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.status || 'all';
+        displayOrders(activeFilter, sortedOrders);
+        updateSortUI();
+    }
+
+    function updateSortUI() {
+        document.querySelectorAll('#orders-table th[data-sort-key]').forEach(th => {
+            if (th.dataset.sortKey === currentSort.key) {
+                th.setAttribute('data-sort-dir', currentSort.direction);
+            } else {
+                th.removeAttribute('data-sort-dir');
+            }
+        });
+    }
+
+    // --- Display Orders (MODIFIED for Sorting) ---
+    function displayOrders(statusFilter = 'all', ordersToDisplay = allOrders) {
         if (!ordersTbody) return;
         ordersTbody.innerHTML = '';
-        const filteredOrders = (statusFilter === 'all') ? allOrders : allOrders.filter(order => order.status === statusFilter);
+        const filteredOrders = (statusFilter === 'all') ? ordersToDisplay : ordersToDisplay.filter(order => order.status === statusFilter);
 
         filteredOrders.forEach(order => {
             const tr = document.createElement('tr');
@@ -350,6 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td data-label="ID Commande">${order.id}</td>
                 <td data-label="Client">${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}</td>
                 <td data-label="Gâteau">${order.product?.name || 'N/A'}</td>
+                <td data-label="Date de commande">${order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}</td>
                 <td data-label="Date de livraison">${order.delivery?.date ? order.delivery.date.toDate().toLocaleDateString() : 'N/A'}</td>
                 <td data-label="Acompte">${acompteAmount.toFixed(2)} €</td>
                 <td data-label="Solde Restant">${remainingBalance.toFixed(2)} €</td>
@@ -504,8 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             showNotification('Statut de paiement mis à jour.', 'success');
-            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.status || 'all';
-            displayOrders(activeFilter);
+            sortAndDisplayOrders();
             displayStats(allOrders);
 
         } catch (error) {
@@ -571,8 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             showNotification('Statut de livraison mis à jour.', 'success');
-            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.status || 'all';
-            displayOrders(activeFilter);
+            sortAndDisplayOrders();
             displayDeliveryChart(allOrders);
             displayDeliveryAlerts(allOrders);
 
@@ -592,8 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await deleteDoc(orderRef);
 
                 allOrders = allOrders.filter(order => order.id !== orderId);
-                const activeFilter = document.querySelector('.filter-btn.active').dataset.status;
-                displayOrders(activeFilter);
+                sortAndDisplayOrders();
                 displayStats(allOrders);
                 displayDeliveryChart(allOrders);
 
@@ -672,8 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             showNotification(`Statut de la commande mis à jour !`, 'success');
-            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.status || 'all';
-            displayOrders(activeFilter);
+            sortAndDisplayOrders();
             displayStats(allOrders);
 
         } catch (error) {
@@ -893,8 +951,7 @@ L'équipe ZeBestCake`;
 
             showNotification('Acompte enregistré avec succès.', 'success');
             document.getElementById('acompte-modal').classList.remove('is-open');
-            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.status || 'all';
-            displayOrders(activeFilter);
+            sortAndDisplayOrders();
 
         } catch (error) {
             console.error("Error saving acompte: ", error);
@@ -932,8 +989,7 @@ L'équipe ZeBestCake`;
                 }
 
                 showNotification('Commande marquée comme payée.', 'success');
-                const activeFilter = document.querySelector('.filter-btn.active')?.dataset.status || 'all';
-                displayOrders(activeFilter);
+                sortAndDisplayOrders();
 
             } catch (error) {
                 console.error("Error marking as paid: ", error);
@@ -970,8 +1026,7 @@ L'équipe ZeBestCake`;
                 }
 
                 showNotification('Commande marquée comme "Jeux Concours".', 'success');
-                const activeFilter = document.querySelector('.filter-btn.active')?.dataset.status || 'all';
-                displayOrders(activeFilter);
+                sortAndDisplayOrders();
 
             } catch (error) {
                 console.error("Error marking as jeux concours: ", error);
@@ -1072,7 +1127,7 @@ L'équipe ZeBestCake`;
                 <td><img src="${product.imageUrl || 'assets/images/gateau.jpg'}" alt="${product.name}"></td>
                 <td data-label="Nom">${product.name}</td>
                 <td data-label="Prix de base">${basePrice} €</td>
-                <td data-label="Disponible">${product.available ? 'Oui' : 'Non'}</td>
+                <td data-label=" Disponible">${product.available ? 'Oui' : 'Non'}</td>
                 <td data-label="Actions" class="actions">
                     <a href="#" class="edit-product-btn" data-id="${product.id}">Modifier</a>
                     <a href="#" class="delete-product-btn" data-id="${product.id}">Supprimer</a>

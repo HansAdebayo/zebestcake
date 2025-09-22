@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi de Commande - ZeBestCake</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo"><img src="assets/images/logo.jpg" alt="ZeBestCake Logo" class="logo-img"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="gateaux.html">Nos Gâteaux</a></li>
+                <li><a href="commander.html">Commander</a></li>
+                <li><a href="a-propos.html">À propos</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="suivi-commande.html" class="active">Suivi de commande</a></li>
+            </ul>
+            <button class="burger-menu" id="burger-menu">
+                <span class="burger-bar"></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="tracking-hero" class="text-center">
+            <div class="container">
+                <h1 class="section-title">Suivez votre commande</h1>
+                <p class="subtitle">Entrez votre numéro de commande pour afficher ses détails et la modifier.</p>
+            </div>
+        </section>
+
+        <section id="tracking-core">
+            <div class="container">
+                <!-- Search Box -->
+                <div id="search-box" class="tracking-box">
+                    <form id="search-order-form">
+                        <div class="form-group">
+                            <label for="order-id-input">Numéro de Commande</label>
+                            <input type="text" id="order-id-input" placeholder="Ex: aBCdE123fGHiJkL" required>
+                        </div>
+                        <button type="submit" class="cta-button">Rechercher</button>
+                    </form>
+                    <div id="search-feedback"></div>
+                </div>
+
+                <!-- Results Box -->
+                <div id="results-box" class="tracking-box" style="display: none;">
+                    <h2>Détails de la commande <span id="order-id-display"></span></h2>
+                    <form id="edit-order-form">
+                        <fieldset>
+                            <legend>Vos informations</legend>
+                            <div class="form-group">
+                                <label for="first-name">Prénom</label>
+                                <input type="text" id="first-name" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name">Nom</label>
+                                <input type="text" id="last-name" name="lastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Téléphone</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Livraison & Personnalisation</legend>
+                            <div class="form-group">
+                                <label for="delivery-date">Date de livraison</label>
+                                <input type="date" id="delivery-date" name="deliveryDate" required>
+                                <small>La date de livraison ne peut être avancée que de 3 jours minimum.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="special-requests">Demandes spéciales</label>
+                                <textarea id="special-requests" name="specialRequests" rows="4"></textarea>
+                            </div>
+                        </fieldset>
+                        
+                        <fieldset class="summary">
+                            <legend>Récapitulatif (non modifiable)</legend>
+                            <p><strong>Gâteau:</strong> <span id="summary-cake"></span></p>
+                            <p><strong>Prix total:</strong> <span id="summary-total"></span></p>
+                        </fieldset>
+
+                        <input type="hidden" id="order-id-hidden">
+                        <div class="form-actions">
+                            <button type="submit" class="cta-button">Enregistrer les modifications</button>
+                            <button type="button" id="cancel-order-btn" class="cta-button cta-button-danger">Annuler la commande</button>
+                        </div>
+                    </form>
+                    <div id="update-feedback"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+             <div class="contact-info">
+                <p><strong>Téléphone :</strong> 05.61.23.45.67</p>
+                <p><strong>Email :</strong> zebestcake@gmail.com</p>
+            </div>
+            <div class="horaires">
+                <p><strong>Horaires :</strong></p>
+                <p>Mar-Sam : 9h-18h</p>
+                <p>Dim : 10h-16h</p>
+                <p>Fermé le lundi</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ZeBestCake - Tous droits réservés - <a href="#mentions-legales">Mentions Légales</a></p>
+            <div class="social-links">
+                <a href="https://www.instagram.com/__zebest__cake?igsh=a2RwM3g2YzdkYXFy&utm_source=qr" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/suivi-commande.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

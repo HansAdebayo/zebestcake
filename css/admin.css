@@ -896,3 +896,44 @@ body {
         padding: 4px 8px;
     }
 }
+
+/* --- Table Sorting Styles --- */
+#orders-table th .sort-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    text-transform: inherit;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#orders-table th .sort-btn:hover {
+    color: var(--primary-color);
+}
+
+.sort-icon {
+    font-size: 10px;
+    line-height: 1;
+    color: var(--text-light);
+}
+
+.sort-icon::before {
+    content: '▲';
+    display: block;
+    opacity: 0.4;
+}
+
+.sort-icon::after {
+    content: '▼';
+    display: block;
+    opacity: 0.4;
+}
+
+[data-sort-dir="asc"] .sort-icon::before { opacity: 1; color: var(--primary-color); }
+[data-sort-dir="desc"] .sort-icon::after { opacity: 1; color: var(--primary-color); }

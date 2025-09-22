@@ -11,6 +11,7 @@
     <!-- New Admin Stylesheet -->
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="css/comments.css">
+    <link rel="stylesheet" href="css/purchases.css">
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -42,6 +43,12 @@
                         <a href="#" class="nav-link" data-target="comments-section">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                             <span>Gestion Commentaires</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-target="purchases-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            <span>Gestion Achats</span>
                         </a>
                     </li>
                 </ul>
@@ -149,15 +156,52 @@
                         <table id="orders-table">
                             <thead>
                                 <tr>
-                                    <th>ID Commande</th>
-                                    <th>Client</th>
-                                    <th>Gâteau</th>
-                                    <th>Date de livraison</th>
-                                    <th>Acompte</th>
-                                    <th>Solde Restant</th>
+                                    <th data-sort-key="id">
+                                        <button class="sort-btn">
+                                            ID Commande <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="customerInfo.lastName">
+                                        <button class="sort-btn">
+                                            Client <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="product.name">
+                                        <button class="sort-btn">
+                                            Gâteau <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="createdAt">
+                                        <button class="sort-btn">
+                                            Date de commande <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="delivery.date">
+                                        <button class="sort-btn">
+                                            Date de livraison <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="acompte.amount">
+                                        <button class="sort-btn">
+                                            Acompte <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="remainingBalance">
+                                        <button class="sort-btn">
+                                            Solde Restant <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
                                     <th>Paiement</th>
-                                    <th>Status</th>
-                                    <th>Statut Livraison</th>
+                                    <th data-sort-key="status">
+                                        <button class="sort-btn">
+                                            Status <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="deliveryStatus">
+                                        <button class="sort-btn">
+                                            Statut Livraison <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -220,6 +264,46 @@
                         </thead>
                         <tbody id="comment-list-tbody">
                             <!-- Comments will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="purchases-section" class="admin-panel">
+                <header class="main-header">
+                    <h1>Gestion des Achats</h1>
+                </header>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h4>Dépenses du mois</h4>
+                        <p id="stats-monthly-spending">0 €</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Dépenses totales</h4>
+                        <p id="stats-total-spending">0 €</p>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <button id="add-purchase-btn" class="cta-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Ajouter un Achat</span>
+                    </button>
+                </div>
+                <div id="purchase-list-container" class="table-container">
+                    <table id="purchase-list-table">
+                        <thead>
+                            <tr>
+                                <th>Produit/Matériel</th>
+                                <th>Fournisseur</th>
+                                <th>Date d'achat</th>
+                                <th>Quantité</th>
+                                <th>Prix unitaire</th>
+                                <th>Prix total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchase-list-tbody">
+                            <!-- Purchases will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -326,6 +410,40 @@
         </div>
     </div>
 
+    <!-- Modal for Add/Edit Purchase -->
+    <div id="purchase-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="purchase-modal-close">&times;</span>
+            <h3 id="purchase-form-title">Ajouter un Achat</h3>
+            <form id="purchase-form">
+                <input type="hidden" id="purchase-id">
+                <div class="form-group">
+                    <label for="purchase-product-name">Produit/Matériel</label>
+                    <input type="text" id="purchase-product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase-supplier">Fournisseur</label>
+                    <input type="text" id="purchase-supplier" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase-date">Date d'achat</label>
+                    <input type="date" id="purchase-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase-quantity">Quantité</label>
+                    <input type="number" id="purchase-quantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase-unit-price">Prix unitaire (€)</label>
+                    <input type="number" id="purchase-unit-price" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="cta-button">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Notification container -->
     <div id="notification-container"></div>
 
@@ -335,5 +453,6 @@
     <!-- Main Admin Script -->
     <script type="module" src="js/admin.js"></script>
     <script type="module" src="js/comments.js"></script>
+    <script type="module" src="js/purchases.js"></script>
 </body>
 </html>

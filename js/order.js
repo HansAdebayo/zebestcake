@@ -313,14 +313,34 @@ async function handleOrderSubmit(event) {
         const docRef = await addDoc(collection(db, "orders"), orderData);
         console.log("handleOrderSubmit: Commande enregistrée avec succès ! ID du document:", docRef.id);
 
-        // Afficher la confirmation
-        document.getElementById('order-form-section').innerHTML = `
+        const confirmationSection = document.getElementById('order-form-section');
+        confirmationSection.innerHTML = `
             <div class="order-confirmation">
                 <h2>Merci pour votre commande !</h2>
                 <p>Votre demande a bien été reçue ! Nous l'étudions avec la plus grande attention et revenons vers vous très vite pour confirmer les détails de votre future gourmandise.</p>
-                <p>Référence de votre commande : <strong>${docRef.id}</strong></p>
+                <div class="order-id-box">
+                    <p>Votre référence de commande :</p>
+                    <strong id="order-id-text">${docRef.id}</strong>
+                    <button id="copy-order-id-btn" class="secondary-btn">Copier</button>
+                </div>
+                <p class="info-text">Conservez cette référence précieusement. Elle vous permettra de suivre ou modifier votre commande.</p>
+                <a href="suivi-commande.html" class="cta-button">Suivre ma commande</a>
             </div>
         `;
+
+        // Add event listener for the new copy button
+        document.getElementById('copy-order-id-btn').addEventListener('click', () => {
+            const orderId = docRef.id;
+            navigator.clipboard.writeText(orderId).then(() => {
+                const copyBtn = document.getElementById('copy-order-id-btn');
+                copyBtn.textContent = 'Copié !';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copier';
+                }, 2000);
+            }).catch(err => {
+                console.error('Impossible de copier le texte: ', err);
+            });
+        });
 
     } catch (error) {
         console.error("handleOrderSubmit: ERREUR CATCHÉE lors de la soumission: ", error);

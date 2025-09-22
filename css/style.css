@@ -713,21 +713,65 @@ footer {
 
 .order-confirmation {
     text-align: center;
-    padding: 4rem 2rem;
-    background-color: var(--creme-fond);
+    padding: 3rem 2rem;
+    background-color: var(--blanc-pur);
     border-radius: var(--border-radius);
-    /* Ajouts pour le centrage vertical */
+    box-shadow: var(--shadow);
+    max-width: 800px;
+    margin: 2rem auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 200px); /* Hauteur minimale pour centrer, en tenant compte du header/footer */
+    gap: 1.5rem;
 }
 
 .order-confirmation h2 {
     color: var(--rose-principal);
     font-size: 2.5rem;
 }
+
+.order-id-box {
+    background-color: var(--creme-fond);
+    border: 2px dashed var(--rose-secondaire);
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 450px;
+}
+
+.order-id-box p {
+    margin: 0;
+}
+
+.order-id-box strong {
+    font-size: 1.2rem;
+    color: var(--texte-sombre);
+    background-color: var(--blanc-pur);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+#copy-order-id-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    min-width: 80px; /* To avoid size change on text change */
+}
+
+.order-confirmation .info-text {
+    font-style: italic;
+    color: var(--texte-sombre);
+    max-width: 500px;
+}
+
+.order-confirmation .cta-button {
+    margin-top: 1rem;
+}
+
 
 /* --- ABOUT PAGE --- */
 #about-hero {
@@ -1265,4 +1309,72 @@ footer {
 .status-cell .cancel-status-btn {
     background-color: var(--gris-delicat);
     color: var(--texte-sombre);
+}
+
+/* --- Order Tracking Page --- */
+#tracking-hero {
+    padding: 4rem 2rem;
+    background-color: var(--blanc-pur);
+    text-align: center;
+}
+
+#tracking-core .container {
+    max-width: 800px;
+}
+
+.tracking-box {
+    background: var(--blanc-pur);
+    padding: 2rem 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-top: 2rem;
+}
+
+#edit-order-form fieldset.summary {
+    background-color: var(--creme-fond);
+    border: 1px solid var(--rose-secondaire);
+}
+
+#edit-order-form fieldset.summary p {
+    font-size: 1.1rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.feedback-message p {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.feedback-message .loading {
+    background-color: #e7f3ff;
+    color: #2e90fa;
+}
+
+.feedback-message .error {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.feedback-message .success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.cta-button-danger {
+    background-color: #dc3545;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.cta-button-danger:hover {
+    background-color: #c82333;
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
 }
