@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     searchForm.addEventListener('submit', handleSearch);
     editForm.addEventListener('submit', handleUpdate);
     cancelBtn.addEventListener('click', handleCancel);
+
+    const closeEditBtn = document.getElementById('close-edit-btn');
+    if (closeEditBtn) {
+        closeEditBtn.addEventListener('click', resetSearchForm);
+    }
+
     console.log('Page de suivi de commande initialisée.');
 });
 
@@ -46,6 +52,9 @@ async function handleSearch(event) {
             const orderData = orderSnap.data();
             if (orderData.status === 'Annulée') {
                 showFeedback(searchFeedback, 'Cette commande a déjà été annulée et ne peut plus être modifiée.', 'error');
+                resultsBox.style.display = 'none';
+            } else if (orderData.status === 'Terminée') {
+                showFeedback(searchFeedback, 'Cette commande est terminée et ne peut plus être modifiée.', 'success');
                 resultsBox.style.display = 'none';
             } else {
                 showFeedback(searchFeedback, '', 'clear');
@@ -98,6 +107,18 @@ function displayOrderDetails(order, orderId) {
 }
 
 /**
+ * Resets the search form view.
+ */
+function resetSearchForm() {
+    resultsBox.style.display = 'none';
+    document.getElementById('search-box').style.display = 'block';
+    orderIdInput.value = '';
+    searchFeedback.innerHTML = '';
+    updateFeedback.innerHTML = '';
+    window.scrollTo(0, 0);
+}
+
+/**
  * Handles the update form submission.
  * @param {Event} event The form submission event.
  */
@@ -124,6 +145,7 @@ async function handleUpdate(event) {
         const orderRef = doc(db, 'orders', orderId);
         await updateDoc(orderRef, updatedData);
         showFeedback(updateFeedback, 'Votre commande a été mise à jour avec succès !', 'success');
+        setTimeout(resetSearchForm, 2000); // Wait 2 seconds before resetting
     } catch (err) {
         console.error("Erreur lors de la mise à jour : ", err);
         showFeedback(updateFeedback, 'Une erreur est survenue lors de la mise à jour.', 'error');
