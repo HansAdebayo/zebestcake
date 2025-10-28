@@ -109,9 +109,21 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                const status = btn.dataset.status;
-                displayOrders(status);
+                sortAndDisplayOrders(); // Re-sort and display all orders with the new status filter
+                const showAllBtn = document.getElementById('show-all-orders-btn');
+                if(showAllBtn) showAllBtn.style.display = 'none';
             });
+        });
+    }
+
+    const showAllBtn = document.getElementById('show-all-orders-btn');
+    if(showAllBtn) {
+        showAllBtn.addEventListener('click', () => {
+            sortAndDisplayOrders();
+            showAllBtn.style.display = 'none';
+            filterBtns.forEach(b => b.classList.remove('active'));
+            const allBtn = document.querySelector('.filter-btn[data-status="all"]');
+            if (allBtn) allBtn.classList.add('active');
         });
     }
     
@@ -248,9 +260,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 plugins: {
                     legend: { display: false },
                     title: { display: true, text: 'Nombre de livraisons prévues par jour' }
+                },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const chartElement = elements[0];
+                        const index = chartElement.index;
+                        const dateStr = labels[index];
+                        filterOrdersByDate(dateStr);
+                    }
                 }
             }
         });
+    }
+
+    function filterOrdersByDate(dateStr) {
+        const filtered = allOrders.filter(order => {
+            if (!order.delivery || !order.delivery.date) return false;
+            return order.delivery.date.toDate().toLocaleDateString('fr-FR') === dateStr;
+        });
+        
+        // De-activate other filters and activate 'all'
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(b => b.classList.remove('active'));
+        const allBtn = document.querySelector('.filter-btn[data-status="all"]');
+        if (allBtn) allBtn.classList.add('active');
+
+        sortAndDisplayOrders(filtered);
+        const showAllBtn = document.getElementById('show-all-orders-btn');
+        if(showAllBtn) showAllBtn.style.display = 'block';
     }
 
     // --- Display Delivery Alerts ---
@@ -335,10 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function sortAndDisplayOrders() {
+    function sortAndDisplayOrders(ordersToDisplay = allOrders) {
         const { key, direction } = currentSort;
 
-        const sortedOrders = [...allOrders].sort((a, b) => {
+        const sortedOrders = [...ordersToDisplay].sort((a, b) => {
             let valA = getNestedProperty(a, key);
             let valB = getNestedProperty(b, key);
 
