@@ -7,6 +7,7 @@ let allOrders = [];
 let deliveryChart = null;
 let currentAlertIndex = 0;
 let currentSort = { key: 'createdAt', direction: 'desc' };
+let totalSpending = 0;
 
 // Admin emails
 const ADMIN_EMAILS = {
@@ -140,17 +141,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Load Purchases ---
+    async function loadPurchases() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "purchases"));
+            const purchases = querySnapshot.docs.map(doc => doc.data());
+            return purchases.reduce((sum, p) => sum + (p.totalPrice || (p.quantity * p.unitPrice)), 0);
+        } catch (error) {
+            console.error("Error loading purchases: ", error);
+            return 0;
+        }
+    }
+
     // --- Load Orders ---
     async function loadOrders() {
         try {
-            const querySnapshot = await getDocs(collection(db, "orders"));
-            allOrders = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const [ordersSnapshot, spending] = await Promise.all([
+                getDocs(collection(db, "orders")),
+                loadPurchases()
+            ]);
+            allOrders = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            totalSpending = spending;
             sortAndDisplayOrders();
             displayStats(allOrders);
             displayDeliveryChart(allOrders);
             displayDeliveryAlerts(allOrders);
         } catch (error) {
-            console.error("Error loading orders: ", error);
+            console.error("Error loading data: ", error);
         }
     }
 
@@ -158,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayStats(orders) {
         const totalRevenueEl = document.getElementById('stats-total-revenue');
         const realRevenueEl = document.getElementById('stats-real-revenue');
+        const netRevenueEl = document.getElementById('stats-net-revenue');
         const totalOrdersEl = document.getElementById('stats-total-orders');
         const completedOrdersEl = document.getElementById('stats-completed-orders');
         const pendingOrdersEl = document.getElementById('stats-pending-orders');
@@ -169,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const totalRevenue = ordersForRevenue.reduce((sum, order) => sum + (order.pricing?.totalPrice || 0), 0);
         const realRevenue = ordersForRevenue.reduce((sum, order) => sum + (order.acompte?.amount || 0), 0);
+        const netRevenue = realRevenue - totalSpending;
         const totalOrders = activeOrders.length;
         const completedOrders = orders.filter(order => order.status === 'Terminée').length;
         const pendingOrders = orders.filter(order => order.status === 'Non traitée' || order.status === 'En cours').length;
@@ -183,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(totalRevenueEl) totalRevenueEl.textContent = `${totalRevenue.toFixed(2)} €`;
         if(realRevenueEl) realRevenueEl.textContent = `${realRevenue.toFixed(2)} €`;
+        if(netRevenueEl) netRevenueEl.textContent = `${netRevenue.toFixed(2)} €`;
         if(totalOrdersEl) totalOrdersEl.textContent = totalOrders;
         if(completedOrdersEl) completedOrdersEl.textContent = completedOrders;
         if(pendingOrdersEl) pendingOrdersEl.textContent = pendingOrders;

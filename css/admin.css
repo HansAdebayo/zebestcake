@@ -246,6 +246,11 @@ body {
     border-left: 5px solid var(--success-color);
 }
 
+.stat-card-net-revenue {
+    background-color: #e0e7ff; /* A light blue/purple */
+    border-left: 5px solid var(--primary-color);
+}
+
 .stat-card-orders {
     background-color: #fff4e5;
     border-left: 5px solid var(--warning-color);
