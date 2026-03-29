@@ -313,6 +313,28 @@ async function handleOrderSubmit(event) {
         const docRef = await addDoc(collection(db, "orders"), orderData);
         console.log("handleOrderSubmit: Commande enregistrée avec succès ! ID du document:", docRef.id);
 
+        // --- ENVOI DES NOTIFICATIONS DISCORD (SÉCURISÉ VIA NETLIFY) ---
+        try {
+            const notificationData = {
+                orderId: docRef.id,
+                customerName: `${orderData.customerInfo.firstName} ${orderData.customerInfo.lastName}`,
+                phone: orderData.customerInfo.phone,
+                email: orderData.customerInfo.email,
+                cakeInfo: `${orderData.product.name} (${orderData.product.size})`,
+                totalPrice: orderData.pricing.totalPrice,
+                deliveryDate: new Date(formElements['delivery-date'].value).toLocaleDateString('fr-FR'),
+                notes: orderData.customization.specialRequests
+            };
+
+            await fetch('/.netlify/functions/send-notification', {
+                method: 'POST',
+                body: JSON.stringify(notificationData)
+            });
+            console.log("handleOrderSubmit: Notification envoyée au serveur Netlify.");
+        } catch (discordError) {
+            console.error("handleOrderSubmit: Erreur lors de l'envoi de la notification:", discordError);
+        }
+
         const confirmationSection = document.getElementById('order-form-section');
         confirmationSection.innerHTML = `
             <div class="order-confirmation">
