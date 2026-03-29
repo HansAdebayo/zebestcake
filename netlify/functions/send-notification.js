@@ -1,6 +1,5 @@
 
 exports.handler = async (event) => {
-  // On n'autorise que les requêtes POST
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -8,9 +7,9 @@ exports.handler = async (event) => {
   try {
     const orderData = JSON.parse(event.body);
 
-    // RÉCUPÉRATION DES URLS DEPUIS LES VARIABLES D'ENVIRONNEMENT (CACHÉES)
-    const webhook1 = process.env.DISCORD_WEBHOOK_1;
-    const webhook2 = process.env.DISCORD_WEBHOOK_2;
+    // TES LIENS SONT ICI : Ils sont sur le serveur, donc INVISIBLES pour les clients.
+    const webhook1 = "https://discord.com/api/webhooks/1487754588105871360/3tFnPQ0GzztswFSGLP8n6eigPiOJ6ul6kZjH0db_zWmRWcuoXVJTG4x4Olpd8QCCwIAz";
+    const webhook2 = "https://discord.com/api/webhooks/1487756721869820116/VXy9genLunKDjq4Hf5pyaXb0xh5910N0IvAW-AVa-GWsfv4fgCaFPMW7yRzsz1fA3mot";
 
     const message = {
       username: "Zebestcake Order Bot",
@@ -34,7 +33,6 @@ exports.handler = async (event) => {
 
     const webhooks = [webhook1, webhook2].filter(url => !!url);
     
-    // Envoi aux webhooks
     await Promise.all(webhooks.map(url => 
       fetch(url, {
         method: 'POST',
@@ -45,13 +43,16 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Notifications envoyées avec succès" }),
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*", // Autorise ton site à appeler la fonction
+      },
+      body: JSON.stringify({ message: "Notifications envoyées !" }),
     };
   } catch (error) {
-    console.error("Erreur fonction Netlify:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Erreur lors de l'envoi" }),
+      body: JSON.stringify({ error: "Erreur serveur" }),
     };
   }
 };

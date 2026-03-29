@@ -313,44 +313,26 @@ async function handleOrderSubmit(event) {
         const docRef = await addDoc(collection(db, "orders"), orderData);
         console.log("handleOrderSubmit: Commande enregistrée avec succès ! ID du document:", docRef.id);
 
-        // --- ENVOI DES NOTIFICATIONS DISCORD ---
-        const DISCORD_WEBHOOK_1 = "https://discord.com/api/webhooks/1487754588105871360/3tFnPQ0GzztswFSGLP8n6eigPiOJ6ul6kZjH0db_zWmRWcuoXVJTG4x4Olpd8QCCwIAz"; 
-        const DISCORD_WEBHOOK_2 = "https://discord.com/api/webhooks/1487756721869820116/VXy9genLunKDjq4Hf5pyaXb0xh5910N0IvAW-AVa-GWsfv4fgCaFPMW7yRzsz1fA3mot"; 
+        // --- ENVOI DES NOTIFICATIONS DISCORD (SÉCURISÉ VIA NETLIFY) ---
+        try {
+            const notificationData = {
+                orderId: docRef.id,
+                customerName: `${orderData.customerInfo.firstName} ${orderData.customerInfo.lastName}`,
+                phone: orderData.customerInfo.phone,
+                email: orderData.customerInfo.email,
+                cakeInfo: `${orderData.product.name} (${orderData.product.size})`,
+                totalPrice: orderData.pricing.totalPrice,
+                deliveryDate: new Date(formElements['delivery-date'].value).toLocaleDateString('fr-FR'),
+                notes: orderData.customization.specialRequests
+            };
 
-        if (DISCORD_WEBHOOK_1 || DISCORD_WEBHOOK_2) {
-            try {
-                const message = {
-                    username: "Zebestcake Order Bot",
-                    embeds: [{
-                        title: "🎂 NOUVELLE COMMANDE !",
-                        color: 16742104, // Rose Zebestcake
-                        fields: [
-                            { name: "Référence", value: docRef.id, inline: true },
-                            { name: "Client", value: `${orderData.customerInfo.firstName} ${orderData.customerInfo.lastName}`, inline: true },
-                            { name: "📱 Téléphone", value: orderData.customerInfo.phone, inline: true },
-                            { name: "📧 Email", value: orderData.customerInfo.email, inline: true },
-                            { name: "🎂 Gâteau", value: `${orderData.product.name} (${orderData.product.size})`, inline: false },
-                            { name: "💰 Prix Total", value: `${orderData.pricing.totalPrice} €`, inline: true },
-                            { name: "📅 Livraison", value: new Date(formElements['delivery-date'].value).toLocaleDateString('fr-FR'), inline: true },
-                            { name: "📝 Notes", value: orderData.customization.specialRequests || "Aucune", inline: false },
-                            { name: "🔗 Action", value: "[Ouvrir le panneau d'administration](https://zebestcake.netlify.app/admin.html)", inline: false }
-                        ],
-                        timestamp: new Date().toISOString()
-                    }]
-                };
-
-                const webhooks = [DISCORD_WEBHOOK_1, DISCORD_WEBHOOK_2].filter(url => url !== "");
-                await Promise.all(webhooks.map(url => 
-                    fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(message)
-                    })
-                ));
-                console.log("handleOrderSubmit: Notifications Discord envoyées !");
-            } catch (discordError) {
-                console.error("handleOrderSubmit: Erreur lors de l'envoi Discord:", discordError);
-            }
+            await fetch('/.netlify/functions/send-notification', {
+                method: 'POST',
+                body: JSON.stringify(notificationData)
+            });
+            console.log("handleOrderSubmit: Notification envoyée au serveur Netlify.");
+        } catch (discordError) {
+            console.error("handleOrderSubmit: Erreur lors de l'envoi de la notification:", discordError);
         }
 
         const confirmationSection = document.getElementById('order-form-section');
