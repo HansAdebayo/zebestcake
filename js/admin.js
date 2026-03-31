@@ -265,21 +265,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Livraisons prévues',
                     data: data,
-                    backgroundColor: 'rgba(108, 92, 231, 0.6)',
-                    borderColor: 'rgba(108, 92, 231, 1)',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.8
+                    backgroundColor: function(context) {
+                        const chart = context.chart;
+                        const { ctx: c, chartArea } = chart;
+                        if (!chartArea) return 'rgba(124, 106, 245, 0.85)';
+                        const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                        gradient.addColorStop(0, 'rgba(124, 106, 245, 0.92)');
+                        gradient.addColorStop(1, 'rgba(124, 106, 245, 0.18)');
+                        return gradient;
+                    },
+                    borderColor: 'transparent',
+                    borderWidth: 0,
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    hoverBackgroundColor: 'rgba(91, 72, 217, 0.95)',
+                    barPercentage: 0.55,
+                    categoryPercentage: 0.7
                 }]
             },
             options: {
-                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: { duration: 700, easing: 'easeOutQuart' },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: {
+                            font: { family: "'Poppins', sans-serif", size: 11 },
+                            color: '#667085'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { color: 'rgba(234, 236, 240, 0.9)' },
+                        ticks: {
+                            stepSize: 1,
+                            font: { family: "'Poppins', sans-serif", size: 11 },
+                            color: '#667085',
+                            padding: 8
+                        }
+                    }
+                },
                 plugins: {
                     legend: { display: false },
-                    title: { display: true, text: 'Nombre de livraisons prévues par jour' }
+                    title: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1B1730',
+                        titleFont: { family: "'Poppins', sans-serif", size: 12, weight: '600' },
+                        bodyFont: { family: "'Poppins', sans-serif", size: 12 },
+                        padding: { x: 14, y: 10 },
+                        cornerRadius: 10,
+                        displayColors: false,
+                        callbacks: {
+                            title: (items) => `📦 ${items[0].label}`,
+                            label: (item) => ` ${item.raw} livraison${item.raw > 1 ? 's' : ''} prévue${item.raw > 1 ? 's' : ''}`
+                        }
+                    }
                 },
                 onClick: (event, elements) => {
                     if (elements.length > 0) {

@@ -7,7 +7,7 @@
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- New Admin Stylesheet -->
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="css/comments.css">
@@ -132,11 +132,15 @@
                 <div class="stats-container">
                      <div class="chart-section">
                         <div class="chart-header">
-                            <h3>Livraisons prévues</h3>
+                            <div>
+                                <h3>Livraisons prévues</h3>
+                                <p class="chart-subtitle">Commandes actives non livrées</p>
+                            </div>
                         </div>
                         <div class="chart-container">
                             <canvas id="delivery-chart"></canvas>
                         </div>
+                        <p class="chart-hint">Cliquez sur une barre pour filtrer les commandes par date</p>
                     </div>
                     <div class="stat-card">
                         <h4>Types de Livraison</h4>
