@@ -152,12 +152,22 @@
                 <section class="orders-section">
                     <div class="orders-header">
                         <h3>Toutes les commandes</h3>
-                        <div class="filters">
-                            <button class="filter-btn active" data-status="all">Toutes</button>
-                            <button class="filter-btn" data-status="pending">Non traitées</button>
-                            <button class="filter-btn" data-status="En cours">En cours</button>
-                            <button class="filter-btn" data-status="Terminée">Terminées</button>
-                            <button class="filter-btn" data-status="Annulée">Annulées</button>
+                        <div class="filters-container">
+                            <div class="filters">
+                                <button class="filter-btn active" data-status="all">Toutes</button>
+                                <button class="filter-btn" data-status="pending">Non traitées</button>
+                                <button class="filter-btn" data-status="En cours">En cours</button>
+                                <button class="filter-btn" data-status="Terminée">Terminées</button>
+                                <button class="filter-btn" data-status="Annulée">Annulées</button>
+                            </div>
+                            <div class="sort-box">
+                                <select id="order-sort-select" class="sort-dropdown">
+                                    <option value="createdAt-desc">📅 Commande (Récent → Ancien)</option>
+                                    <option value="createdAt-asc">📅 Commande (Ancien → Récent)</option>
+                                    <option value="delivery.date-asc">🚚 Livraison (Proche → Lointain)</option>
+                                    <option value="delivery.date-desc">🚚 Livraison (Lointain → Proche)</option>
+                                </select>
+                            </div>
                         </div>
                         <button id="show-all-orders-btn" class="filter-btn" style="display:none; margin-top: 10px;">Voir toutes les commandes</button>
                     </div>
@@ -167,7 +177,12 @@
                                 <tr>
                                     <th data-sort-key="id">
                                         <button class="sort-btn">
-                                            ID Commande <span class="sort-icon"></span>
+                                            ID <span class="sort-icon"></span>
+                                        </button>
+                                    </th>
+                                    <th data-sort-key="createdAt">
+                                        <button class="sort-btn">
+                                            Date <span class="sort-icon"></span>
                                         </button>
                                     </th>
                                     <th data-sort-key="customerInfo.lastName">
@@ -180,37 +195,12 @@
                                             Gâteau <span class="sort-icon"></span>
                                         </button>
                                     </th>
-                                    <th data-sort-key="createdAt">
-                                        <button class="sort-btn">
-                                            Date de commande <span class="sort-icon"></span>
-                                        </button>
-                                    </th>
                                     <th data-sort-key="delivery.date">
                                         <button class="sort-btn">
-                                            Date de livraison <span class="sort-icon"></span>
+                                            Livraison <span class="sort-icon"></span>
                                         </button>
                                     </th>
-                                    <th data-sort-key="acompte.amount">
-                                        <button class="sort-btn">
-                                            Acompte <span class="sort-icon"></span>
-                                        </button>
-                                    </th>
-                                    <th data-sort-key="remainingBalance">
-                                        <button class="sort-btn">
-                                            Solde Restant <span class="sort-icon"></span>
-                                        </button>
-                                    </th>
-                                    <th>Paiement</th>
-                                    <th data-sort-key="status">
-                                        <button class="sort-btn">
-                                            Status <span class="sort-icon"></span>
-                                        </button>
-                                    </th>
-                                    <th data-sort-key="deliveryStatus">
-                                        <button class="sort-btn">
-                                            Statut Livraison <span class="sort-icon"></span>
-                                        </button>
-                                    </th>
+                                    <th>Statuts</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -224,6 +214,9 @@
 
             <section id="products-section" class="admin-panel">
                 <header class="main-header">
+                    <button class="mobile-menu-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
                     <h1>Gestion des Produits</h1>
                 </header>
                 <div class="toolbar">
@@ -252,6 +245,9 @@
 
             <section id="comments-section" class="admin-panel">
                 <header class="main-header">
+                    <button class="mobile-menu-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
                     <h1>Gestion des Commentaires</h1>
                 </header>
                 <div class="toolbar">
@@ -280,6 +276,9 @@
 
             <section id="purchases-section" class="admin-panel">
                 <header class="main-header">
+                    <button class="mobile-menu-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
                     <h1>Gestion des Achats</h1>
                 </header>
                 <div class="stats-container">

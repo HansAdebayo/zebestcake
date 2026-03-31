@@ -27,14 +27,14 @@ const getNestedProperty = (obj, path) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const sidebar = document.querySelector('.sidebar');
 
-    if (mobileMenuBtn && sidebar) {
-        mobileMenuBtn.addEventListener('click', () => {
+    // Tous les boutons burger (un par section)
+    document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
             document.body.classList.toggle('sidebar-open');
         });
-    }
+    });
 
     const sidebarCloseBtn = document.querySelector('.sidebar-close-btn');
 
@@ -433,6 +433,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 sortAndDisplayOrders();
             });
         });
+
+        const mobileSortSelect = document.getElementById('order-sort-select');
+        if (mobileSortSelect) {
+            mobileSortSelect.addEventListener('change', (e) => {
+                const [key, direction] = e.target.value.split('-');
+                currentSort.key = key;
+                currentSort.direction = direction;
+                sortAndDisplayOrders();
+            });
+        }
     }
 
     function sortAndDisplayOrders(ordersToDisplay = allOrders) {
@@ -472,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Display Orders (MODIFIED for Sorting) ---
+    // --- Display Orders ---
     function displayOrders(statusFilter = 'all', ordersToDisplay = allOrders) {
         if (!ordersTbody) return;
         ordersTbody.innerHTML = '';
@@ -481,6 +491,8 @@ document.addEventListener('DOMContentLoaded', () => {
         filteredOrders.forEach(order => {
             const tr = document.createElement('tr');
             const statusClass = getStatusClass(order.status);
+            tr.classList.add(statusClass); // Ajout de la classe pour la barre latérale CSS
+            
             const totalPrice = order.pricing?.totalPrice || 0;
             const acompteAmount = order.acompte?.amount || 0;
             let remainingBalance = totalPrice - acompteAmount;
@@ -489,55 +501,40 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const isPaid = remainingBalance <= 0;
 
-            let paymentStatusHtml = '';
+            let paymentBadgeHtml = '';
             if (order.paymentMethod === 'Jeux Concours') {
-                paymentStatusHtml = '<span class="jeux-concours-badge">Jeux Concours</span>';
+                paymentBadgeHtml = '<span class="jeux-concours-badge">Concours</span>';
             } else if (order.paymentMethod === 'Don') {
-                paymentStatusHtml = '<span class="jeux-concours-badge">Don</span>';
+                paymentBadgeHtml = '<span class="jeux-concours-badge">Don</span>';
             } else if (order.status === 'Annulée') {
-                paymentStatusHtml = '<span class="cancelled-badge">Annulée</span>';
+                paymentBadgeHtml = '<span class="cancelled-badge">Annulée</span>';
             } else if (isPaid) {
-                paymentStatusHtml = '<span class="paid-badge">Payé</span>';
+                paymentBadgeHtml = '<span class="paid-badge">Payé</span>';
             } else {
-                paymentStatusHtml = '<span class="unpaid-badge">Non payé</span>';
+                paymentBadgeHtml = '<span class="unpaid-badge">Non payé</span>';
             }
 
             const deliveryStatus = order.deliveryStatus || 'Non livré';
             const deliveryStatusClass = getStatusClass(deliveryStatus);
-
-            const displayStatusClass = statusClass;
+            const deliveryDate = order.delivery?.date ? order.delivery.date.toDate().toLocaleDateString('fr-FR') : 'N/A';
+            const createdAtDate = order.createdAt ? order.createdAt.toDate().toLocaleDateString('fr-FR') : 'N/A';
 
             tr.innerHTML = `
-                <td data-label="ID Commande">${order.id}</td>
+                <td class="id-cell" title="${order.id}">${order.id.slice(0, 8)}…</td>
+                <td data-label="Date Commande">${createdAtDate}</td>
                 <td data-label="Client">${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}</td>
                 <td data-label="Gâteau">${order.product?.name || 'N/A'}</td>
-                <td data-label="Date de commande">${order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}</td>
-                <td data-label="Date de livraison">${order.delivery?.date ? order.delivery.date.toDate().toLocaleDateString() : 'N/A'}</td>
-                <td data-label="Acompte">${acompteAmount.toFixed(2)} €</td>
-                <td data-label="Solde Restant">${remainingBalance.toFixed(2)} €</td>
-                <td data-label="Paiement" class="payment-cell" data-order-id="${order.id}">
-                    <div>
-                        <span class="current-payment-status">${paymentStatusHtml}</span>
-                        <button class="edit-payment-btn">Modifier</button>
-                    </div>
-                </td>
-                <td data-label="Status" class="status-cell" data-order-id="${order.id}">
-                    <div>
-                        <span class="current-status status-badge ${displayStatusClass}">${order.status}</span>
-                        <button class="edit-status-btn">Modifier</button>
-                    </div>
-                </td>
-                <td data-label="Statut Livraison" class="delivery-status-cell" data-order-id="${order.id}">
-                    <div>
-                        <span class="current-delivery-status ${deliveryStatusClass}">${deliveryStatus}</span>
-                        <button class="edit-delivery-status-btn">Modifier</button>
-                    </div>
+                <td data-label="Livraison">${deliveryDate}</td>
+                <td data-label="Statuts" class="statuts-cell">
+                    <span class="current-status ${statusClass}">${order.status}</span>
+                    ${paymentBadgeHtml}
+                    <span class="current-delivery-status ${deliveryStatusClass}">${deliveryStatus}</span>
                 </td>
                 <td data-label="Actions" class="actions">
                     <div class="actions-container">
-                        <button class="view-details-btn" data-order-id="${order.id}">Voir</button>
+                        <button class="view-details-btn" data-order-id="${order.id}">Modifier</button>
                         <div class="actions-menu">
-                            <button class="actions-menu-btn">...</button>
+                            <button class="actions-menu-btn">···</button>
                             <div class="dropdown-menu">
                                 <a href="#" class="acompte-btn" data-order-id="${order.id}">Gérer Acompte</a>
                                 <a href="facture.html?orderId=${order.id}" target="_blank" class="invoice-btn">Facture</a>
@@ -550,195 +547,69 @@ document.addEventListener('DOMContentLoaded', () => {
             ordersTbody.appendChild(tr);
         });
 
-        // Re-attach all event listeners
-        document.querySelectorAll('.edit-status-btn').forEach(btn => btn.addEventListener('click', enterEditMode));
-        document.querySelectorAll('.edit-payment-btn').forEach(btn => btn.addEventListener('click', enterPaymentEditMode));
-        document.querySelectorAll('.edit-delivery-status-btn').forEach(btn => btn.addEventListener('click', enterDeliveryEditMode));
         document.querySelectorAll('.view-details-btn').forEach(btn => btn.addEventListener('click', showOrderDetails));
         document.querySelectorAll('.delete-order-btn').forEach(btn => btn.addEventListener('click', deleteOrder));
         document.querySelectorAll('.acompte-btn').forEach(btn => btn.addEventListener('click', showAcompteModal));
     }
 
-    function enterPaymentEditMode(event) {
-        const paymentCell = event.target.closest('.payment-cell');
-        const orderId = paymentCell.dataset.orderId;
+    async function saveModalStatuses(orderId) {
         const order = allOrders.find(o => o.id === orderId);
         if (!order) return;
 
-        const totalPrice = order.pricing?.totalPrice || 0;
-        const acompteAmount = order.acompte?.amount || 0;
-        const remainingBalance = totalPrice - acompteAmount;
-        const isPaid = remainingBalance <= 0;
+        const newStatus = document.getElementById('modal-status-select').value;
+        const newPayment = document.getElementById('modal-payment-select').value;
+        const newDelivery = document.getElementById('modal-delivery-select').value;
 
-        paymentCell.innerHTML = `
-            <select class="payment-status-select" data-order-id="${order.id}">
-                <option value="Non payé" ${!isPaid && !order.paymentMethod ? 'selected' : ''}>Non payé</option>
-                <option value="Payé" ${isPaid && !order.paymentMethod ? 'selected' : ''}>Payé</option>
-                <option value="Don" ${order.paymentMethod === 'Don' ? 'selected' : ''}>Don</option>
-                <option value="Jeux Concours" ${order.paymentMethod === 'Jeux Concours' ? 'selected' : ''}>Jeux Concours</option>
-            </select>
-            <button class="validate-payment-btn cta-button">Valider</button>
-            <button class="cancel-payment-btn secondary-btn">Annuler</button>
-        `;
-
-        paymentCell.querySelector('.validate-payment-btn').addEventListener('click', updatePaymentStatus);
-        paymentCell.querySelector('.cancel-payment-btn').addEventListener('click', cancelPaymentEditMode);
-    }
-
-    function cancelPaymentEditMode(event) {
-        const paymentCell = event.target.closest('.payment-cell');
-        const orderId = paymentCell.dataset.orderId;
-        const order = allOrders.find(o => o.id === orderId);
-        if (!order) return;
-
-        const totalPrice = order.pricing?.totalPrice || 0;
-        const acompteAmount = order.acompte?.amount || 0;
-        const remainingBalance = totalPrice - acompteAmount;
-        const isPaid = remainingBalance <= 0;
-
-        let paymentStatusHtml = '';
-        if (order.paymentMethod === 'Jeux Concours') {
-            paymentStatusHtml = '<span class="jeux-concours-badge">Jeux Concours</span>';
-        } else if (order.paymentMethod === 'Don') {
-            paymentStatusHtml = '<span class="jeux-concours-badge">Don</span>';
-        } else if (order.status === 'Annulée') {
-            paymentStatusHtml = '<span class="cancelled-badge">Annulée</span>';
-        } else if (isPaid) {
-            paymentStatusHtml = '<span class="paid-badge">Payé</span>';
-        } else {
-            paymentStatusHtml = '<span class="unpaid-badge">Non payé</span>';
-        }
-
-        paymentCell.innerHTML = `
-            <div>
-                <span class="current-payment-status">${paymentStatusHtml}</span>
-                <button class="edit-payment-btn">Modifier</button>
-            </div>
-        `;
-        paymentCell.querySelector('.edit-payment-btn').addEventListener('click', enterPaymentEditMode);
-    }
-
-    async function updatePaymentStatus(event) {
-        const paymentCell = event.target.closest('.payment-cell');
-        const orderId = paymentCell.dataset.orderId;
-        const newStatus = paymentCell.querySelector('.payment-status-select').value;
-        const order = allOrders.find(o => o.id === orderId);
-
-        if (!order) return;
+        const saveBtn = document.getElementById('modal-save-statuses-btn');
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Enregistrement…'; }
 
         try {
             const orderRef = doc(db, "orders", orderId);
-            let dataToUpdate = {};
+            let dataToUpdate = {
+                status: newStatus,
+                deliveryStatus: newDelivery,
+                updatedAt: Timestamp.now()
+            };
 
-            if (newStatus === 'Payé') {
-                dataToUpdate = {
-                    'acompte.amount': order.pricing?.totalPrice || 0,
-                    paymentMethod: ''
-                };
-            } else if (newStatus === 'Non payé') {
-                dataToUpdate = {
-                    paymentMethod: ''
-                };
-            } else if (newStatus === 'Don') {
-                dataToUpdate = {
-                    paymentMethod: 'Don'
-                };
-            } else if (newStatus === 'Jeux Concours') {
-                dataToUpdate = {
-                    paymentMethod: 'Jeux Concours'
-                };
+            if (newPayment === 'Payé' || newStatus === 'Terminée' || newStatus === 'Annulée') {
+                dataToUpdate['acompte.amount'] = order.pricing?.totalPrice || 0;
+                dataToUpdate['acompte.date'] = order.acompte?.date || Timestamp.now();
+                dataToUpdate.paymentMethod = '';
+            } else if (newPayment === 'Non payé') {
+                dataToUpdate.paymentMethod = '';
+            } else {
+                dataToUpdate.paymentMethod = newPayment;
             }
 
             await updateDoc(orderRef, dataToUpdate);
 
-            // Update local order object
-            const orderInAllOrders = allOrders.find(o => o.id === orderId);
-            if (orderInAllOrders) {
-                if (newStatus === 'Payé') {
-                    if (!orderInAllOrders.acompte) orderInAllOrders.acompte = {};
-                    orderInAllOrders.acompte.amount = order.pricing?.totalPrice || 0;
-                    orderInAllOrders.paymentMethod = '';
-                } else if (newStatus === 'Non payé') {
-                    orderInAllOrders.paymentMethod = '';
+            const o = allOrders.find(o => o.id === orderId);
+            if (o) {
+                o.status = newStatus;
+                o.deliveryStatus = newDelivery;
+                if (newPayment === 'Payé' || newStatus === 'Terminée' || newStatus === 'Annulée') {
+                    if (!o.acompte) o.acompte = {};
+                    o.acompte.amount = order.pricing?.totalPrice || 0;
+                    o.acompte.date = order.acompte?.date || Timestamp.now();
+                    o.paymentMethod = '';
+                } else if (newPayment === 'Non payé') {
+                    o.paymentMethod = '';
                 } else {
-                    orderInAllOrders.paymentMethod = newStatus;
+                    o.paymentMethod = newPayment;
                 }
             }
 
-            showNotification('Statut de paiement mis à jour.', 'success');
+            showNotification('Statuts mis à jour !', 'success');
+            orderModal.classList.remove('is-open');
             sortAndDisplayOrders();
             displayStats(allOrders);
-
-        } catch (error) {
-            console.error("Error updating payment status: ", error);
-            showNotification("Erreur lors de la mise à jour.", 'error');
-        }
-    }
-
-    function enterDeliveryEditMode(event) {
-        const deliveryCell = event.target.closest('.delivery-status-cell');
-        const orderId = deliveryCell.dataset.orderId;
-        const order = allOrders.find(o => o.id === orderId);
-        if (!order) return;
-
-        const currentDeliveryStatus = order.deliveryStatus || 'Non livré';
-
-        deliveryCell.innerHTML = `
-            <select class="delivery-status-select" data-order-id="${order.id}">
-                <option value="Non livré" ${currentDeliveryStatus === 'Non livré' ? 'selected' : ''}>Non livré</option>
-                <option value="Livré" ${currentDeliveryStatus === 'Livré' ? 'selected' : ''}>Livré</option>
-            </select>
-            <button class="validate-delivery-status-btn cta-button">Valider</button>
-            <button class="cancel-delivery-status-btn secondary-btn">Annuler</button>
-        `;
-
-        deliveryCell.querySelector('.validate-delivery-status-btn').addEventListener('click', updateDeliveryStatus);
-        deliveryCell.querySelector('.cancel-delivery-status-btn').addEventListener('click', cancelDeliveryEditMode);
-    }
-
-    function cancelDeliveryEditMode(event) {
-        const deliveryCell = event.target.closest('.delivery-status-cell');
-        const orderId = deliveryCell.dataset.orderId;
-        const order = allOrders.find(o => o.id === orderId);
-        if (!order) return;
-
-        const deliveryStatus = order.deliveryStatus || 'Non livré';
-        const deliveryStatusClass = getStatusClass(deliveryStatus);
-
-        deliveryCell.innerHTML = `
-            <div>
-                <span class="current-delivery-status ${deliveryStatusClass}">${deliveryStatus}</span>
-                <button class="edit-delivery-status-btn">Modifier</button>
-            </div>
-        `;
-        deliveryCell.querySelector('.edit-delivery-status-btn').addEventListener('click', enterDeliveryEditMode);
-    }
-
-    async function updateDeliveryStatus(event) {
-        const deliveryCell = event.target.closest('.delivery-status-cell');
-        const orderId = deliveryCell.dataset.orderId;
-        const newStatus = deliveryCell.querySelector('.delivery-status-select').value;
-        const order = allOrders.find(o => o.id === orderId);
-
-        if (!order) return;
-
-        try {
-            const orderRef = doc(db, "orders", orderId);
-            await updateDoc(orderRef, { deliveryStatus: newStatus });
-
-            const orderInAllOrders = allOrders.find(o => o.id === orderId);
-            if (orderInAllOrders) {
-                orderInAllOrders.deliveryStatus = newStatus;
-            }
-
-            showNotification('Statut de livraison mis à jour.', 'success');
-            sortAndDisplayOrders();
             displayDeliveryChart(allOrders);
             displayDeliveryAlerts(allOrders);
 
         } catch (error) {
-            console.error("Error updating delivery status: ", error);
+            console.error("Error saving statuses:", error);
             showNotification("Erreur lors de la mise à jour.", 'error');
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Enregistrer'; }
         }
     }
 
@@ -764,82 +635,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Enter Edit Mode ---
-    function enterEditMode(event) {
-        const statusCell = event.target.closest('.status-cell');
-        const orderId = statusCell.dataset.orderId;
-        const currentStatus = statusCell.querySelector('.current-status').textContent;
-
-        statusCell.innerHTML = `
-            <select class="status-select" data-order-id="${orderId}">
-                <option value="Non traitée" ${currentStatus === 'Non traitée' ? 'selected' : ''}>Non traitée</option>
-                <option value="En cours" ${currentStatus === 'En cours' ? 'selected' : ''}>En cours</option>
-                <option value="Terminée" ${currentStatus === 'Terminée' ? 'selected' : ''}>Terminée</option>
-                <option value="Annulée" ${currentStatus === 'Annulée' ? 'selected' : ''}>Annulée</option>
-            </select>
-            <button class="validate-status-btn cta-button">Valider</button>
-            <button class="cancel-status-btn secondary-btn">Annuler</button>
-        `;
-
-        statusCell.querySelector('.validate-status-btn').addEventListener('click', updateOrderStatus);
-        statusCell.querySelector('.cancel-status-btn').addEventListener('click', cancelEditMode);
-    }
-
-    // --- Cancel Edit Mode ---
-    function cancelEditMode(event) {
-        const statusCell = event.target.closest('.status-cell');
-        const orderId = statusCell.dataset.orderId;
-        const order = allOrders.find(o => o.id === orderId);
-
-        statusCell.innerHTML = `
-            <div>
-                <span class="current-status status-badge ${getStatusClass(order.status)}">${order.status}</span>
-                <button class="edit-status-btn">Modifier</button>
-            </div>
-        `;
-        statusCell.querySelector('.edit-status-btn').addEventListener('click', enterEditMode);
-    }
-
-    // --- Update Order Status ---
-        async function updateOrderStatus(event) {
-        const statusCell = event.target.closest('.status-cell');
-        const orderId = statusCell.dataset.orderId;
-        const newStatus = statusCell.querySelector('.status-select').value;
-        const order = allOrders.find(o => o.id === orderId);
-
-        if (!order) return;
-
-        try {
-            const orderRef = doc(db, "orders", orderId);
-            let dataToUpdate = { status: newStatus, updatedAt: Timestamp.now() };
-
-            if ((newStatus === 'Terminée' || newStatus === 'Annulée') && order.pricing?.totalPrice) {
-                dataToUpdate['acompte.amount'] = order.pricing.totalPrice;
-                dataToUpdate['acompte.date'] = order.acompte?.date || Timestamp.now();
-            }
-
-            await updateDoc(orderRef, dataToUpdate);
-            
-            const orderInAllOrders = allOrders.find(o => o.id === orderId);
-            if (orderInAllOrders) {
-                orderInAllOrders.status = newStatus;
-                if ((newStatus === 'Terminée' || newStatus === 'Annulée') && order.pricing?.totalPrice) {
-                    if (!orderInAllOrders.acompte) orderInAllOrders.acompte = {};
-                    orderInAllOrders.acompte.amount = order.pricing.totalPrice;
-                    orderInAllOrders.acompte.date = order.acompte?.date || Timestamp.now();
-                }
-            }
-
-            showNotification(`Statut de la commande mis à jour !`, 'success');
-            sortAndDisplayOrders();
-            displayStats(allOrders);
-
-        } catch (error) {
-            console.error("Error updating order status: ", error);
-            showNotification(`Erreur lors de la mise à jour.`, 'error');
-            cancelEditMode(event);
-        }
-    }
 
     // --- Show Order Details ---
     function showOrderDetails(event) {
@@ -852,37 +647,86 @@ document.addEventListener('DOMContentLoaded', () => {
             const acompteAmount = order.acompte?.amount || 0;
             const remainingBalance = totalPrice - acompteAmount;
             const acompteDate = order.acompte?.date ? order.acompte.date.toDate().toLocaleDateString('fr-FR') : 'Non défini';
+            const deliveryStatus = order.deliveryStatus || 'Non livré';
+            const isPaid = remainingBalance <= 0 || order.paymentMethod === 'Jeux Concours' || order.paymentMethod === 'Don';
+
+            let currentPaymentValue = 'Non payé';
+            if (order.paymentMethod === 'Jeux Concours') currentPaymentValue = 'Jeux Concours';
+            else if (order.paymentMethod === 'Don') currentPaymentValue = 'Don';
+            else if (isPaid) currentPaymentValue = 'Payé';
+
+            const deliveryDateStr = order.delivery?.date ? order.delivery.date.toDate().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
 
             modalDetails.innerHTML = `
-                <p><strong>ID Commande:</strong> ${order.id}</p>
-                <p><strong>Client:</strong> ${order.customerInfo?.firstName || 'N/A'} ${order.customerInfo?.lastName || 'N/A'}</p>
-                <p><strong>Email:</strong> ${order.customerInfo?.email || 'N/A'}</p>
-                <p><strong>Téléphone:</strong> ${order.customerInfo?.phone || 'N/A'}</p>
-                <hr>
-                <p><strong>Gâteau:</strong> ${order.product?.name || 'N/A'} (${order.product?.size || 'N/A'})</p>
-                <p><strong>Demandes spéciales:</strong> ${order.customization?.specialRequests || 'Aucune'}</p>
-                <hr>
-                <p><strong>Livraison:</strong> ${order.delivery?.type}</p>
-                <p><strong>Date:</strong> ${order.delivery?.date.toDate().toLocaleDateString('fr-FR')}</p>
-                <hr>
-                <p><strong>Total:</strong> ${totalPrice.toFixed(2)} €</p>
-                <p><strong>Acompte versé:</strong> ${acompteAmount.toFixed(2)} € (le ${acompteDate})</p>
-                <p><strong>Solde restant:</strong> ${remainingBalance.toFixed(2)} €</p>
+                <div class="modal-info-grid">
+                    <div class="modal-info-block">
+                        <h4>Client</h4>
+                        <p>${order.customerInfo?.firstName || 'N/A'} ${order.customerInfo?.lastName || 'N/A'}</p>
+                        <p class="modal-info-sub">${order.customerInfo?.email || 'N/A'}</p>
+                        <p class="modal-info-sub">${order.customerInfo?.phone || 'N/A'}</p>
+                    </div>
+                    <div class="modal-info-block">
+                        <h4>Commande</h4>
+                        <p>${order.product?.name || 'N/A'} (${order.product?.size || 'N/A'})</p>
+                        <p class="modal-info-sub">${order.customization?.specialRequests || 'Aucune demande spéciale'}</p>
+                    </div>
+                    <div class="modal-info-block">
+                        <h4>Livraison</h4>
+                        <p>${order.delivery?.type || 'N/A'}</p>
+                        <p class="modal-info-sub">${deliveryDateStr}</p>
+                    </div>
+                    <div class="modal-info-block">
+                        <h4>Paiement</h4>
+                        <p>Total : <strong>${totalPrice.toFixed(2)} €</strong></p>
+                        <p class="modal-info-sub">Acompte : ${acompteAmount.toFixed(2)} € (${acompteDate})</p>
+                        <p>Solde : <strong>${remainingBalance.toFixed(2)} €</strong></p>
+                    </div>
+                </div>
+                <div class="modal-status-edit">
+                    <h4>Modifier les statuts</h4>
+                    <div class="modal-status-fields">
+                        <div class="modal-field">
+                            <label for="modal-status-select">Commande</label>
+                            <select id="modal-status-select">
+                                <option value="Non traitée" ${order.status === 'Non traitée' ? 'selected' : ''}>Non traitée</option>
+                                <option value="En cours" ${order.status === 'En cours' ? 'selected' : ''}>En cours</option>
+                                <option value="Terminée" ${order.status === 'Terminée' ? 'selected' : ''}>Terminée</option>
+                                <option value="Annulée" ${order.status === 'Annulée' ? 'selected' : ''}>Annulée</option>
+                            </select>
+                        </div>
+                        <div class="modal-field">
+                            <label for="modal-payment-select">Paiement</label>
+                            <select id="modal-payment-select">
+                                <option value="Non payé" ${currentPaymentValue === 'Non payé' ? 'selected' : ''}>Non payé</option>
+                                <option value="Payé" ${currentPaymentValue === 'Payé' ? 'selected' : ''}>Payé</option>
+                                <option value="Don" ${currentPaymentValue === 'Don' ? 'selected' : ''}>Don</option>
+                                <option value="Jeux Concours" ${currentPaymentValue === 'Jeux Concours' ? 'selected' : ''}>Jeux Concours</option>
+                            </select>
+                        </div>
+                        <div class="modal-field">
+                            <label for="modal-delivery-select">Livraison</label>
+                            <select id="modal-delivery-select">
+                                <option value="Non livré" ${deliveryStatus === 'Non livré' ? 'selected' : ''}>Non livré</option>
+                                <option value="Livré" ${deliveryStatus === 'Livré' ? 'selected' : ''}>Livré</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="modal-save-statuses-btn" class="cta-button">Enregistrer</button>
+                </div>
             `;
+
+            document.getElementById('modal-save-statuses-btn').addEventListener('click', () => saveModalStatuses(order.id));
+
             orderModal.classList.add('is-open');
 
             const printTicketBtn = document.getElementById('print-ticket-btn');
             if (printTicketBtn) {
-                printTicketBtn.onclick = () => {
-                    printTicket(modalDetails.innerHTML);
-                };
+                printTicketBtn.onclick = () => printTicket(modalDetails.querySelector('.modal-info-grid').outerHTML);
             }
 
             const sendConfirmationBtn = document.getElementById('send-confirmation-btn');
             if (sendConfirmationBtn) {
-                sendConfirmationBtn.onclick = () => {
-                    sendConfirmationEmail(order);
-                };
+                sendConfirmationBtn.onclick = () => sendConfirmationEmail(order);
             }
         }
     }

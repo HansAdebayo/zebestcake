@@ -552,79 +552,467 @@ body.sidebar-open .sidebar { transform: translateX(0); }
     .orders-section { padding: 22px; }
 }
 
-/* Orders header — mobile : colonne */
-.orders-header {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 14px;
-}
+/* Transformation du tableau en cartes sur Mobile */
+@media (max-width: 768px) {
+    #orders-table { border: none; min-width: unset; display: block; }
+    #orders-table thead { display: none; }
+    #orders-table tbody { display: block; width: 100%; }
+    
+    #orders-table tr {
+        display: block;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        margin-bottom: 20px;
+        padding: 16px;
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+    }
 
-/* Orders header — desktop : ligne */
-@media (min-width: 769px) {
-    .orders-header {
-        flex-direction: row;
+    /* Bordure colorée selon le statut (optionnel mais recommandé) */
+    #orders-table tr::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; bottom: 0;
+        width: 6px;
+        background: var(--primary-color);
+        opacity: 0.6;
+    }
+
+    #orders-table td {
+        display: flex;
         justify-content: space-between;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 18px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        text-align: right;
+        min-height: 40px;
+    }
+
+    #orders-table td:last-child { border-bottom: none; padding-top: 15px; }
+
+    #orders-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        margin-right: 15px;
+        text-align: left;
+        color: var(--text-light);
+        font-size: 11px;
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+
+    #orders-table td.id-cell {
+        font-family: monospace;
+        font-size: 14px;
+        background: var(--background-color);
+        margin: -16px -16px 12px -16px;
+        padding: 12px 16px;
+        justify-content: flex-start;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    #orders-table td.id-cell::before { content: "COMMANDE "; margin-right: 5px; }
+
+    #orders-table .statuts-cell {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    /* --- Actions dans les cartes --- */
+    table td.actions {
+        display: block;
+        width: 100%;
+        padding-top: 12px !important;
+        border-top: 1px dashed var(--border-color);
+        border-bottom: none;
+    }
+
+    .actions-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: stretch;
+        gap: 8px;
+        width: 100%;
+    }
+
+    /* Bouton principal (Modifier) */
+    .view-details-btn, .edit-product-btn, .edit-comment-btn, .edit-purchase-btn {
+        flex: 1; /* Prend tout l'espace restant */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-color) !important;
+        color: white !important;
+        height: 44px; /* Taille standard pour le pouce */
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+        padding: 0 15px;
+    }
+
+    /* Bouton menu (Trois points) */
+    .actions-menu {
+        flex-shrink: 0;
+    }
+
+    .actions-menu-btn {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--background-color);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        font-size: 20px;
+        color: var(--text-color);
+    }
+
+    /* Style pour les autres tables qui n'ont pas encore le container */
+    #product-list-table .actions, #comment-list-table .actions, #purchase-list-table .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: stretch;
+    }
+    
+    #product-list-table .actions a, #comment-list-table .actions a, #purchase-list-table .actions a {
+        flex: 1;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--background-color);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        color: var(--text-color);
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    
+    #product-list-table .actions a.delete-product-btn {
+        color: var(--danger-color);
+        border-color: rgba(240, 68, 56, 0.2);
     }
 }
 
-.orders-header h3 {
+/* ---- MODAL DETAILS ENHANCEMENTS ---- */
+.modal-info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 600px) {
+    .modal-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.modal-info-block {
+    background: var(--background-color);
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.modal-info-block h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.modal-info-block p {
     font-size: 14px;
     font-weight: 600;
     color: var(--text-color);
 }
 
-@media (min-width: 769px) {
-    .orders-header h3 { font-size: 15px; }
+.modal-info-sub {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    color: var(--text-light) !important;
+    margin-top: 2px;
 }
 
-.filters { display: flex; gap: 5px; flex-wrap: wrap; }
-
-.filters .filter-btn {
-    background: none;
-    border: 1px solid var(--border-color);
-    padding: 5px 10px;
-    border-radius: 99px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.75rem;
-    color: var(--text-light);
-    transition: var(--transition);
-    font-family: var(--font-family);
+.modal-status-edit {
+    margin-top: 20px;
+    padding: 16px;
+    background: #FFFFFF;
+    border: 2px solid var(--primary-light);
+    border-radius: var(--radius-lg);
 }
 
-@media (min-width: 769px) {
-    .filters .filter-btn { padding: 6px 14px; font-size: 0.8rem; }
-}
-
-.filters .filter-btn:hover {
-    background: var(--primary-light);
+.modal-status-edit h4 {
+    margin-bottom: 12px;
     color: var(--primary-color);
-    border-color: var(--primary-color);
 }
 
-.filters .filter-btn.active {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
+.modal-status-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
 }
 
-/* ---- TABLE STYLING ---- */
+@media (min-width: 500px) {
+    .modal-status-fields {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.modal-field select {
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    font-family: var(--font-family);
+    font-size: 14px;
+    background: var(--card-bg);
+}
+
+#modal-save-statuses-btn {
+    width: 100%;
+    margin-top: 16px;
+    justify-content: center;
+    padding: 14px;
+}
+
+/* ---- FILTERS & SORT — Layout ---- */
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+@media (min-width: 769px) {
+    .filters-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.sort-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-dropdown {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: var(--font-family);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+    outline: none;
+    -webkit-appearance: none; /* Cache le style natif sur iOS */
+}
+
+.sort-dropdown:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(124,106,245,0.1);
+}
+
+@media (max-width: 768px) {
+    .sort-box, .sort-dropdown {
+        width: 100%;
+    }
+}
+
+/* ---- FILTERS — Mobile : défilement horizontal ---- */
+@media (max-width: 768px) {
+    .filters {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 8px;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Cache la scrollbar sur Firefox */
+    }
+    .filters::-webkit-scrollbar { display: none; } /* Cache la scrollbar sur Chrome/Safari */
+    
+    .filters .filter-btn {
+        flex: 0 0 auto;
+        padding: 8px 16px;
+    }
+}
+
+/* ---- MODAL — Mobile : Bottom Sheet ---- */
+@media (max-width: 768px) {
+    .modal.is-open {
+        align-items: flex-end; /* Aligne en bas */
+        padding: 0;
+    }
+
+    .modal-content {
+        margin: 0;
+        border-radius: 24px 24px 0 0; /* Arrondi seulement en haut */
+        max-width: 100%;
+        width: 100%;
+        padding: 24px 20px 40px; /* Plus d'espace en bas pour le confort */
+        border: none;
+        animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 90vh; /* Empêche de dépasser l'écran */
+        overflow-y: auto;
+    }
+
+    /* Petite barre de drag en haut de la modal pour le style */
+    .modal-content::after {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 4px;
+        background: var(--border-color);
+        border-radius: 2px;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    .close-button {
+        top: 16px;
+        right: 20px;
+        background: var(--background-color);
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 18px;
+    }
+}
+
+/* ---- STATS CARDS — Mobile : Plus compact ---- */
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-card h4 {
+        font-size: 9px;
+    }
+    
+    .stat-card p {
+        font-size: 18px;
+    }
+}
+
+/* ---- TABLE STYLING — Mobile First Card View ---- */
 .table-container {
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible; /* On enlève le scroll horizontal forcé */
 }
 
-#orders-table, #product-list-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    min-width: 700px;
+@media (max-width: 768px) {
+    /* On cible TOUS les tableaux de l'admin */
+    #orders-table, #product-list-table, #comment-list-table, #purchase-list-table { 
+        display: block; 
+        width: 100%;
+        min-width: 0 !important; /* Force la suppression du 700px */
+        border: none;
+    }
+    
+    table thead { display: none; }
+    table tbody { display: block; width: 100%; }
+    
+    table tr {
+        display: block;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+        margin-bottom: 12px;
+        padding: 10px;
+        background: var(--card-bg);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+    }
+
+    table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.03);
+        text-align: right;
+        font-size: 13px;
+        min-height: 32px;
+    }
+
+    table td:last-child { border-bottom: none; margin-top: 8px; }
+
+    table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-align: left;
+        color: var(--text-light);
+        font-size: 10px;
+        text-transform: uppercase;
+    }
+
+    /* Cas spécifique de l'ID pour gagner de la place */
+    #orders-table td.id-cell {
+        background: var(--background-color);
+        margin: -10px -10px 8px -10px;
+        padding: 8px 12px;
+        border-radius: var(--radius) var(--radius) 0 0;
+        font-size: 12px;
+        color: var(--primary-color);
+    }
+    
+    /* On rend les badges plus petits sur mobile */
+    .current-status, .current-delivery-status, .paid-badge, .unpaid-badge {
+        padding: 2px 6px;
+        font-size: 9px;
+    }
+    
+    .statuts-cell {
+        gap: 4px !important;
+    }
+}
+
+/* Redimensionnement des tableaux sur Desktop */
+@media (min-width: 769px) {
+    #orders-table, #product-list-table, #comment-list-table, #purchase-list-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+    /* ... le reste du style desktop ... */
 }
 
 #orders-table th, #product-list-table th {
