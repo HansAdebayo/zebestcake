@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion — Admin ZeBest Custom</title>
+    <link rel="stylesheet" href="../css/custom.css">
+    <style>
+        .login-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+        }
+        .login-box .logo {
+            display: block;
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+        .login-box h1 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrap">
+        <div class="login-box">
+            <a href="../index.html" class="logo">ZeBest <em>Custom</em></a>
+            <h1>Administration</h1>
+
+            <form id="login-form" novalidate>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+                <div id="login-feedback" class="feedback hidden"></div>
+                <button type="submit" id="login-btn" class="btn btn-full" style="margin-top: 0.5rem;">
+                    Se connecter
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from '../js/custom-firebase.js';
+        import { signInWithEmailAndPassword, onAuthStateChanged }
+            from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+
+        // Si déjà connecté, rediriger directement
+        onAuthStateChanged(auth, user => {
+            if (user) window.location.href = 'plans.html';
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn      = document.getElementById('login-btn');
+            const feedback = document.getElementById('login-feedback');
+            const email    = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            btn.disabled    = true;
+            btn.textContent = 'Connexion…';
+            feedback.className   = 'feedback loading';
+            feedback.textContent = 'Vérification…';
+            feedback.classList.remove('hidden');
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = 'plans.html';
+            } catch (err) {
+                feedback.className   = 'feedback error';
+                feedback.textContent = 'Email ou mot de passe incorrect.';
+                btn.disabled    = false;
+                btn.textContent = 'Se connecter';
+            }
+        });
+    </script>
+</body>
+</html>
