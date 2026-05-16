@@ -1,0 +1,594 @@
+/*
+  ================================================
+  EDITORIAL — ZeBestCake
+  Override de style.css pour gateaux.html
+  Palette : #FFFFFF | #0A0A0A | #E5E5E5 | #6B6B6B | #C97A9A
+  ================================================
+*/
+
+/* ---- VARIABLES ---- */
+:root {
+    --blanc:    #FFFFFF;
+    --noir:     #0A0A0A;
+    --gris-sep: #E5E5E5;
+    --gris-txt: #6B6B6B;
+    --rose:     #C97A9A;
+}
+
+/* ---- TYPOGRAPHIE ---- */
+body {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    background-color: var(--blanc);
+    color: var(--noir);
+}
+
+h1, h2, h3 {
+    font-weight: 400;
+}
+
+.section-title,
+.logo-text,
+.product-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+}
+
+/* ---- BASE ---- */
+a {
+    color: var(--noir);
+}
+
+/* ---- HEADER ---- */
+header {
+    background: var(--blanc);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: 1px solid var(--gris-sep);
+}
+
+.logo-text {
+    color: var(--noir);
+}
+
+.logo-img {
+    border: none;
+    border-radius: 2px;
+}
+
+.logo:hover .logo-img {
+    transform: none;
+    border: 1px solid var(--rose);
+}
+
+.logo:hover .logo-text {
+    color: var(--rose);
+}
+
+.nav-links a {
+    color: var(--noir);
+    border-radius: 0;
+}
+
+.nav-links a:hover {
+    background: none;
+    color: var(--noir);
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.nav-links a.active {
+    background: none;
+    color: var(--noir);
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-color: var(--rose);
+    text-underline-offset: 4px;
+}
+
+.burger-bar,
+.burger-bar::before,
+.burger-bar::after {
+    background-color: var(--noir);
+    border-radius: 0;
+}
+
+/* ---- TITRE DE SECTION ---- */
+.section-title {
+    color: var(--noir);
+}
+
+.section-title::after {
+    background: var(--rose);
+    border-radius: 0;
+    width: 32px;
+    height: 1px;
+}
+
+/* ---- ANIMATIONS : DÉSACTIVÉES ---- */
+.animate-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+}
+
+.animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---- CATALOGUE ---- */
+#catalogue {
+    background: var(--blanc);
+}
+
+/* ---- FILTRES ---- */
+.filter-btn {
+    background: none;
+    border: 1px solid var(--noir);
+    border-radius: 0;
+    color: var(--noir);
+    box-shadow: none;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background 0.15s, color 0.15s;
+}
+
+.filter-btn:hover {
+    background: var(--rose);
+    color: var(--blanc);
+    border-color: var(--rose);
+}
+
+.filter-btn.active {
+    background: var(--rose);
+    color: var(--blanc);
+    border-color: var(--rose);
+    box-shadow: none;
+}
+
+/* ---- GRILLE PRODUITS ---- */
+.products-grid {
+    background: var(--blanc);
+    gap: 48px 32px;
+}
+
+/* ---- PRODUCT CARD ---- */
+.product-card {
+    background: var(--blanc);
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    transition: none;
+}
+
+.product-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 2px;
+    transition: none;
+    display: block;
+}
+
+.product-card:hover img {
+    transform: none;
+}
+
+.product-card .product-info {
+    padding: 1rem 0;
+}
+
+@media (min-width: 768px) {
+    .product-card .product-info { padding: 1.25rem 0; }
+}
+
+.product-card h3 {
+    color: var(--noir);
+    font-size: 1.05rem;
+    margin-bottom: 0.35rem;
+}
+
+.product-card p:not(.price) {
+    color: var(--gris-txt);
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+
+.product-card .price {
+    color: var(--gris-txt);
+    font-weight: 400;
+    font-size: 0.88rem;
+    padding-top: 0.5rem;
+}
+
+/* ---- CTA BUTTON ---- */
+.cta-button {
+    background: var(--rose);
+    color: var(--blanc);
+    border-radius: 0;
+    box-shadow: none;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    transition: opacity 0.15s;
+}
+
+.cta-button:hover {
+    transform: none;
+    box-shadow: none;
+    background: var(--rose);
+    color: var(--blanc);
+    opacity: 0.7;
+}
+
+.cta-button:active {
+    transform: none;
+}
+
+/* ---- FOOTER ---- */
+footer {
+    background: var(--noir);
+    color: var(--gris-txt);
+}
+
+.footer-content a,
+.footer-bottom,
+.footer-bottom a {
+    color: var(--gris-txt);
+}
+
+.footer-content strong {
+    color: var(--blanc);
+    font-weight: 400;
+}
+
+.footer-content a:hover,
+.footer-bottom a:hover {
+    color: var(--rose);
+    opacity: 1;
+}
+
+.social-links a {
+    border-radius: 0;
+    border-color: var(--gris-sep);
+    color: var(--gris-txt);
+    font-weight: 400;
+}
+
+.social-links a:hover {
+    background: none;
+    color: var(--blanc);
+    border-color: var(--blanc);
+    opacity: 1;
+}
+
+/* ---- HERO ---- */
+#hero {
+    background: var(--blanc);
+}
+
+#hero::before,
+#hero::after {
+    display: none;
+}
+
+.hero-text {
+    animation: none;
+}
+
+.hero-subtitle {
+    color: var(--gris-txt);
+}
+
+.hero-image {
+    animation: none;
+}
+
+.hero-image img {
+    aspect-ratio: 4 / 5;
+    border-radius: 2px;
+    box-shadow: none;
+    transition: none;
+}
+
+.hero-image img:hover {
+    transform: none;
+    border-radius: 2px;
+    box-shadow: none;
+}
+
+/* ---- SECTION SPÉCIALITÉS (Nos Créations) ---- */
+#specialites {
+    background: var(--blanc);
+}
+
+.specialite-item {
+    background: var(--blanc);
+    border-radius: 0;
+    border: 1px solid var(--gris-sep);
+    box-shadow: none;
+    transition: none;
+}
+
+.specialite-item:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.specialite-image-container img {
+    transition: none;
+}
+
+.specialite-item:hover .specialite-image-container img {
+    transform: none;
+}
+
+.specialite-text-container h3 {
+    color: var(--noir);
+}
+
+.specialite-text-container p {
+    color: var(--gris-txt);
+}
+
+/* ---- TÉMOIGNAGES ---- */
+#temoignages {
+    background: var(--blanc);
+}
+
+.temoignage-card {
+    background: var(--blanc);
+    border-radius: 0;
+    border: 1px solid var(--gris-sep);
+    box-shadow: none;
+    transition: none;
+}
+
+.temoignage-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.temoignage-card::before {
+    display: none;
+}
+
+.temoignage-card .rating {
+    color: var(--rose);
+    position: static;
+}
+
+.temoignage-card .comment {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--noir);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    position: static;
+}
+
+.temoignage-card .author {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    color: var(--gris-txt);
+    font-size: 0.82rem;
+    position: static;
+}
+
+/* ---- FORMULAIRE DE COMMANDE ---- */
+.info-box {
+    background: var(--blanc);
+    border-left: 2px solid var(--gris-sep);
+    border-radius: 0;
+    color: var(--gris-txt);
+}
+
+.info-box a {
+    color: var(--rose);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.info-box.warning {
+    background: var(--blanc);
+    border-left: 2px solid #c53030;
+    border-radius: 0;
+}
+
+.progress-step {
+    color: var(--gris-txt);
+}
+
+.progress-step::before {
+    border-radius: 0;
+    background: var(--gris-sep);
+    color: var(--gris-txt);
+    border: 1px solid var(--gris-sep);
+    box-shadow: none;
+}
+
+.progress-step::after {
+    background: var(--gris-sep);
+    border-radius: 0;
+}
+
+.progress-step.active {
+    color: var(--noir);
+}
+
+.progress-step.active::before {
+    background: var(--rose);
+    color: var(--blanc);
+    border-color: var(--rose);
+    box-shadow: none;
+}
+
+.progress-step.active::after {
+    background: var(--rose);
+}
+
+.order-form {
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid var(--gris-sep);
+}
+
+.order-form fieldset {
+    border-radius: 0;
+    border: 1px solid var(--gris-sep);
+}
+
+.order-form fieldset.active {
+    border-color: var(--gris-sep);
+}
+
+.order-form legend {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+    border-radius: 0;
+    border: 1px solid var(--gris-sep);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--rose);
+    box-shadow: none;
+}
+
+#order-summary {
+    background: var(--blanc);
+    border: 1px solid var(--gris-sep);
+    border-radius: 0;
+}
+
+.total-price {
+    color: var(--rose);
+}
+
+/* ---- À PROPOS ---- */
+#about-hero {
+    background: var(--blanc);
+}
+
+#about-hero .subtitle {
+    color: var(--gris-txt);
+}
+
+.about-text p {
+    color: var(--gris-txt);
+}
+
+.team-member-card {
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid var(--gris-sep);
+}
+
+.team-member-card img {
+    border-radius: 2px;
+    border: none;
+    box-shadow: none;
+}
+
+.team-member-card h3 {
+    color: var(--noir);
+}
+
+.values-section li {
+    border-left: 2px solid var(--rose);
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--blanc);
+    color: var(--gris-txt);
+}
+
+/* ---- CONTACT ---- */
+.subtitle {
+    color: var(--gris-txt);
+}
+
+.contact-form-container,
+.contact-info-container {
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid var(--gris-sep);
+}
+
+.info-item h4 {
+    color: var(--rose);
+}
+
+#map-container {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.cta-button:disabled {
+    background: var(--gris-sep);
+    color: var(--gris-txt);
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+/* ---- SUIVI DE COMMANDE ---- */
+#tracking-hero {
+    background: var(--blanc);
+}
+
+.tracking-box {
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid var(--gris-sep);
+}
+
+#edit-order-form fieldset {
+    border-radius: 0;
+    border: 1px solid var(--gris-sep);
+}
+
+#edit-order-form legend {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+}
+
+#edit-order-form fieldset.summary {
+    background: var(--blanc);
+    border-color: var(--gris-sep);
+}
+
+.feedback-message p {
+    border-radius: 0;
+}
+
+.cta-button-danger {
+    background: #c53030;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.cta-button-danger:hover {
+    background: #a82828;
+    box-shadow: none;
+    opacity: 1;
+}

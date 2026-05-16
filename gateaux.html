@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nos Gâteaux - ZeBestCake</title>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/editorial.css">
 </head>
 <body>
 
@@ -19,7 +20,7 @@
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Accueil</a></li>
-                <li><a href="gateaux.html">Nos Gâteaux</a></li>
+                <li><a href="gateaux.html" class="active">Nos Gâteaux</a></li>
                 <li><a href="commander.html">Commander</a></li>
                 <li><a href="a-propos.html">À propos</a></li>
                 <li><a href="contact.html">Contact</a></li>
@@ -33,15 +34,13 @@
 
     <main>
         <section id="catalogue">
-            <h1 class="section-title">Tous Nos Gâteaux</h1>
+            <h1 class="section-title">Nos Gâteaux</h1>
             <div class="filters">
                 <button class="filter-btn active" data-filter="all">Tous</button>
                 <button class="filter-btn" data-filter="standard">Standards</button>
                 <button class="filter-btn" data-filter="personnalise">Personnalisés</button>
-                <!-- D'autres filtres peuvent être ajoutés ici -->
             </div>
             <div class="products-grid" id="products-grid">
-                <!-- Les produits seront chargés ici par JavaScript -->
                 <p>Chargement des gâteaux...</p>
             </div>
         </section>
@@ -49,19 +48,19 @@
 
     <footer>
         <div class="footer-content">
-             <div class="contact-info">
+            <div class="contact-info">
                 <p><strong>Téléphone :</strong> 05.61.23.45.67</p>
                 <p><strong>Email :</strong> zebestcake@gmail.com</p>
             </div>
             <div class="horaires">
                 <p><strong>Horaires :</strong></p>
-                <p>Mar-Sam : 9h-18h</p>
-                <p>Dim : 10h-16h</p>
+                <p>Mar–Sam : 9h–18h</p>
+                <p>Dim : 10h–16h</p>
                 <p>Fermé le lundi</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 ZeBestCake - Tous droits réservés - <a href="#mentions-legales">Mentions Légales</a></p>
+            <p>&copy; 2025 ZeBestCake — Tous droits réservés — <a href="#mentions-legales">Mentions Légales</a></p>
             <div class="social-links">
                 <a href="https://www.instagram.com/__zebest__cake?igsh=a2RwM3g2YzdkYXFy&utm_source=qr" target="_blank">Instagram</a>
             </div>
@@ -69,6 +68,6 @@
     </footer>
 
     <script type="module" src="js/gateaux.js"></script>
-    <script type="module" src="js/app.js"></script> <!-- Pour le menu burger partagé -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
