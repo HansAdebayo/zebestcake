@@ -24,15 +24,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- SCROLL HEADER ---
     let lastScrollTop = 0;
+    let ticking = false;
     const header = document.querySelector('header');
     window.addEventListener('scroll', () => {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop) {
-            header.style.top = '-100px';
-        } else {
-            header.style.top = '0';
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop) {
+                    header.style.transform = 'translateY(-100%)';
+                } else {
+                    header.style.transform = 'translateY(0)';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                ticking = false;
+            });
+            ticking = true;
         }
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
 
     // --- ANIMATIONS AU SCROLL ---

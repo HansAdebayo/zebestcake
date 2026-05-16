@@ -40,11 +40,17 @@ a {
 }
 
 /* ---- HEADER ---- */
+html {
+    scroll-behavior: auto;
+}
+
 header {
     background: var(--blanc);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     border-bottom: 1px solid var(--gris-sep);
+    transition: transform 0.3s ease;
+    will-change: transform;
 }
 
 .logo-text {
