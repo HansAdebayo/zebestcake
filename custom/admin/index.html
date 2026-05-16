@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Plans | ZeBest Custom</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">CUSTOM <span>ADMIN</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active">Plans</a></li>
+                    <li><a href="orders.html">Commandes</a></li>
+                    <li><a href="../../admin.html">Retour ZeBestCake</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="admin-header">
+            <h1>Gestion des Plans de Custom</h1>
+            <button id="add-plan-btn" class="btn">Nouveau Plan</button>
+        </div>
+
+        <div id="plans-list" class="plans-grid">
+            <!-- Chargé dynamiquement -->
+            <p class="loading">Chargement des plans...</p>
+        </div>
+    </main>
+
+    <!-- Modal Nouveau/Edition Plan -->
+    <div id="plan-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Nouveau Plan</h2>
+            <form id="plan-form">
+                <input type="hidden" id="plan-id">
+                
+                <div class="form-group">
+                    <label>Nom du produit</label>
+                    <input type="text" id="plan-title" required placeholder="ex: Porte-clés 3D Signature">
+                </div>
+
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <input type="text" id="plan-category" required placeholder="ex: Impression 3D">
+                </div>
+
+                <div class="form-group">
+                    <label>Prix de base (€)</label>
+                    <input type="number" id="plan-price" step="0.01" required placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="plan-description" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Image (URL)</label>
+                    <input type="text" id="plan-image" placeholder="URL de l'image">
+                    <small>Pour la MV, utilise une URL d'image existante ou une image du dossier assets.</small>
+                </div>
+
+                <div id="options-container">
+                    <label>Options de personnalisation</label>
+                    <div id="options-list">
+                        <!-- Options ajoutées ici -->
+                    </div>
+                    <button type="button" id="add-option-btn" class="btn btn-outline btn-sm">+ Ajouter une option</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Enregistrer le Plan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>

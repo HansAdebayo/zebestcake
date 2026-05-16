@@ -1,0 +1,149 @@
+/* custom/admin/css/admin.css */
+
+main.container {
+    padding-top: 150px; /* Force l'espace sous le header fixe */
+    display: block !important;
+    visibility: visible !important;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 20px;
+    background: #fff;
+    border: 2px solid var(--terracotta); /* Bordure pour bien le voir */
+}
+
+#add-plan-btn {
+    background-color: var(--terracotta) !important;
+    color: white !important;
+    padding: 15px 30px !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    cursor: pointer;
+    display: inline-block !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(200, 85, 61, 0.4);
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 60px;
+}
+
+.plan-card {
+    background: white;
+    border: 1px solid var(--ligne);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-card h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.plan-card .price {
+    color: var(--terracotta);
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.plan-card .actions {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+    padding-top: 20px;
+}
+
+.btn-sm {
+    padding: 8px 15px;
+    font-size: 12px;
+}
+
+.btn-danger {
+    background-color: #8b0000;
+}
+
+.btn-danger:hover {
+    background-color: #5a0000;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: var(--creme);
+    margin: 5% auto;
+    padding: 40px;
+    border: 1px solid var(--ligne);
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--pierre);
+}
+
+.form-actions {
+    margin-top: 30px;
+    text-align: right;
+}
+
+/* Options Builder */
+#options-list {
+    background: #fff;
+    border: 1px solid var(--ligne);
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.option-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.option-row input {
+    flex: 2;
+}
+
+.option-row select {
+    flex: 1;
+}
+
+.remove-option {
+    color: #8b0000;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--pierre);
+    grid-column: 1 / -1;
+}

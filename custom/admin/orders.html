@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Commandes | ZeBest Custom</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">CUSTOM <span>ADMIN</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Plans</a></li>
+                    <li><a href="orders.html" class="active">Commandes</a></li>
+                    <li><a href="../../admin.html">Retour ZeBestCake</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="admin-header">
+            <h1>Commandes Custom</h1>
+        </div>
+
+        <div class="orders-table-container" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--ligne);">
+                <thead>
+                    <tr style="background: var(--creme); text-align: left;">
+                        <th style="padding: 15px; border-bottom: 1px solid var(--ligne);">Date</th>
+                        <th style="padding: 15px; border-bottom: 1px solid var(--ligne);">Client</th>
+                        <th style="padding: 15px; border-bottom: 1px solid var(--ligne);">Produits</th>
+                        <th style="padding: 15px; border-bottom: 1px solid var(--ligne);">Source / Lien</th>
+                        <th style="padding: 15px; border-bottom: 1px solid var(--ligne);">Statut</th>
+                        <th style="padding: 15px; border-bottom: 1px solid var(--ligne);">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-list">
+                    <!-- Chargé dynamiquement -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script type="module" src="js/orders.js"></script>
+</body>
+</html>

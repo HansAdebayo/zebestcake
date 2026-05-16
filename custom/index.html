@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeBest Custom — Objets personnalisés artisanaux</title>
+    <meta name="description" content="Atelier créatif toulousain. Porte-clés 3D, cake toppers et objets personnalisés fabriqués à la main pour vos moments uniques.">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">ZeBest <em>Custom</em></a>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html" class="active">Collection</a></li>
+                <li><a href="atelier.html">L'Atelier</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a href="commander.html" class="nav-cart" id="nav-cart" aria-label="Voir mon panier">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 01-8 0"/>
+                    </svg>
+                    <span class="cart-count" id="cart-count" data-count="0">0</span>
+                </a>
+                <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="container">
+                <div class="hero-inner">
+                    <div class="hero-text">
+                        <p class="hero-eyebrow">Atelier créatif · Toulouse</p>
+                        <h1>Chaque pièce,<br>une histoire.</h1>
+                        <p>Objets personnalisés fabriqués à la main pour accompagner vos plus beaux moments.</p>
+                        <a href="#catalogue" class="btn">Découvrir la collection</a>
+                    </div>
+                    <div class="hero-image">
+                        <img src="../assets/images/gateau.jpg" alt="Objets personnalisés ZeBest Custom">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="catalogue">
+            <div class="container">
+                <div class="section-header">
+                    <h2>La collection</h2>
+                    <p>Des pièces uniques, configurées selon vos envies.</p>
+                </div>
+                <div class="plans-grid" id="plans-grid">
+                    <p class="text-pierre">Chargement de la collection…</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <span class="footer-logo">ZeBest <em>Custom</em></span>
+                <ul class="footer-links">
+                    <li><a href="atelier.html">L'Atelier</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="https://zebestcake.fr" target="_blank" rel="noopener">ZeBestCake</a></li>
+                </ul>
+                <p>&copy; 2026 ZeBest Custom</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/custom-home.js"></script>
+
+</body>
+</html>
