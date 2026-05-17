@@ -5,44 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personnalisation — ZeBest Custom</title>
     <meta name="description" content="Configurez votre objet personnalisé sur-mesure.">
-    <link rel="stylesheet" href="css/custom.css?v=6">
+    <link rel="stylesheet" href="css/custom.css?v=7">
     <style>
-        /* CSS critique inline — appliqué même si custom.css est mis en cache */
-        @media (max-width: 1023px) {
+        /*
+         * CSS du plan inline — priorité sur custom.css même mis en cache.
+         * Règle clé : position:static sur .plan-gallery SANS media query
+         * écrase tout sticky venant d'une version cachée du CSS externe.
+         */
+
+        /* Galerie : jamais sticky par défaut (mobile portrait + paysage) */
+        .plan-gallery {
+            position: static;
+        }
+
+        /* Image : hauteur fixe 220px, fiable sur tous les navigateurs mobiles */
+        .plan-main-image {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: #E0D6C8;
+        }
+
+        .plan-main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Miniatures : cachées par défaut (mobile) */
+        .plan-thumbs {
+            display: none;
+        }
+
+        /* Conteneur principal : flex colonne sur mobile */
+        .plan-detail {
+            display: flex;
+            flex-direction: column;
+            padding-top: 3.6rem;
+            gap: 0;
+        }
+
+        /* Configurateur */
+        .plan-configurator {
+            padding: 1.75rem 1.25rem 5.5rem;
+        }
+
+        /* Bouton sticky en bas de l'écran sur mobile */
+        .plan-submit-btn {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 50;
+            border-radius: 0;
+            padding: 1.1rem;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Desktop ≥ 1024px : grille 2 colonnes, galerie sticky à gauche.
+           1024px (et non 768px) pour que les iPhones en paysage
+           (844–932px) gardent le layout mobile sans sticky. */
+        @media (min-width: 1024px) {
             .plan-detail {
-                display: flex;
-                flex-direction: column;
-                padding-top: 3.6rem;
-                gap: 0;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5rem;
+                padding: 8rem 0 6rem;
+                align-items: start;
             }
+
+            .plan-gallery {
+                position: sticky;
+                top: 5rem;
+                align-self: start;
+            }
+
             .plan-main-image {
-                width: 100%;
-                height: 220px;
-                overflow: hidden;
+                height: auto;
+                aspect-ratio: 4 / 5;
             }
-            .plan-main-image img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-            }
+
             .plan-thumbs {
-                display: none;
+                display: flex;
+                gap: 0.5rem;
+                margin-top: 0.75rem;
+                flex-wrap: wrap;
             }
+
             .plan-configurator {
-                padding: 1.75rem 1.25rem 5.5rem;
+                padding: 0;
             }
+
             .plan-submit-btn {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
+                position: static;
+                display: block;
                 width: 100%;
-                z-index: 50;
+                margin-top: 1.5rem;
                 border-radius: 0;
-                padding: 1.1rem;
-                text-align: center;
-                margin: 0;
+                padding: 0.85rem 1.75rem;
             }
         }
     </style>

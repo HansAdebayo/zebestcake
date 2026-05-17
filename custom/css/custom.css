@@ -476,48 +476,10 @@ header {
     margin-top: 0.4rem;
 }
 
-/* ---- PAGE PLAN (configurateur) ---- */
-
-/* Conteneur principal : flex colonne sur mobile */
-.plan-detail {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding-top: 3.6rem; /* hauteur header fixe */
-}
-
-/* --- Galerie --- */
-
-/* Mobile : image compact strip en haut */
-.plan-gallery {
-    position: static;
-    flex-shrink: 0;
-}
-
-.plan-main-image {
-    width: 100%;
-    height: 220px;      /* hauteur fixe mobile, fiable sur tous navigateurs */
-    overflow: hidden;
-    background: var(--ligne);
-}
-
-.plan-main-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-/* Miniatures : masquées sur mobile */
-.plan-thumbs {
-    display: none;
-}
-
-/* --- Configurateur --- */
-
-.plan-configurator {
-    padding: 1.75rem 1.25rem 5.5rem; /* 5.5rem bas = espace bouton sticky */
-}
+/* ---- PAGE PLAN (configurateur) ----
+   Layout et responsivité gérés en inline CSS dans plan.html
+   pour garantir l'application même en cas de cache navigateur.
+   Ce bloc gère uniquement la typographie et les éléments de contenu. */
 
 .plan-configurator .plan-category {
     margin-bottom: 0.5rem;
@@ -546,67 +508,7 @@ header {
     border-bottom: 1px solid var(--ligne);
 }
 
-/* Bouton sticky bas d'écran sur mobile */
-.plan-submit-btn {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 50;
-    border-radius: 0;
-    padding: 1.1rem;
-    text-align: center;
-}
-
-/* --- Desktop ≥ 1024px : grille 2 colonnes, galerie sticky à gauche ---
-   1024px et non 768px pour éviter que la galerie sticky se déclenche
-   sur les iPhones en mode paysage (844-932px de large). */
-
-@media (min-width: 1024px) {
-    .plan-detail {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5rem;
-        padding: 8rem 0 6rem;
-        align-items: start;
-    }
-
-    .plan-gallery {
-        position: sticky;
-        top: 5rem;
-        align-self: start;
-        /* Galerie est en 1er dans le HTML → colonne gauche naturellement */
-    }
-
-    .plan-main-image {
-        height: auto;
-        aspect-ratio: 4 / 5;
-    }
-
-    .plan-thumbs {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.75rem;
-        flex-wrap: wrap;
-    }
-
-    .plan-configurator {
-        padding: 0;
-    }
-
-    /* Bouton normal (non sticky) sur desktop */
-    .plan-submit-btn {
-        position: static;
-        margin-top: 1.5rem;
-        width: 100%;
-        border-radius: 0;
-        padding: 0.85rem 1.75rem;
-    }
-}
-
-/* --- Miniatures (desktop uniquement) --- */
-
+/* Miniatures galerie (desktop) */
 .plan-thumb {
     width: 56px;
     height: 70px;
