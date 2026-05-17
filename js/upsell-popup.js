@@ -7,8 +7,7 @@ import {
     collection, query, where, limit, getDocs
 } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-// En dev/subfolder : chemin relatif. Remplacer par l'URL absolue au déploiement séparé.
-const CUSTOM_DOMAIN = '/custom';
+const CUSTOM_DOMAIN = 'https://zebestcustom.netlify.app';
 const SEEN_KEY    = 'zebest_upsell_last_order'; // stocke l'ID de la dernière commande vue
 const VARIANT_KEY = 'zebest_upsell_variant';
 
@@ -43,9 +42,13 @@ export async function showUpsellModal(cakeOrderId) {
         ? 'Faites durer le plaisir&hellip;'
         : 'Un souvenir unique pour vos invités';
 
+    const planImg = plan
+        ? (Array.isArray(plan.images) && plan.images[0]) ? plan.images[0] : (plan.image || '')
+        : '';
+
     const planHtml = plan
         ? `<div class="upsell-plan">
-            ${plan.image ? `<img src="${plan.image}" alt="${plan.title}" class="upsell-plan-img">` : ''}
+            ${planImg ? `<img src="${planImg}" alt="${plan.title}" class="upsell-plan-img">` : ''}
             <div>
                 <p class="upsell-plan-name">${plan.title}</p>
                 ${typeof plan.basePrice === 'number'
@@ -70,11 +73,12 @@ export async function showUpsellModal(cakeOrderId) {
 
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
-    localStorage.setItem(SEEN_KEY, cakeOrderId);
 
     requestAnimationFrame(() => {
         overlay.classList.add('visible');
         document.getElementById('upsell-sheet').classList.add('visible');
+        // Marquer comme vu seulement une fois affiché
+        localStorage.setItem(SEEN_KEY, cakeOrderId);
     });
 
     function close() {
