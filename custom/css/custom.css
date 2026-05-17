@@ -477,29 +477,27 @@ header {
 }
 
 /* ---- PAGE PLAN (configurateur) ---- */
+/* Mobile : flex column-reverse — configurateur en haut, galerie en bas */
 .plan-detail {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column-reverse;
     gap: 1.5rem;
     padding: 5.5rem 0 4rem;
 }
 
 @media (min-width: 768px) {
+    /* Desktop : grille 2 colonnes — galerie à gauche sticky, form à droite */
     .plan-detail {
+        display: grid;
         grid-template-columns: 1fr 1fr;
+        flex-direction: unset;
         gap: 5rem;
         padding: 8rem 0 6rem;
     }
 }
 
-/* Mobile : galerie sous le configurateur */
 .plan-gallery {
     position: static;
-    order: 2;
-}
-
-.plan-configurator {
-    order: 1;
 }
 
 @media (min-width: 768px) {
@@ -507,11 +505,6 @@ header {
         position: sticky;
         top: 5rem;
         align-self: start;
-        order: 0;
-    }
-
-    .plan-configurator {
-        order: 0;
     }
 }
 
