@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personnalisation — ZeBest Custom</title>
     <meta name="description" content="Configurez votre objet personnalisé sur-mesure.">
-    <link rel="stylesheet" href="css/custom.css?v=8">
+    <link rel="stylesheet" href="css/custom.css?v=9">
     <style>
         /* ID selectors — priorité absolue sur tout CSS externe */
 
@@ -14,6 +14,7 @@
             max-height: 220px;     /* mobile : image compacte */
             object-fit: cover;
             display: block;
+            position: static !important; /* force : annule tout sticky caché */
         }
 
         #plan-detail {
