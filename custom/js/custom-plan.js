@@ -90,10 +90,22 @@ function renderPlan(plan, container) {
         ? plan.images
         : (plan.image ? [plan.image] : ['../assets/images/gateau.jpg']);
 
-    container.innerHTML = `
-        <img id="cfg-photo" src="${images[0]}" alt="${plan.title}">
+    const isMobile = window.innerWidth < 1024;
 
-        <div id="cfg-form-wrap">
+    // Styles appliqués inline pour être indépendants du cache CSS
+    container.style.cssText = isMobile
+        ? 'display:block;padding-top:3.6rem;'
+        : 'display:grid;grid-template-columns:1fr 1fr;gap:5rem;padding:8rem 2rem 6rem;align-items:start;';
+
+    container.innerHTML = `
+        <img id="cfg-photo"
+             src="${images[0]}"
+             alt="${plan.title}"
+             style="${isMobile
+                 ? 'width:100%;height:220px;object-fit:cover;object-position:center;display:block;'
+                 : 'width:100%;aspect-ratio:4/5;object-fit:cover;display:block;position:sticky;top:5rem;align-self:start;'}">
+
+        <div id="cfg-form-wrap" style="padding:1.5rem 1.25rem;">
             <p class="plan-category">${plan.category || ''}</p>
             <h1>${plan.title}</h1>
             <p class="plan-price-display" id="price-display">
