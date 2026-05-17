@@ -101,13 +101,6 @@ function renderPlan(plan, container) {
         : '';
 
     container.innerHTML = `
-        <div class="plan-gallery">
-            <div class="plan-main-image">
-                <img id="main-img" src="${images[0]}" alt="${plan.title}">
-            </div>
-            ${thumbsHtml}
-        </div>
-
         <div class="plan-configurator">
             <p class="plan-category">${plan.category || ''}</p>
             <h1>${plan.title}</h1>
@@ -131,6 +124,13 @@ function renderPlan(plan, container) {
                     Ajouter au panier
                 </button>
             </form>
+        </div>
+
+        <div class="plan-gallery">
+            <div class="plan-main-image">
+                <img id="main-img" src="${images[0]}" alt="${plan.title}">
+            </div>
+            ${thumbsHtml}
         </div>
     `;
 
