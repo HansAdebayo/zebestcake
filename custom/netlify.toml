@@ -1,3 +1,14 @@
 [build]
   functions = "netlify/functions"
   publish   = "."
+
+# HTML et JS : toujours servis frais (jamais mis en cache)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/js/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
