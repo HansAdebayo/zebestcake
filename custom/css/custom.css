@@ -480,8 +480,8 @@ header {
 .plan-detail {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 3rem;
-    padding: 6rem 0 5rem;
+    gap: 1.5rem;
+    padding: 5.5rem 0 4rem;
 }
 
 @media (min-width: 768px) {
@@ -492,18 +492,31 @@ header {
     }
 }
 
+/* Mobile : galerie compacte horizontale */
 .plan-gallery {
-    position: sticky;
-    top: 5rem;
-    align-self: start;
+    position: static;
+}
+
+@media (min-width: 768px) {
+    .plan-gallery {
+        position: sticky;
+        top: 5rem;
+        align-self: start;
+    }
 }
 
 .plan-main-image {
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
     background: var(--ligne);
     border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+    .plan-main-image {
+        aspect-ratio: 4 / 5;
+    }
 }
 
 .plan-main-image img {
