@@ -2,7 +2,7 @@
 // Gestion des commandes custom : liste temps réel, filtres, détail, statut.
 // Protégé par auth Firebase.
 
-import { db, auth } from '../js/custom-firebase.js';
+import { db, auth } from '../../js/custom-firebase.js';
 import {
     collection, query, orderBy, onSnapshot,
     doc, updateDoc, deleteDoc

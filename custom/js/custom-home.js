@@ -14,27 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // ---- NAVIGATION ----
 
 function initNav() {
-    const burger  = document.getElementById('burger');
-    const navLinks = document.getElementById('nav-links');
-    const header  = document.querySelector('header');
+    const header = document.querySelector('header');
+    if (!header) return;
 
-    // Burger mobile
-    if (burger && navLinks) {
-        burger.addEventListener('click', () => {
-            const isOpen = navLinks.classList.toggle('open');
-            burger.classList.toggle('active', isOpen);
-            burger.setAttribute('aria-expanded', isOpen);
-        });
-
-        // Ferme le menu au clic sur un lien
-        navLinks.addEventListener('click', () => {
-            navLinks.classList.remove('open');
-            burger.classList.remove('active');
-            burger.setAttribute('aria-expanded', false);
-        });
-    }
-
-    // Masquage du header au scroll (GPU via transform)
     let lastScroll = 0;
     let ticking    = false;
 
@@ -81,6 +63,9 @@ function captureUpsellContext() {
 
 // ---- CATALOGUE ----
 
+let allPlans     = [];
+let activeFilter = 'all';
+
 async function loadCatalogue() {
     const grid = document.getElementById('plans-grid');
     if (!grid) return;
@@ -94,22 +79,75 @@ async function loadCatalogue() {
             return;
         }
 
-        grid.innerHTML = '';
+        allPlans = [];
         qs.forEach(docSnap => {
-            const plan = { id: docSnap.id, ...docSnap.data() };
-            grid.appendChild(renderPlanCard(plan));
+            allPlans.push({ id: docSnap.id, ...docSnap.data() });
         });
+
+        buildFilters();
+        renderCatalogue();
+
     } catch (err) {
         console.error('Erreur chargement catalogue :', err);
         grid.innerHTML = '<p class="text-pierre">Erreur de chargement. Veuillez réessayer.</p>';
     }
 }
 
+function buildFilters() {
+    const filtersEl = document.getElementById('catalogue-filters');
+    if (!filtersEl) return;
+
+    // Collecter les catégories uniques
+    const cats = [...new Set(allPlans.map(p => p.category).filter(Boolean))];
+
+    // N'afficher les filtres que s'il y a plusieurs catégories
+    if (cats.length < 2) return;
+
+    filtersEl.style.display = 'flex';
+
+    // Vider et reconstruire (garder le bouton "Tout")
+    filtersEl.innerHTML = '<button class="cat-filter active" data-cat="all">Tout</button>';
+    cats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className    = 'cat-filter';
+        btn.dataset.cat  = cat;
+        btn.textContent  = cat;
+        filtersEl.appendChild(btn);
+    });
+
+    filtersEl.addEventListener('click', e => {
+        const btn = e.target.closest('.cat-filter');
+        if (!btn) return;
+        filtersEl.querySelectorAll('.cat-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.cat;
+        renderCatalogue();
+    });
+}
+
+function renderCatalogue() {
+    const grid = document.getElementById('plans-grid');
+    grid.innerHTML = '';
+
+    const filtered = activeFilter === 'all'
+        ? allPlans
+        : allPlans.filter(p => p.category === activeFilter);
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<p class="text-pierre">Aucun produit dans cette catégorie.</p>';
+        return;
+    }
+
+    filtered.forEach(plan => grid.appendChild(renderPlanCard(plan)));
+}
+
 function renderPlanCard(plan) {
     const article  = document.createElement('article');
     article.className = 'plan-card';
 
-    const imageUrl = plan.image || '../assets/images/gateau.jpg';
+    const imageUrl = (Array.isArray(plan.images) && plan.images[0])
+        ? plan.images[0]
+        : (plan.image || '../assets/images/gateau.jpg');
     const price    = typeof plan.basePrice === 'number'
         ? `À partir de ${plan.basePrice.toFixed(2)} €`
         : '';

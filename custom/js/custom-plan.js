@@ -24,22 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // ---- NAVIGATION ----
 
 function initNav() {
-    const burger   = document.getElementById('burger');
-    const navLinks = document.getElementById('nav-links');
-    const header   = document.querySelector('header');
-
-    if (burger && navLinks) {
-        burger.addEventListener('click', () => {
-            const isOpen = navLinks.classList.toggle('open');
-            burger.classList.toggle('active', isOpen);
-            burger.setAttribute('aria-expanded', isOpen);
-        });
-        navLinks.addEventListener('click', () => {
-            navLinks.classList.remove('open');
-            burger.classList.remove('active');
-            burger.setAttribute('aria-expanded', false);
-        });
-    }
+    const header = document.querySelector('header');
+    if (!header) return;
 
     let lastScroll = 0;
     let ticking    = false;
@@ -99,13 +85,27 @@ async function loadPlan(id) {
 // ---- RENDU DE LA PAGE ----
 
 function renderPlan(plan, container) {
-    const imageUrl = plan.image || '../assets/images/gateau.jpg';
+    // Compatibilité images[] et ancien champ image
+    const images = Array.isArray(plan.images) && plan.images.length > 0
+        ? plan.images
+        : (plan.image ? [plan.image] : ['../assets/images/gateau.jpg']);
+
+    const thumbsHtml = images.length > 1
+        ? `<div class="plan-thumbs">
+            ${images.map((url, i) => `
+                <button type="button" class="plan-thumb ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Image ${i + 1}">
+                    <img src="${url}" alt="">
+                </button>
+            `).join('')}
+           </div>`
+        : '';
 
     container.innerHTML = `
         <div class="plan-gallery">
             <div class="plan-main-image">
-                <img src="${imageUrl}" alt="${plan.title}">
+                <img id="main-img" src="${images[0]}" alt="${plan.title}">
             </div>
+            ${thumbsHtml}
         </div>
 
         <div class="plan-configurator">
@@ -136,6 +136,15 @@ function renderPlan(plan, container) {
 
     renderOptions(plan);
 
+    // Galerie — clic sur miniature
+    container.querySelectorAll('.plan-thumb').forEach(btn => {
+        btn.addEventListener('click', () => {
+            container.querySelectorAll('.plan-thumb').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('main-img').src = images[parseInt(btn.dataset.index, 10)];
+        });
+    });
+
     document.getElementById('configurator-form').addEventListener('submit', (e) => {
         e.preventDefault();
         addToCart(plan);
@@ -159,31 +168,21 @@ function renderOptions(plan) {
 
         let field;
 
-        if (opt.type === 'text') {
-            field = document.createElement('input');
-            field.type = 'text';
-            field.id   = `opt-${index}`;
-            field.name = `opt-${index}`;
-            field.dataset.optId = opt.id;
-            field.placeholder   = opt.placeholder || '';
-            if (opt.maxLength) field.maxLength = opt.maxLength;
-            if (opt.required)  field.required  = true;
-
-        } else if (opt.type === 'select' && opt.choices) {
+        if (opt.type === 'select') {
             field = document.createElement('select');
             field.id   = `opt-${index}`;
             field.name = `opt-${index}`;
             field.dataset.optId = opt.id;
             if (opt.required) field.required = true;
 
-            const placeholder = document.createElement('option');
-            placeholder.value    = '';
-            placeholder.textContent = `Choisir…`;
-            placeholder.disabled = true;
-            placeholder.selected = true;
-            field.appendChild(placeholder);
+            const placeholderOpt = document.createElement('option');
+            placeholderOpt.value       = '';
+            placeholderOpt.textContent = 'Choisir…';
+            placeholderOpt.disabled    = true;
+            placeholderOpt.selected    = true;
+            field.appendChild(placeholderOpt);
 
-            opt.choices.forEach(choice => {
+            (opt.choices || []).forEach(choice => {
                 const option = document.createElement('option');
                 option.value = choice.value;
                 option.textContent = choice.label +
@@ -192,19 +191,27 @@ function renderOptions(plan) {
                 field.appendChild(option);
             });
 
-            // Mise à jour du prix en temps réel
             field.addEventListener('change', () => updatePriceDisplay(plan));
+
+        } else {
+            // type 'text' par défaut
+            field = document.createElement('input');
+            field.type = 'text';
+            field.id   = `opt-${index}`;
+            field.name = `opt-${index}`;
+            field.dataset.optId = opt.id;
+            field.placeholder   = opt.placeholder || '';
+            if (opt.maxLength) field.maxLength = opt.maxLength;
+            if (opt.required)  field.required  = true;
         }
+
+        group.appendChild(field);
 
         if (opt.hint) {
             const hint = document.createElement('p');
             hint.className   = 'form-hint';
             hint.textContent = opt.hint;
-            group.appendChild(label);
-            group.appendChild(field);
             group.appendChild(hint);
-        } else {
-            group.appendChild(field);
         }
 
         container.appendChild(group);
@@ -267,7 +274,7 @@ function addToCart(plan) {
         selectedOptions: selectedOptions,
         notes:           document.getElementById('custom-notes').value.trim(),
         unitPrice:       computeUnitPrice(plan),
-        image:           plan.image || '../assets/images/gateau.jpg',
+        image:           images[0] || '../assets/images/gateau.jpg',
         addedAt:         Date.now()
     };
 

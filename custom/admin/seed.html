@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Seed — ZeBest Custom</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: 4rem auto; padding: 1rem; }
+        h1 { margin-bottom: 0.5rem; }
+        p { color: #555; margin-bottom: 1rem; }
+        hr { margin: 2rem 0; border: none; border-top: 1px solid #ddd; }
+        h2 { font-size: 1rem; margin-bottom: 0.5rem; }
+        textarea { width: 100%; height: 220px; font-family: monospace; font-size: 0.82rem; border: 1px solid #ccc; padding: 1rem; resize: vertical; box-sizing: border-box; }
+        input[type="file"] { display: block; margin-bottom: 1rem; }
+        button { padding: 0.85rem 2rem; font-size: 1rem; cursor: pointer; background: #C8553D; color: #fff; border: none; margin-top: 0.5rem; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #log { margin-top: 1.5rem; font-family: monospace; font-size: 0.82rem; }
+        .ok  { color: green; }
+        .err { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Import Plans — ZeBest Custom</h1>
+    <p>Tu dois être connecté en admin avant d'importer.</p>
+
+    <h2>Option 1 — Fichier JSON</h2>
+    <p>Sélectionne le fichier <code>plans-seed.json</code> depuis le dossier <code>custom/admin/</code>.</p>
+    <input type="file" id="file-input" accept=".json">
+    <button id="import-file-btn">Importer le fichier</button>
+
+    <hr>
+
+    <h2>Option 2 — Coller du JSON</h2>
+    <textarea id="json-input" placeholder='[{"title": "...", ...}]'></textarea>
+    <button id="import-text-btn">Importer le JSON</button>
+
+    <div id="log"></div>
+
+<script type="module">
+import { db } from '../js/custom-firebase.js';
+import { collection, addDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+const log = document.getElementById('log');
+
+function print(msg, cls = '') {
+    const line = document.createElement('p');
+    line.textContent = msg;
+    if (cls) line.className = cls;
+    log.appendChild(line);
+}
+
+async function importPlans(plans, btn) {
+    log.innerHTML = '';
+    if (!Array.isArray(plans)) plans = [plans];
+    btn.disabled = true;
+    print(`${plans.length} plan(s) a importer...`);
+    const now = Timestamp.now();
+    for (const plan of plans) {
+        try {
+            await addDoc(collection(db, 'custom_plans'), { ...plan, isActive: plan.isActive !== false, createdAt: now, updatedAt: now });
+            print(`OK : "${plan.title}" ajoute`, 'ok');
+        } catch (err) {
+            print(`ERREUR pour "${plan.title}" : ${err.message}`, 'err');
+        }
+    }
+    print('Import termine.', 'ok');
+    btn.disabled = false;
+}
+
+// Option 1 — fichier
+document.getElementById('import-file-btn').addEventListener('click', () => {
+    const file = document.getElementById('file-input').files[0];
+    if (!file) { alert('Selectionne un fichier JSON.'); return; }
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const plans = JSON.parse(e.target.result);
+            await importPlans(plans, document.getElementById('import-file-btn'));
+        } catch (err) {
+            log.innerHTML = '';
+            print('JSON invalide : ' + err.message, 'err');
+        }
+    };
+    reader.readAsText(file);
+});
+
+// Option 2 — textarea
+document.getElementById('import-text-btn').addEventListener('click', async () => {
+    const raw = document.getElementById('json-input').value.trim();
+    if (!raw) { alert('Colle du JSON dans la zone de texte.'); return; }
+    try {
+        const plans = JSON.parse(raw);
+        await importPlans(plans, document.getElementById('import-text-btn'));
+    } catch (err) {
+        log.innerHTML = '';
+        print('JSON invalide : ' + err.message, 'err');
+    }
+});
+</script>
+</body>
+</html>

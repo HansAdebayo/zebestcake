@@ -2,7 +2,7 @@
 // Gestion des plans de custom : liste, création, édition, archivage.
 // Protégé par auth Firebase.
 
-import { db, auth } from '../js/custom-firebase.js';
+import { db, auth } from '../../js/custom-firebase.js';
 import {
     collection, query, orderBy, onSnapshot,
     doc, addDoc, updateDoc, deleteDoc, Timestamp
@@ -19,6 +19,56 @@ onAuthStateChanged(auth, user => {
     }
 });
 
+// ---- CLOUDINARY ----
+const CLOUDINARY_CLOUD  = 'do5yllup7';
+const CLOUDINARY_PRESET = 'Zebest_custom_upload';
+
+let cloudinaryWidget = null;
+let currentImages    = []; // tableau d'URLs
+
+function initCloudinaryWidget() {
+    cloudinaryWidget = cloudinary.createUploadWidget(
+        {
+            cloudName:    CLOUDINARY_CLOUD,
+            uploadPreset: CLOUDINARY_PRESET,
+            sources:      ['local', 'url', 'camera'],
+            multiple:     true,
+            cropping:     true,
+            croppingAspectRatio: 0.8,
+            language:     'fr'
+        },
+        (error, result) => {
+            if (error) { console.error('Cloudinary error:', error); return; }
+            if (result.event === 'success') {
+                currentImages.push(result.info.secure_url);
+                renderThumbs();
+            }
+        }
+    );
+}
+
+function renderThumbs() {
+    const container = document.getElementById('images-thumbs');
+    container.innerHTML = '';
+    currentImages.forEach((url, index) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'image-thumb';
+        if (index === 0) wrap.classList.add('image-thumb-main');
+        wrap.innerHTML = `
+            <img src="${url}" alt="Image ${index + 1}">
+            ${index === 0 ? '<span class="thumb-label">Principale</span>' : ''}
+            <button type="button" class="thumb-remove" data-index="${index}" aria-label="Supprimer">&times;</button>
+        `;
+        container.appendChild(wrap);
+    });
+    container.querySelectorAll('.thumb-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentImages.splice(parseInt(btn.dataset.index, 10), 1);
+            renderThumbs();
+        });
+    });
+}
+
 // ---- INIT ----
 function init() {
     document.getElementById('logout-btn').addEventListener('click', () => {
@@ -31,10 +81,15 @@ function init() {
     document.getElementById('add-option-btn').addEventListener('click', () => addOptionRow());
     document.getElementById('plan-form').addEventListener('submit', handleSubmit);
 
-    // Fermer la modal en cliquant en dehors
     document.getElementById('plan-modal').addEventListener('click', e => {
         if (e.target === e.currentTarget) closeModal();
     });
+
+    document.getElementById('cloudinary-upload-btn').addEventListener('click', () => {
+        if (!cloudinaryWidget) initCloudinaryWidget();
+        cloudinaryWidget.open();
+    });
+
 
     loadPlans();
 }
@@ -106,15 +161,26 @@ function openModal(plan = null) {
     feedback.className = 'feedback hidden';
     document.getElementById('plan-id').value = '';
 
+    // Reset images
+    currentImages = [];
+    renderThumbs();
+
     if (plan) {
         title.textContent = 'Modifier le plan';
-        document.getElementById('plan-id').value        = plan.id;
-        document.getElementById('plan-title').value     = plan.title || '';
-        document.getElementById('plan-category').value  = plan.category || '';
-        document.getElementById('plan-price').value     = plan.basePrice ?? '';
-        document.getElementById('plan-description').value = plan.description || '';
-        document.getElementById('plan-image').value     = plan.image || '';
-        document.getElementById('plan-status').value    = String(plan.isActive !== false);
+        document.getElementById('plan-id').value           = plan.id;
+        document.getElementById('plan-title').value        = plan.title || '';
+        document.getElementById('plan-category').value     = plan.category || '';
+        document.getElementById('plan-price').value        = plan.basePrice ?? '';
+        document.getElementById('plan-description').value  = plan.description || '';
+        document.getElementById('plan-status').value       = String(plan.isActive !== false);
+
+        // Charger les images existantes (supporte ancien champ `image` et nouveau `images`)
+        if (Array.isArray(plan.images) && plan.images.length > 0) {
+            currentImages = [...plan.images];
+        } else if (plan.image) {
+            currentImages = [plan.image];
+        }
+        renderThumbs();
 
         (plan.options || []).forEach(opt => addOptionRow(opt));
     } else {
@@ -288,7 +354,7 @@ async function handleSubmit(e) {
         category:    document.getElementById('plan-category').value.trim(),
         basePrice:   parseFloat(document.getElementById('plan-price').value),
         description: document.getElementById('plan-description').value.trim(),
-        image:       document.getElementById('plan-image').value.trim(),
+        images:      currentImages,
         options:     collectOptions(),
         isActive,
         updatedAt:   Timestamp.now()

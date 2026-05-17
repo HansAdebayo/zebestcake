@@ -6,6 +6,7 @@
     <title>Plans — Admin ZeBest Custom</title>
     <link rel="stylesheet" href="../css/custom.css">
     <link rel="stylesheet" href="css/admin.css">
+    <script src="https://upload-widget.cloudinary.com/global/all.js" defer></script>
 </head>
 <body>
 
@@ -76,9 +77,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="plan-image">URL de l'image principale</label>
-                    <input type="url" id="plan-image" placeholder="https://…">
-                    <p class="form-hint">Upload Firebase Storage non disponible dans cette version.</p>
+                    <label>Images du produit</label>
+                    <div class="image-upload-zone">
+                        <div id="images-thumbs" class="images-thumbs"></div>
+                        <button type="button" id="cloudinary-upload-btn" class="btn btn-outline btn-sm">
+                            + Ajouter des images
+                        </button>
+                        <p class="form-hint">La première image est l'image principale. Cliquez × pour supprimer.</p>
+                    </div>
                 </div>
 
                 <!-- Options de personnalisation -->

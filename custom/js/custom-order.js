@@ -36,24 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // ---- NAVIGATION ----
 
 function initNav() {
-    const burger   = document.getElementById('burger');
-    const navLinks = document.getElementById('nav-links');
-    const header   = document.querySelector('header');
-
-    if (burger && navLinks) {
-        burger.addEventListener('click', () => {
-            const isOpen = navLinks.classList.toggle('open');
-            burger.classList.toggle('active', isOpen);
-            burger.setAttribute('aria-expanded', isOpen);
-        });
-        navLinks.addEventListener('click', () => {
-            navLinks.classList.remove('open');
-            burger.classList.remove('active');
-            burger.setAttribute('aria-expanded', false);
-        });
-    }
-
+    const header = document.querySelector('header');
     if (!header) return;
+
     let lastScroll = 0;
     let ticking    = false;
     window.addEventListener('scroll', () => {
@@ -236,12 +221,30 @@ async function handleCheckout(e) {
     try {
         const ref = await addDoc(collection(db, 'custom_orders'), orderData);
 
+        // Notification Discord
+        try {
+            await fetch('/.netlify/functions/send-custom-notification', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderId:      ref.id,
+                    customerName: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
+                    phone:        orderData.customer.phone,
+                    email:        orderData.customer.email,
+                    items:        orderData.items,
+                    totalPrice:   orderData.totalPrice.toFixed(2),
+                    source:       orderData.source
+                })
+            });
+        } catch (notifErr) {
+            console.warn('Notification Discord non envoyée :', notifErr);
+        }
+
         // Nettoyage
         localStorage.removeItem(CART_KEY);
         sessionStorage.removeItem('custom_source');
         sessionStorage.removeItem('custom_cake_id');
 
-        // On transmet l'ID à la page de confirmation via sessionStorage
         sessionStorage.setItem('custom_last_order_id', ref.id);
 
         window.location.href = 'confirmation.html';
