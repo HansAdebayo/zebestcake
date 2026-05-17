@@ -507,7 +507,7 @@ header {
 
 .plan-main-image {
     width: 100%;
-    aspect-ratio: 3 / 2;
+    height: 220px;
     overflow: hidden;
     background: var(--ligne);
     border-radius: 2px;
@@ -515,6 +515,7 @@ header {
 
 @media (min-width: 768px) {
     .plan-main-image {
+        height: auto;
         aspect-ratio: 4 / 5;
     }
 }
