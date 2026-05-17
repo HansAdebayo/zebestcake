@@ -10,8 +10,8 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'Champs manquants' }) };
     }
 
-    const webhook1 = "https://discord.com/api/webhooks/1487754588105871360/3tFnPQ0GzztswFSGLP8n6eigPiOJ6ul6kZjH0db_zWmRWcuoXVJTG4x4Olpd8QCCwIAz";
-    const webhook2 = "https://discord.com/api/webhooks/1487756721869820116/VXy9genLunKDjq4Hf5pyaXb0xh5910N0IvAW-AVa-GWsfv4fgCaFPMW7yRzsz1fA3mot";
+    const webhook1 = process.env.DISCORD_WEBHOOK_1;
+    const webhook2 = process.env.DISCORD_WEBHOOK_2;
 
     // Formatage des articles
     const itemsText = (data.items || []).map(item => {
