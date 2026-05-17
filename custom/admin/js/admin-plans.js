@@ -5,7 +5,7 @@
 import { db, auth } from '../../js/custom-firebase.js';
 import {
     collection, query, orderBy, onSnapshot,
-    doc, addDoc, updateDoc, deleteDoc, Timestamp
+    doc, addDoc, updateDoc, deleteDoc, Timestamp, getDoc, setDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 import { onAuthStateChanged, signOut }
     from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
@@ -69,11 +69,47 @@ function renderThumbs() {
     });
 }
 
+// ---- UPSELL TOGGLE ----
+const UPSELL_DOC = doc(db, 'settings', 'upsell');
+
+async function initUpsellToggle() {
+    const btn = document.getElementById('upsell-toggle-btn');
+    if (!btn) return;
+
+    try {
+        const snap = await getDoc(UPSELL_DOC);
+        const enabled = snap.exists() ? snap.data().enabled !== false : true;
+        updateToggleBtn(btn, enabled);
+    } catch (err) {
+        btn.textContent = 'Erreur';
+    }
+
+    btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        try {
+            const snap = await getDoc(UPSELL_DOC);
+            const current = snap.exists() ? snap.data().enabled !== false : true;
+            await setDoc(UPSELL_DOC, { enabled: !current });
+            updateToggleBtn(btn, !current);
+        } catch (err) {
+            console.error('Toggle upsell :', err);
+        }
+        btn.disabled = false;
+    });
+}
+
+function updateToggleBtn(btn, enabled) {
+    btn.textContent = enabled ? '✓ Popup upsell active' : '✗ Popup upsell désactivée';
+    btn.style.background = enabled ? '#2d7a4f' : '#8b0000';
+}
+
 // ---- INIT ----
 function init() {
     document.getElementById('logout-btn').addEventListener('click', () => {
         signOut(auth).then(() => window.location.href = 'login.html');
     });
+
+    initUpsellToggle();
 
     document.getElementById('add-plan-btn').addEventListener('click', () => openModal());
     document.getElementById('modal-close').addEventListener('click', closeModal);

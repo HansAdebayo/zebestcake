@@ -4,7 +4,7 @@
 
 import { db } from './firebase-config.js';
 import {
-    collection, query, where, limit, getDocs
+    collection, query, where, limit, getDocs, doc, getDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 const CUSTOM_DOMAIN = 'https://zebestcustom.netlify.app';
@@ -12,6 +12,12 @@ const SEEN_KEY    = 'zebest_upsell_last_order'; // stocke l'ID de la dernière c
 const VARIANT_KEY = 'zebest_upsell_variant';
 
 export async function showUpsellModal(cakeOrderId) {
+    // Vérifier si la popup est activée
+    try {
+        const settingsSnap = await getDoc(doc(db, 'settings', 'upsell'));
+        if (settingsSnap.exists() && settingsSnap.data().enabled === false) return;
+    } catch (_) {}
+
     // Deduplication — une seule popup par commande
     if (localStorage.getItem(SEEN_KEY) === cakeOrderId) return;
 
