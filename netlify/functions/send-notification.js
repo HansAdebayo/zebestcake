@@ -7,6 +7,11 @@ exports.handler = async (event) => {
   try {
     const orderData = JSON.parse(event.body);
 
+    // Validation basique
+    if (!orderData.orderId || !orderData.customerName || !orderData.phone) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Champs manquants' }) };
+    }
+
     // TES LIENS SONT ICI : Ils sont sur le serveur, donc INVISIBLES pour les clients.
     const webhook1 = "https://discord.com/api/webhooks/1487754588105871360/3tFnPQ0GzztswFSGLP8n6eigPiOJ6ul6kZjH0db_zWmRWcuoXVJTG4x4Olpd8QCCwIAz";
     const webhook2 = "https://discord.com/api/webhooks/1487756721869820116/VXy9genLunKDjq4Hf5pyaXb0xh5910N0IvAW-AVa-GWsfv4fgCaFPMW7yRzsz1fA3mot";
@@ -45,7 +50,7 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*", // Autorise ton site à appeler la fonction
+        "Access-Control-Allow-Origin": "https://zebestcake.netlify.app",
       },
       body: JSON.stringify({ message: "Notifications envoyées !" }),
     };

@@ -3,6 +3,7 @@
 import { db, storage } from './firebase-config.js';
 import { collection, getDocs, addDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js';
+import { showUpsellModal } from './upsell-popup.js';
 
 let products = [];
 
@@ -313,6 +314,9 @@ async function handleOrderSubmit(event) {
         const docRef = await addDoc(collection(db, "orders"), orderData);
         console.log("handleOrderSubmit: Commande enregistrée avec succès ! ID du document:", docRef.id);
 
+        // --- SHOW UPSELL MODAL ---
+        showUpsellModal(docRef.id);
+
         // --- ENVOI DES NOTIFICATIONS DISCORD (SÉCURISÉ VIA NETLIFY) ---
         try {
             const notificationData = {
@@ -369,5 +373,6 @@ async function handleOrderSubmit(event) {
         alert(`Une erreur est survenue: ${error.message}`);
         submitButton.disabled = false;
         submitButton.textContent = 'Valider la Commande';
-    }
-}
+        }
+        }
+

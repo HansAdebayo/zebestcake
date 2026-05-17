@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans — Admin ZeBest Custom</title>
+    <link rel="stylesheet" href="../css/custom.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://upload-widget.cloudinary.com/global/all.js" defer></script>
+</head>
+<body>
+
+    <header class="admin-header">
+        <nav class="admin-nav">
+            <a href="../index.html" class="logo">ZeBest <em>Custom</em></a>
+            <ul class="admin-nav-links">
+                <li><a href="plans.html" class="active">Plans</a></li>
+                <li><a href="orders.html">Commandes</a></li>
+            </ul>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <button id="upsell-toggle-btn" class="btn btn-sm" style="min-width:160px;">Chargement…</button>
+                <button id="logout-btn" class="btn btn-ghost btn-sm">Déconnexion</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+
+            <div class="admin-page-header">
+                <h1>Plans de custom</h1>
+                <button id="add-plan-btn" class="btn">+ Nouveau plan</button>
+            </div>
+
+            <div class="plans-admin-grid" id="plans-list">
+                <p class="text-pierre">Chargement…</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal création / édition -->
+    <div id="plan-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close" aria-label="Fermer">&times;</button>
+            <h2 id="modal-title">Nouveau plan</h2>
+
+            <form id="plan-form" novalidate>
+                <input type="hidden" id="plan-id">
+
+                <!-- Infos de base -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="plan-title">Nom du produit</label>
+                        <input type="text" id="plan-title" required placeholder="ex : Porte-clé 3D Signature">
+                    </div>
+                    <div class="form-group">
+                        <label for="plan-category">Catégorie</label>
+                        <input type="text" id="plan-category" required placeholder="ex : Impression 3D">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="plan-price">Prix de base (€)</label>
+                        <input type="number" id="plan-price" step="0.01" min="0" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="plan-status">Statut</label>
+                        <select id="plan-status">
+                            <option value="true">Actif</option>
+                            <option value="false">Archivé</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="plan-description">Description</label>
+                    <textarea id="plan-description" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Images du produit</label>
+                    <div class="image-upload-zone">
+                        <div id="images-thumbs" class="images-thumbs"></div>
+                        <button type="button" id="cloudinary-upload-btn" class="btn btn-outline btn-sm">
+                            + Ajouter des images
+                        </button>
+                        <p class="form-hint">La première image est l'image principale. Cliquez × pour supprimer.</p>
+                    </div>
+                </div>
+
+                <!-- Options de personnalisation -->
+                <div class="options-builder">
+                    <div class="options-builder-header">
+                        <label>Options de personnalisation</label>
+                        <button type="button" id="add-option-btn" class="btn btn-outline btn-sm">
+                            + Option
+                        </button>
+                    </div>
+                    <p class="form-hint" style="margin-bottom: 0.75rem;">
+                        Chaque option génère un champ dans le configurateur client.
+                    </p>
+                    <div id="options-list"></div>
+                </div>
+
+                <div id="plan-form-feedback" class="feedback hidden"></div>
+
+                <div class="form-actions">
+                    <button type="button" id="cancel-modal-btn" class="btn btn-ghost">Annuler</button>
+                    <button type="submit" class="btn">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="js/admin-plans.js"></script>
+
+</body>
+</html>

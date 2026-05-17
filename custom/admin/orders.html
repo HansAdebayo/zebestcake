@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commandes — Admin ZeBest Custom</title>
+    <link rel="stylesheet" href="../css/custom.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <header class="admin-header">
+        <nav class="admin-nav">
+            <a href="../index.html" class="logo">ZeBest <em>Custom</em></a>
+            <ul class="admin-nav-links">
+                <li><a href="plans.html">Plans</a></li>
+                <li><a href="orders.html" class="active">Commandes</a></li>
+            </ul>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <button id="upsell-toggle-btn" class="btn btn-sm" style="min-width:160px;">Chargement…</button>
+                <button id="logout-btn" class="btn btn-ghost btn-sm">Déconnexion</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+
+            <div class="admin-page-header">
+                <h1>Commandes custom</h1>
+                <div class="admin-filters">
+                    <button class="filter-pill active" data-filter="all">Toutes</button>
+                    <button class="filter-pill" data-filter="non-traitée">Non traitées</button>
+                    <button class="filter-pill" data-filter="en-cours">En cours</button>
+                    <button class="filter-pill" data-filter="terminée">Terminées</button>
+                    <button class="filter-pill" data-filter="annulée">Annulées</button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="admin-table" id="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Articles</th>
+                            <th>Total</th>
+                            <th>Source</th>
+                            <th>Statut</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-list">
+                        <tr><td colspan="7" class="table-empty">Chargement…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Drawer détail commande -->
+    <div id="order-drawer" class="drawer" aria-hidden="true">
+        <div class="drawer-content">
+            <button class="drawer-close" id="drawer-close" aria-label="Fermer">&times;</button>
+            <div id="drawer-body"></div>
+        </div>
+    </div>
+    <div id="drawer-overlay" class="drawer-overlay hidden"></div>
+
+    <script type="module" src="js/admin-orders.js"></script>
+
+</body>
+</html>
