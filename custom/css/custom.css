@@ -559,9 +559,11 @@ header {
     text-align: center;
 }
 
-/* --- Desktop ≥ 768px : grille 2 colonnes, galerie sticky à gauche --- */
+/* --- Desktop ≥ 1024px : grille 2 colonnes, galerie sticky à gauche ---
+   1024px et non 768px pour éviter que la galerie sticky se déclenche
+   sur les iPhones en mode paysage (844-932px de large). */
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .plan-detail {
         display: grid;
         grid-template-columns: 1fr 1fr;
