@@ -97,9 +97,35 @@ export async function showUpsellModal(cakeOrderId) {
     document.getElementById('upsell-dismiss').addEventListener('click', close);
     overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 
-    document.getElementById('upsell-cta-link').addEventListener('click', () => {
+    document.getElementById('upsell-cta-link').addEventListener('click', (e) => {
+        e.preventDefault();
         try {
             if (window.gtag) window.gtag('event', 'upsell_clicked', { variant, cake_order_id: cakeOrderId });
         } catch (_) {}
+
+        // Remplace le contenu par l'écran de confirmation
+        const sheet = document.getElementById('upsell-sheet');
+        sheet.innerHTML = `
+            <p class="upsell-eyebrow">Commande confirmée</p>
+            <h2 class="upsell-headline" style="font-size:1.15rem;">Votre commande est bien enregistrée&nbsp;!</h2>
+            <p style="font-size:0.85rem; color:var(--gris-txt); margin-bottom:1.25rem; line-height:1.65;">
+                Vous allez maintenant être redirigé vers <strong>ZeBest Custom</strong> pour personnaliser vos cadeaux. Notez votre numéro de commande gâteau pour suivre votre livraison.
+            </p>
+
+            <div style="background:var(--gris-sep); padding:0.9rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+                <span style="font-family:monospace; font-size:0.8rem; word-break:break-all; color:var(--noir);">${cakeOrderId}</span>
+                <button id="upsell-copy-btn" style="background:none; border:1px solid var(--noir); font-size:0.7rem; padding:0.3rem 0.65rem; cursor:pointer; white-space:nowrap; font-family:inherit; flex-shrink:0;">
+                    Copier
+                </button>
+            </div>
+
+            <a href="${ctaUrl}" class="upsell-cta">Continuer vers ZeBest Custom</a>
+        `;
+
+        document.getElementById('upsell-copy-btn').addEventListener('click', () => {
+            navigator.clipboard.writeText(cakeOrderId).then(() => {
+                document.getElementById('upsell-copy-btn').textContent = 'Copié !';
+            });
+        });
     });
 }
