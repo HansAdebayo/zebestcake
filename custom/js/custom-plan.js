@@ -101,6 +101,13 @@ function renderPlan(plan, container) {
         : '';
 
     container.innerHTML = `
+        <div class="plan-gallery">
+            <div class="plan-main-image">
+                <img id="main-img" src="${images[0]}" alt="${plan.title}">
+            </div>
+            ${thumbsHtml}
+        </div>
+
         <div class="plan-configurator">
             <p class="plan-category">${plan.category || ''}</p>
             <h1>${plan.title}</h1>
@@ -112,7 +119,7 @@ function renderPlan(plan, container) {
             <form id="configurator-form" novalidate>
                 <div id="options-container"></div>
 
-                <div class="form-group" style="margin-top: 1.5rem;">
+                <div class="form-group">
                     <label for="custom-notes">Notes (optionnel)</label>
                     <textarea id="custom-notes" rows="3"
                         placeholder="Une précision, une envie particulière ?"></textarea>
@@ -120,17 +127,10 @@ function renderPlan(plan, container) {
 
                 <div id="form-feedback" class="feedback hidden"></div>
 
-                <button type="submit" class="btn btn-full" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-full plan-submit-btn">
                     Ajouter au panier
                 </button>
             </form>
-        </div>
-
-        <div class="plan-gallery">
-            <div class="plan-main-image">
-                <img id="main-img" src="${images[0]}" alt="${plan.title}">
-            </div>
-            ${thumbsHtml}
         </div>
     `;
 

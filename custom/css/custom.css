@@ -477,76 +477,133 @@ header {
 }
 
 /* ---- PAGE PLAN (configurateur) ---- */
-/* ---- PAGE PLAN (configurateur) ---- */
-/* Mobile : configurateur en premier (ordre HTML), galerie en dessous */
+
+/* Conteneur principal : flex colonne sur mobile */
 .plan-detail {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 5.5rem 0 4rem;
+    gap: 0;
+    padding-top: 3.6rem; /* hauteur header fixe */
 }
 
-@media (min-width: 768px) {
-    /* Desktop : grille 2 colonnes, galerie ramenée à gauche via order */
-    .plan-detail {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5rem;
-        padding: 8rem 0 6rem;
-    }
+/* --- Galerie --- */
+
+/* Mobile : image compact strip en haut */
+.plan-gallery {
+    position: static;
+    flex-shrink: 0;
 }
 
-/* Mobile : image compacte en bas, miniatures cachées */
 .plan-main-image {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 220px;      /* hauteur fixe mobile, fiable sur tous navigateurs */
     overflow: hidden;
     background: var(--ligne);
-    border-radius: 2px;
-}
-
-@media (max-width: 767px) {
-    .plan-main-image {
-        aspect-ratio: 16 / 7;
-    }
-    .plan-thumbs {
-        display: none;
-    }
-}
-
-@media (min-width: 768px) {
-    .plan-main-image {
-        aspect-ratio: 4 / 5;
-    }
 }
 
 .plan-main-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 2px;
+    display: block;
 }
 
-.plan-gallery {
-    position: static;
+/* Miniatures : masquées sur mobile */
+.plan-thumbs {
+    display: none;
 }
+
+/* --- Configurateur --- */
+
+.plan-configurator {
+    padding: 1.75rem 1.25rem 5.5rem; /* 5.5rem bas = espace bouton sticky */
+}
+
+.plan-configurator .plan-category {
+    margin-bottom: 0.5rem;
+}
+
+.plan-configurator h1 {
+    font-size: clamp(1.5rem, 6vw, 2.75rem);
+    line-height: 1.15;
+    margin-bottom: 0.4rem;
+}
+
+.plan-price-display {
+    font-size: 1.25rem;
+    color: var(--terracotta);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+}
+
+.plan-description {
+    color: var(--pierre);
+    font-size: 0.88rem;
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ligne);
+}
+
+/* Bouton sticky bas d'écran sur mobile */
+.plan-submit-btn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 50;
+    border-radius: 0;
+    padding: 1.1rem;
+    text-align: center;
+}
+
+/* --- Desktop ≥ 768px : grille 2 colonnes, galerie sticky à gauche --- */
 
 @media (min-width: 768px) {
+    .plan-detail {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        padding: 8rem 0 6rem;
+        align-items: start;
+    }
+
     .plan-gallery {
         position: sticky;
         top: 5rem;
         align-self: start;
-        order: -1; /* Galerie à gauche malgré son ordre HTML */
+        /* Galerie est en 1er dans le HTML → colonne gauche naturellement */
+    }
+
+    .plan-main-image {
+        height: auto;
+        aspect-ratio: 4 / 5;
+    }
+
+    .plan-thumbs {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .plan-configurator {
+        padding: 0;
+    }
+
+    /* Bouton normal (non sticky) sur desktop */
+    .plan-submit-btn {
+        position: static;
+        margin-top: 1.5rem;
+        width: 100%;
+        border-radius: 0;
+        padding: 0.85rem 1.75rem;
     }
 }
 
-/* Miniatures galerie */
-.plan-thumbs {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-    flex-wrap: wrap;
-}
+/* --- Miniatures (desktop uniquement) --- */
 
 .plan-thumb {
     width: 56px;
@@ -567,32 +624,6 @@ header {
 
 .plan-thumb.active {
     border-color: var(--terracotta);
-}
-
-.plan-configurator .plan-category {
-    margin-bottom: 0.75rem;
-}
-
-.plan-configurator h1 {
-    font-size: clamp(1.75rem, 4vw, 2.75rem);
-    margin-bottom: 0.5rem;
-}
-
-.plan-price-display {
-    font-size: 1.4rem;
-    color: var(--terracotta);
-    margin-bottom: 1.75rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-}
-
-.plan-description {
-    color: var(--pierre);
-    font-size: 0.9rem;
-    line-height: 1.75;
-    margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--ligne);
 }
 
 /* ---- PANIER (commander.html) ---- */
