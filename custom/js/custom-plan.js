@@ -147,7 +147,7 @@ function renderPlan(plan, container) {
 
     document.getElementById('configurator-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        addToCart(plan);
+        addToCart(plan, images[0]);
     });
 }
 
@@ -249,7 +249,7 @@ function computeUnitPrice(plan) {
 
 // ---- AJOUT AU PANIER ----
 
-function addToCart(plan) {
+function addToCart(plan, mainImage) {
     const form     = document.getElementById('configurator-form');
     const feedback = document.getElementById('form-feedback');
 
@@ -274,7 +274,7 @@ function addToCart(plan) {
         selectedOptions: selectedOptions,
         notes:           document.getElementById('custom-notes').value.trim(),
         unitPrice:       computeUnitPrice(plan),
-        image:           images[0] || '../assets/images/gateau.jpg',
+        image:           mainImage || '',
         addedAt:         Date.now()
     };
 

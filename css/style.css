@@ -1868,3 +1868,93 @@ footer {
     background: var(--gris-delicat);
     color: var(--texte-sombre);
 }
+
+/* --- ZeBest Custom Upsell Modal --- */
+.upsell-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.upsell-modal-content {
+    background: #F5EFE6; /* Creme ZeBest Custom */
+    max-width: 480px;
+    width: 100%;
+    padding: 40px;
+    position: relative;
+    text-align: center;
+    border: 1px solid #E0D6C8;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.upsell-modal-content h2 {
+    font-family: 'Fraunces', serif !important;
+    color: #1F1B18;
+    font-size: 26px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.upsell-modal-content p {
+    color: #8B7E72;
+    margin-bottom: 25px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.upsell-product-preview {
+    margin-bottom: 25px;
+    border: 1px solid #E0D6C8;
+    background: white;
+    padding: 10px;
+}
+
+.upsell-product-preview img {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+}
+
+.upsell-product-title {
+    font-family: 'Fraunces', serif !important;
+    font-size: 19px;
+    color: #C8553D; /* Terracotta */
+    margin: 10px 0;
+}
+
+.upsell-cta {
+    background: #C8553D;
+    color: white !important;
+    padding: 16px 30px;
+    display: block;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.3s;
+}
+
+.upsell-cta:hover {
+    background: #A4432F;
+}
+
+.upsell-close {
+    margin-top: 20px;
+    display: inline-block;
+    font-size: 11px;
+    color: #8B7E72;
+    text-decoration: underline;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
