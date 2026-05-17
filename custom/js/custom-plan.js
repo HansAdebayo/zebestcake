@@ -90,25 +90,10 @@ function renderPlan(plan, container) {
         ? plan.images
         : (plan.image ? [plan.image] : ['../assets/images/gateau.jpg']);
 
-    const thumbsHtml = images.length > 1
-        ? `<div class="plan-thumbs">
-            ${images.map((url, i) => `
-                <button type="button" class="plan-thumb ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Image ${i + 1}">
-                    <img src="${url}" alt="">
-                </button>
-            `).join('')}
-           </div>`
-        : '';
-
     container.innerHTML = `
-        <div class="plan-gallery">
-            <div class="plan-main-image">
-                <img id="main-img" src="${images[0]}" alt="${plan.title}">
-            </div>
-            ${thumbsHtml}
-        </div>
+        <img id="cfg-photo" src="${images[0]}" alt="${plan.title}">
 
-        <div class="plan-configurator">
+        <div id="cfg-form-wrap">
             <p class="plan-category">${plan.category || ''}</p>
             <h1>${plan.title}</h1>
             <p class="plan-price-display" id="price-display">
@@ -127,7 +112,7 @@ function renderPlan(plan, container) {
 
                 <div id="form-feedback" class="feedback hidden"></div>
 
-                <button type="submit" class="btn btn-full plan-submit-btn">
+                <button type="submit" class="btn btn-full">
                     Ajouter au panier
                 </button>
             </form>
