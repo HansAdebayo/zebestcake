@@ -6,6 +6,46 @@
     <title>Personnalisation — ZeBest Custom</title>
     <meta name="description" content="Configurez votre objet personnalisé sur-mesure.">
     <link rel="stylesheet" href="css/custom.css?v=6">
+    <style>
+        /* CSS critique inline — appliqué même si custom.css est mis en cache */
+        @media (max-width: 767px) {
+            .plan-detail {
+                display: flex;
+                flex-direction: column;
+                padding-top: 3.6rem;
+                gap: 0;
+            }
+            .plan-main-image {
+                width: 100%;
+                height: 220px;
+                overflow: hidden;
+            }
+            .plan-main-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            .plan-thumbs {
+                display: none;
+            }
+            .plan-configurator {
+                padding: 1.75rem 1.25rem 5.5rem;
+            }
+            .plan-submit-btn {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                z-index: 50;
+                border-radius: 0;
+                padding: 1.1rem;
+                text-align: center;
+                margin: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
