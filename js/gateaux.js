@@ -3,6 +3,7 @@
 import { db } from './firebase-config.js';
 import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 let allProducts = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -15,13 +16,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Gérer l'état actif du bouton
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-
-            // Filtrer et afficher les produits
-            const filter = button.getAttribute('data-filter');
-            displayProducts(filter);
+            displayProducts(button.getAttribute('data-filter'));
         });
     });
 });
@@ -29,8 +26,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadAllProducts() {
     const productsGrid = document.getElementById('products-grid');
     try {
+        // Cache partagé avec home.js (même clé)
+        const cached = sessionStorage.getItem('zbc_products');
+        if (cached) {
+            const { data, ts } = JSON.parse(cached);
+            if (Date.now() - ts < CACHE_TTL) {
+                allProducts = data;
+                return;
+            }
+        }
+
         const querySnapshot = await getDocs(collection(db, "products"));
         allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        sessionStorage.setItem('zbc_products', JSON.stringify({ data: allProducts, ts: Date.now() }));
+
     } catch (error) {
         console.error("Error loading products: ", error);
         productsGrid.innerHTML = '<p>Erreur lors du chargement des produits. Veuillez réessayer plus tard.</p>';
@@ -53,12 +62,10 @@ function displayProducts(filter = 'all') {
 
     filteredProducts.forEach(product => {
         const productElement = document.createElement('div');
-        productElement.className = 'product-card'; // Utiliser une nouvelle classe pour un style potentiellement différent
-        
-        // Simplification de l'affichage du prix
+        productElement.className = 'product-card';
+
         let priceDisplay = '';
         if (product.prices) {
-            // Trouve le prix le plus bas pour l'affichage "À partir de"
             const lowestPrice = Math.min(...Object.values(product.prices));
             priceDisplay = `<p class="price">À partir de ${lowestPrice}€</p>`;
         }
