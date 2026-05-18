@@ -2,12 +2,13 @@
 // Page d'accueil ZeBest Custom : catalogue + navigation partagée.
 
 import { db } from './custom-firebase.js';
-import { collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+import { collection, query, where, getDocs, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initNav();
     initCartCount();
     captureUpsellContext();
+    loadHeroImage();
     loadCatalogue();
 });
 
@@ -46,6 +47,21 @@ function initCartCount() {
 
     badge.textContent       = count;
     badge.dataset.count     = count;
+}
+
+// ---- HERO IMAGE ----
+
+async function loadHeroImage() {
+    const img = document.querySelector('.hero-image img');
+    if (!img) return;
+    try {
+        const snap = await getDoc(doc(db, 'settings', 'homepage'));
+        if (snap.exists() && snap.data().heroImage) {
+            img.src = snap.data().heroImage;
+        }
+    } catch (err) {
+        // En cas d'erreur, l'image par défaut reste affichée
+    }
 }
 
 // ---- CONTEXTE UPSELL ----

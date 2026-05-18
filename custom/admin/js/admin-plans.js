@@ -69,6 +69,64 @@ function renderThumbs() {
     });
 }
 
+// ---- HERO IMAGE ----
+const HOMEPAGE_DOC = doc(db, 'settings', 'homepage');
+let heroWidget = null;
+
+async function initHeroImage() {
+    const previewImg   = document.getElementById('hero-preview-img');
+    const previewEmpty = document.getElementById('hero-preview-empty');
+    const uploadBtn    = document.getElementById('hero-upload-btn');
+    if (!uploadBtn) return;
+
+    // Charger l'image actuelle depuis Firestore
+    try {
+        const snap = await getDoc(HOMEPAGE_DOC);
+        if (snap.exists() && snap.data().heroImage) {
+            showHeroPreview(snap.data().heroImage, previewImg, previewEmpty);
+        }
+    } catch (err) {
+        console.error('Hero image load error:', err);
+    }
+
+    // Bouton upload
+    uploadBtn.addEventListener('click', () => {
+        if (!heroWidget) {
+            heroWidget = cloudinary.createUploadWidget(
+                {
+                    cloudName:    CLOUDINARY_CLOUD,
+                    uploadPreset: CLOUDINARY_PRESET,
+                    sources:      ['local', 'url', 'camera'],
+                    multiple:     false,
+                    cropping:     false,
+                    language:     'fr'
+                },
+                async (error, result) => {
+                    if (error) { console.error('Cloudinary error:', error); return; }
+                    if (result.event === 'success') {
+                        const url = result.info.secure_url;
+                        try {
+                            await setDoc(HOMEPAGE_DOC, { heroImage: url }, { merge: true });
+                            showHeroPreview(url, previewImg, previewEmpty);
+                            uploadBtn.textContent = '✓ Image enregistrée';
+                            setTimeout(() => { uploadBtn.textContent = 'Changer l\'image'; }, 2000);
+                        } catch (err) {
+                            console.error('Hero image save error:', err);
+                        }
+                    }
+                }
+            );
+        }
+        heroWidget.open();
+    });
+}
+
+function showHeroPreview(url, img, empty) {
+    img.src     = url;
+    img.style.display  = 'block';
+    empty.style.display = 'none';
+}
+
 // ---- UPSELL TOGGLE ----
 const UPSELL_DOC = doc(db, 'settings', 'upsell');
 
@@ -109,6 +167,7 @@ function init() {
         signOut(auth).then(() => window.location.href = 'login.html');
     });
 
+    initHeroImage();
     initUpsellToggle();
 
     document.getElementById('add-plan-btn').addEventListener('click', () => openModal());
