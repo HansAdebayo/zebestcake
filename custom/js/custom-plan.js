@@ -57,8 +57,26 @@ function showError(msg) {
 
 // ---- CHARGEMENT DU PLAN ----
 
+const PLAN_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+
 async function loadPlan(id) {
     try {
+        // Chercher d'abord dans le cache catalogue (évite une lecture Firestore)
+        const catalogueRaw = sessionStorage.getItem('zbcustom_catalogue');
+        if (catalogueRaw) {
+            const { data, ts } = JSON.parse(catalogueRaw);
+            if (Date.now() - ts < PLAN_CACHE_TTL) {
+                const cached = data.find(p => p.id === id);
+                if (cached) {
+                    currentPlan = cached;
+                    document.title = `${cached.title} — ZeBest Custom`;
+                    renderPlan(cached);
+                    return;
+                }
+            }
+        }
+
+        // Pas en cache → lecture Firestore
         const snap = await getDoc(doc(db, 'custom_plans', id));
 
         if (!snap.exists()) { showError('Produit introuvable.'); return; }

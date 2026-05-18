@@ -66,11 +66,27 @@ function captureUpsellContext() {
 let allPlans     = [];
 let activeFilter = 'all';
 
+const CACHE_KEY = 'zbcustom_catalogue';
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+
 async function loadCatalogue() {
     const grid = document.getElementById('plans-grid');
     if (!grid) return;
 
     try {
+        // Lire le cache sessionStorage
+        const cached = sessionStorage.getItem(CACHE_KEY);
+        if (cached) {
+            const { data, ts } = JSON.parse(cached);
+            if (Date.now() - ts < CACHE_TTL) {
+                allPlans = data;
+                buildFilters();
+                renderCatalogue();
+                return;
+            }
+        }
+
+        // Pas de cache valide → lecture Firestore
         const q  = query(collection(db, 'custom_plans'), where('isActive', '==', true));
         const qs = await getDocs(q);
 
@@ -83,6 +99,9 @@ async function loadCatalogue() {
         qs.forEach(docSnap => {
             allPlans.push({ id: docSnap.id, ...docSnap.data() });
         });
+
+        // Mettre en cache
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: allPlans, ts: Date.now() }));
 
         buildFilters();
         renderCatalogue();
