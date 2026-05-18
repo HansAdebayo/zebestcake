@@ -74,16 +74,39 @@ const HOMEPAGE_DOC = doc(db, 'settings', 'homepage');
 let heroWidget = null;
 
 async function initHeroImage() {
-    const previewImg   = document.getElementById('hero-preview-img');
-    const previewEmpty = document.getElementById('hero-preview-empty');
-    const uploadBtn    = document.getElementById('hero-upload-btn');
-    if (!uploadBtn) return;
+    // Injecte la section dans le DOM (indépendant du cache HTML)
+    const container = document.querySelector('.container');
+    const plansHeader = document.querySelector('.admin-page-header');
+    if (!container || !plansHeader) return;
 
-    // Charger l'image actuelle depuis Firestore
+    const section = document.createElement('div');
+    section.style.cssText = 'border:1px solid #E0D6C8;padding:1.5rem;margin-bottom:2rem;background:#fff;';
+    section.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+            <div>
+                <h2 style="font-size:1.05rem;margin-bottom:0.2rem;">Image d'accueil</h2>
+                <p style="font-size:0.82rem;color:#8B7E72;">Image affichée dans le hero de la page d'accueil.</p>
+            </div>
+            <button id="hero-upload-btn" class="btn btn-outline btn-sm">Changer l'image</button>
+        </div>
+        <div>
+            <img id="hero-preview-img" src="" alt="" style="max-width:300px;width:100%;display:none;">
+            <p id="hero-preview-empty" style="font-size:0.82rem;color:#8B7E72;">Aucune image définie — l'image par défaut est utilisée.</p>
+        </div>
+    `;
+    container.insertBefore(section, plansHeader);
+
+    const uploadBtn   = document.getElementById('hero-upload-btn');
+    const previewImg  = document.getElementById('hero-preview-img');
+    const previewEmpty = document.getElementById('hero-preview-empty');
+
+    // Charger l'image actuelle
     try {
         const snap = await getDoc(HOMEPAGE_DOC);
         if (snap.exists() && snap.data().heroImage) {
-            showHeroPreview(snap.data().heroImage, previewImg, previewEmpty);
+            previewImg.src = snap.data().heroImage;
+            previewImg.style.display = 'block';
+            previewEmpty.style.display = 'none';
         }
     } catch (err) {
         console.error('Hero image load error:', err);
@@ -107,7 +130,9 @@ async function initHeroImage() {
                         const url = result.info.secure_url;
                         try {
                             await setDoc(HOMEPAGE_DOC, { heroImage: url }, { merge: true });
-                            showHeroPreview(url, previewImg, previewEmpty);
+                            previewImg.src = url;
+                            previewImg.style.display = 'block';
+                            previewEmpty.style.display = 'none';
                             uploadBtn.textContent = '✓ Image enregistrée';
                             setTimeout(() => { uploadBtn.textContent = 'Changer l\'image'; }, 2000);
                         } catch (err) {
@@ -119,12 +144,6 @@ async function initHeroImage() {
         }
         heroWidget.open();
     });
-}
-
-function showHeroPreview(url, img, empty) {
-    img.src     = url;
-    img.style.display  = 'block';
-    empty.style.display = 'none';
 }
 
 // ---- UPSELL TOGGLE ----
