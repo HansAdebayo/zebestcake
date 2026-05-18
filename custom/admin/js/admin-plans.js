@@ -74,27 +74,26 @@ const HOMEPAGE_DOC = doc(db, 'settings', 'homepage');
 let heroWidget = null;
 
 async function initHeroImage() {
-    // Injecte la section dans le DOM (indépendant du cache HTML)
-    const container = document.querySelector('.container');
-    const plansHeader = document.querySelector('.admin-page-header');
-    if (!container || !plansHeader) return;
+    // Injecte la section en haut du main
+    const main = document.querySelector('.admin-main') || document.querySelector('main');
+    if (!main) return;
 
     const section = document.createElement('div');
-    section.style.cssText = 'border:1px solid #E0D6C8;padding:1.5rem;margin-bottom:2rem;background:#fff;';
+    section.style.cssText = 'padding:1.5rem 2rem 0;';
     section.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
-            <div>
-                <h2 style="font-size:1.05rem;margin-bottom:0.2rem;">Image d'accueil</h2>
-                <p style="font-size:0.82rem;color:#8B7E72;">Image affichée dans le hero de la page d'accueil.</p>
+        <div style="border:1px solid #E0D6C8;padding:1.5rem;margin-bottom:2rem;background:#fff;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+                <div>
+                    <h2 style="font-size:1.05rem;font-weight:600;margin-bottom:0.2rem;">Image d'accueil</h2>
+                    <p style="font-size:0.82rem;color:#8B7E72;margin:0;">Image affichée dans le hero de la page d'accueil.</p>
+                </div>
+                <button id="hero-upload-btn" class="btn btn-outline btn-sm">Changer l'image</button>
             </div>
-            <button id="hero-upload-btn" class="btn btn-outline btn-sm">Changer l'image</button>
-        </div>
-        <div>
-            <img id="hero-preview-img" src="" alt="" style="max-width:300px;width:100%;display:none;">
-            <p id="hero-preview-empty" style="font-size:0.82rem;color:#8B7E72;">Aucune image définie — l'image par défaut est utilisée.</p>
+            <img id="hero-preview-img" src="" alt="" style="max-width:280px;width:100%;display:none;">
+            <p id="hero-preview-empty" style="font-size:0.82rem;color:#8B7E72;margin:0;">Aucune image définie — l'image par défaut est utilisée.</p>
         </div>
     `;
-    container.insertBefore(section, plansHeader);
+    main.prepend(section);
 
     const uploadBtn   = document.getElementById('hero-upload-btn');
     const previewImg  = document.getElementById('hero-preview-img');
