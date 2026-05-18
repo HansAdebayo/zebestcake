@@ -32,6 +32,37 @@
             object-position: center;
         }
 
+        /* Miniatures */
+        .plan-thumbs {
+            display: flex;
+            gap: 8px;
+            padding: 8px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .plan-thumb {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .plan-thumb.active {
+            border-color: var(--terracotta, #C8553D);
+        }
+
+        .plan-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
         /* --- FORMULAIRE : bloc normal sous l'image --- */
         .plan-form-wrap {
             padding: 1.5rem 1.25rem 5rem;
@@ -85,6 +116,7 @@
         <!-- Colonne image — structure statique, JS remplace juste le src -->
         <div class="plan-photo-wrap">
             <img id="cfg-photo" src="" alt="">
+            <div class="plan-thumbs" id="plan-thumbs"></div>
         </div>
 
         <!-- Colonne formulaire — JS peuple le contenu de #plan-content -->

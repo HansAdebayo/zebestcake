@@ -84,11 +84,29 @@ function renderPlan(plan) {
         ? plan.images
         : (plan.image ? [plan.image] : []);
 
-    // Image : on remplace juste src/alt — le layout reste intact
+    // Image principale
     const photo = document.getElementById('cfg-photo');
     if (photo && images[0]) {
         photo.src = images[0];
         photo.alt = plan.title;
+    }
+
+    // Miniatures (si plusieurs images)
+    const thumbsWrap = document.getElementById('plan-thumbs');
+    if (thumbsWrap && images.length > 1) {
+        images.forEach((url, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'plan-thumb' + (i === 0 ? ' active' : '');
+            btn.type = 'button';
+            btn.setAttribute('aria-label', `Image ${i + 1}`);
+            btn.innerHTML = `<img src="${url}" alt="">`;
+            btn.addEventListener('click', () => {
+                photo.src = url;
+                thumbsWrap.querySelectorAll('.plan-thumb').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+            thumbsWrap.appendChild(btn);
+        });
     }
 
     // Contenu formulaire
