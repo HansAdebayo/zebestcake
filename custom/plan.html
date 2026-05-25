@@ -81,11 +81,21 @@
                 position: sticky;
                 top: 0;
                 height: 100vh;
+                display: flex;
+                flex-direction: column;
             }
 
             #cfg-photo {
-                height: 100%;
+                flex: 1;
+                height: 0; /* flex enfant : prend tout l'espace dispo */
                 max-height: none;
+                object-fit: cover;
+            }
+
+            .plan-thumbs {
+                flex-shrink: 0;
+                padding: 10px 12px;
+                background: var(--creme, #F5EFE6);
             }
 
             .plan-form-wrap {
