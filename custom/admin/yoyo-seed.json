@@ -1,0 +1,152 @@
+[
+  {
+    "title": "YoYo Insta",
+    "category": "Yoyo NFC",
+    "description": "Partage ton profil Instagram en un simple contact NFC. Tes followers arrivent directement sur ta page — sans taper, sans chercher. Idéal pour les créateurs de contenu et les influenceurs.",
+    "basePrice": 12.90,
+    "isActive": true,
+    "images": [],
+    "options": [
+      {
+        "id": "instagram_url",
+        "label": "Ton lien Instagram",
+        "type": "text",
+        "placeholder": "https://instagram.com/tonprofil",
+        "hint": "Copie l'URL de ton profil Instagram.",
+        "required": true,
+        "maxLength": 200
+      },
+      {
+        "id": "couleur",
+        "label": "Couleur du YoYo",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "noir", "label": "Noir", "priceModifier": 0 },
+          { "value": "blanc", "label": "Blanc", "priceModifier": 0 },
+          { "value": "rose", "label": "Rose", "priceModifier": 0 }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "YoYo Snap",
+    "category": "Yoyo NFC",
+    "description": "Partage ton Snapchat instantanément. Un contact NFC et tes amis t'ajoutent directement — fini les captures d'écran de QR code. Pour les créateurs et les passionnés de stories.",
+    "basePrice": 12.90,
+    "isActive": true,
+    "images": [],
+    "options": [
+      {
+        "id": "snapchat_url",
+        "label": "Ton lien Snapchat",
+        "type": "text",
+        "placeholder": "https://snapchat.com/add/tonpseudo",
+        "hint": "Copie l'URL de ton profil Snapchat.",
+        "required": true,
+        "maxLength": 200
+      },
+      {
+        "id": "couleur",
+        "label": "Couleur du YoYo",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "jaune", "label": "Jaune", "priceModifier": 0 },
+          { "value": "noir", "label": "Noir", "priceModifier": 0 },
+          { "value": "blanc", "label": "Blanc", "priceModifier": 0 }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "YoYo Connect",
+    "category": "Yoyo NFC",
+    "description": "Le YoYo universel : programme n'importe quel lien — portfolio, linktree, site web, réseaux… Un contact NFC et tu partages tout ce que tu veux. Parfait pour les créateurs multi-plateformes.",
+    "basePrice": 12.90,
+    "isActive": true,
+    "images": [],
+    "options": [
+      {
+        "id": "lien",
+        "label": "Lien à programmer",
+        "type": "text",
+        "placeholder": "https://monsite.com",
+        "hint": "N'importe quelle URL : site, Linktree, portfolio…",
+        "required": true,
+        "maxLength": 200
+      },
+      {
+        "id": "couleur",
+        "label": "Couleur du YoYo",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "noir", "label": "Noir", "priceModifier": 0 },
+          { "value": "blanc", "label": "Blanc", "priceModifier": 0 },
+          { "value": "gris", "label": "Gris", "priceModifier": 0 }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "YoYo Contact",
+    "category": "Yoyo NFC",
+    "description": "Partagez votre WhatsApp Business en un contact NFC. Vos clients vous écrivent directement, sans enregistrer votre numéro. La carte de visite nouvelle génération pour les professionnels.",
+    "basePrice": 14.90,
+    "isActive": true,
+    "images": [],
+    "options": [
+      {
+        "id": "whatsapp",
+        "label": "Ton numéro WhatsApp Business",
+        "type": "text",
+        "placeholder": "+33612345678",
+        "hint": "Format international avec indicatif pays (ex: +33…)",
+        "required": true,
+        "maxLength": 20
+      },
+      {
+        "id": "couleur",
+        "label": "Couleur du YoYo",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "vert", "label": "Vert", "priceModifier": 0 },
+          { "value": "noir", "label": "Noir", "priceModifier": 0 },
+          { "value": "blanc", "label": "Blanc", "priceModifier": 0 }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "YoYo Boost",
+    "category": "Yoyo NFC",
+    "description": "Boostez vos avis Google en un contact NFC. Vos clients posent leur téléphone et tombent directement sur votre page Google My Business pour laisser un avis. Idéal pour les commerces et restaurants.",
+    "basePrice": 14.90,
+    "isActive": true,
+    "images": [],
+    "options": [
+      {
+        "id": "google_url",
+        "label": "Lien Google My Business",
+        "type": "text",
+        "placeholder": "https://g.page/r/votre-lien-avis",
+        "hint": "Copie le lien direct vers vos avis Google.",
+        "required": true,
+        "maxLength": 200
+      },
+      {
+        "id": "couleur",
+        "label": "Couleur du YoYo",
+        "type": "select",
+        "required": true,
+        "choices": [
+          { "value": "rouge", "label": "Rouge", "priceModifier": 0 },
+          { "value": "blanc", "label": "Blanc", "priceModifier": 0 },
+          { "value": "noir", "label": "Noir", "priceModifier": 0 }
+        ]
+      }
+    ]
+  }
+]
