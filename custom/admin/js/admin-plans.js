@@ -323,7 +323,7 @@ function addOptionRow(opt = null) {
             <div class="form-group">
                 <label>ID (slug)</label>
                 <input type="text" class="opt-id" value="${opt?.id || ''}"
-                    placeholder="ex: prenom" pattern="[a-z0-9_-]+" required>
+                    placeholder="ex: prenom" pattern="[a-z0-9_]+" required>
                 <p class="form-hint">Minuscules, sans espace</p>
             </div>
             <div class="form-group">
