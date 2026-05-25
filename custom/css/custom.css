@@ -269,6 +269,90 @@ header {
     border-radius: 2px;
 }
 
+/* ---- YOYO NFC ---- */
+#yoyo {
+    padding: 5rem 0;
+    background: var(--encre);
+    color: #fff;
+}
+
+.yoyo-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+@media (min-width: 900px) {
+    .yoyo-inner {
+        flex-direction: row;
+        align-items: center;
+        gap: 5rem;
+    }
+}
+
+.yoyo-text { flex: 1; }
+
+.yoyo-text .hero-eyebrow { color: var(--pierre); }
+
+.yoyo-text h2 {
+    font-family: var(--font-titre);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.yoyo-text p {
+    font-size: 1rem;
+    color: #aaa;
+    max-width: 420px;
+    margin-bottom: 2rem;
+    line-height: 1.75;
+}
+
+.yoyo-text .btn {
+    background: #fff;
+    color: var(--encre);
+    border-color: #fff;
+}
+
+.yoyo-text .btn:hover {
+    background: var(--creme);
+    border-color: var(--creme);
+}
+
+.yoyo-products {
+    flex: 1;
+}
+
+.yoyo-badge {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--pierre);
+    margin-bottom: 0.75rem;
+}
+
+.yoyo-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.yoyo-chip {
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    color: #fff;
+}
+
+.chip-insta  { background: #E1306C; }
+.chip-snap   { background: #FFFC00; color: #1a1a1a; }
+.chip-connect { background: #555; }
+.chip-contact { background: #25D366; }
+.chip-boost  { background: #EA4335; }
+
 /* ---- EN-TÊTES DE SECTION ---- */
 .section-header {
     margin-bottom: 3rem;

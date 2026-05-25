@@ -10,7 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
     captureUpsellContext();
     loadHeroImage();
     loadCatalogue();
+    initYoyoCta();
 });
+
+function initYoyoCta() {
+    const cta = document.getElementById('yoyo-cta');
+    if (!cta) return;
+    cta.addEventListener('click', (e) => {
+        e.preventDefault();
+        activeFilter = 'Yoyo NFC';
+        renderCatalogue();
+        // Mettre à jour les boutons filtres
+        document.querySelectorAll('.cat-filter').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.cat === 'Yoyo NFC');
+        });
+        document.getElementById('catalogue')?.scrollIntoView({ behavior: 'smooth' });
+    });
+}
 
 // ---- NAVIGATION ----
 
@@ -80,7 +96,7 @@ function captureUpsellContext() {
 // ---- CATALOGUE ----
 
 let allPlans     = [];
-let activeFilter = 'all';
+let activeFilter = new URLSearchParams(window.location.search).get('cat') || 'all';
 
 const CACHE_KEY = 'zbcustom_catalogue';
 const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
