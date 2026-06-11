@@ -1326,21 +1326,17 @@ header.scrolled {
 body.modal-open { overflow: hidden; }
 
 /* ---- Grille d'entrée ---- */
-/* auto-fill : chaque carte fait min 320px, pas de colonne vide si une seule carte */
 .products-entry-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 420px));
-    gap: 1px;
-    background: var(--ligne);
-    border: 1px solid var(--ligne);
+    width: 100%;
 }
 
-/* ---- Carte porte-clé ---- */
+/* ---- Carte porte-clé — bandeau éditorial horizontal ---- */
 .keychain-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
-    background: #fff;
+    min-height: 460px;
+    background: none;
     border: none;
     cursor: pointer;
     text-align: left;
@@ -1350,16 +1346,17 @@ body.modal-open { overflow: hidden; }
 }
 
 .keychain-card:focus-visible {
-    outline: 2px solid var(--encre);
-    outline-offset: 2px;
+    outline: 2px solid var(--terracotta);
+    outline-offset: 3px;
 }
 
+/* Image 55% gauche */
 .keychain-card-visual {
     position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 5;
+    width: 55%;
+    flex-shrink: 0;
     overflow: hidden;
-    background: #f0efee;
+    background: #e8e4e0;
 }
 
 .keychain-card-visual img {
@@ -1369,48 +1366,94 @@ body.modal-open { overflow: hidden; }
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .keychain-card:hover .keychain-card-visual img,
 .keychain-card:focus-visible .keychain-card-visual img {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
-.keychain-card-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(10, 10, 10, 0.38);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    color: #fff;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-}
+.keychain-card-overlay { display: none; }
 
-.keychain-card:hover .keychain-card-overlay,
-.keychain-card:focus-visible .keychain-card-overlay {
-    opacity: 1;
-}
-
+/* Panneau info fond sombre */
 .keychain-card-info {
-    padding: 1.25rem 1.25rem 1.5rem;
+    flex: 1;
+    background: var(--encre);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem 3.5rem;
+    transition: background 0.3s;
+}
+
+.keychain-card:hover .keychain-card-info,
+.keychain-card:focus-visible .keychain-card-info {
+    background: #111;
+}
+
+.keychain-card-info .eyebrow {
+    color: var(--terracotta);
+    margin-bottom: 1.25rem;
 }
 
 .keychain-card-info h3 {
-    font-size: 1.1rem;
+    font-size: clamp(2rem, 3.5vw, 3rem);
     font-weight: 400;
-    margin-bottom: 0.35rem;
+    line-height: 1.1;
+    color: #fff;
+    letter-spacing: -0.02em;
+    margin-bottom: 0;
+}
+
+.keychain-card-info-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 }
 
 .keychain-count {
-    font-size: 0.8rem;
-    color: var(--pierre);
+    font-size: 0.78rem;
+    color: rgba(245, 239, 230, 0.4);
+    letter-spacing: 0.04em;
+}
+
+.keychain-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(245, 239, 230, 0.45);
+    transition: color 0.2s, gap 0.2s;
+}
+
+.keychain-card:hover .keychain-cta,
+.keychain-card:focus-visible .keychain-cta {
+    color: #fff;
+    gap: 1rem;
+}
+
+/* Mobile : empilement vertical */
+@media (max-width: 767px) {
+    .keychain-card {
+        flex-direction: column;
+        min-height: auto;
+    }
+    .keychain-card-visual {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        position: relative;
+        height: auto;
+    }
+    .keychain-card-info {
+        padding: 2rem 1.5rem;
+        min-height: 240px;
+    }
+    .keychain-card-info h3 {
+        font-size: 1.75rem;
+    }
 }
 
 /* ---- Modal : structure ---- */
