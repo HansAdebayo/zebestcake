@@ -4,51 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | ZeBest Custom</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Une question, un projet spécial ? Écrivez-nous, on vous répond vite.">
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <div class="logo">ZEBEST <span>CUSTOM</span></div>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Collection</a></li>
-                    <li><a href="atelier.html">L'Atelier</a></li>
-                    <li><a href="contact.html" class="active">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
+    <header id="site-header">
+        <nav class="navbar">
+            <a href="index.html" class="logo">ZeBest <em>Custom</em></a>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html#catalogue">Collection</a></li>
+                <li><a href="index.html#process">Comment ça marche</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a href="commander.html" class="nav-cart" id="nav-cart" aria-label="Voir mon panier">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 01-8 0"/>
+                    </svg>
+                    <span class="cart-count" id="cart-count" data-count="0">0</span>
+                </a>
+                <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
     </header>
 
     <main>
-        <section>
+        <section class="contact-section">
             <div class="container">
-                <div class="section-title">
-                    <h2>Contactez l'Atelier</h2>
-                    <p>Une question ? Un projet spécifique de personnalisation ?</p>
-                </div>
 
-                <div style="max-width: 600px; margin: 0 auto;">
-                    <form id="contact-form">
-                        <div class="form-group">
-                            <label for="name">Nom complet</label>
-                            <input type="text" id="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="text" id="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Votre message</label>
-                            <textarea id="message" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn" style="width: 100%;">Envoyer le message</button>
-                    </form>
+                <div class="contact-layout">
 
-                    <div style="margin-top: 40px; text-align: center; color: var(--pierre);">
-                        <p>Retrouvez-nous également via la pâtisserie ZeBestCake.</p>
+                    <div class="contact-intro">
+                        <p class="eyebrow">Atelier créatif · Toulouse</p>
+                        <h1>Parlons de votre projet</h1>
+                        <p class="contact-lead">Un cadeau à offrir, une commande en grande quantité, une idée originale ? On est là. Réponse sous 24h.</p>
+
+                        <ul class="contact-info-list">
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                                <a href="https://www.instagram.com/zebest_custom" target="_blank" rel="noopener">@zebest_custom</a>
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                                Réponse sous 24h
+                            </li>
+                        </ul>
                     </div>
+
+                    <div class="contact-form-wrap">
+                        <form id="contact-form" novalidate>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contact-name">Prénom et nom</label>
+                                    <input type="text" id="contact-name" name="name" placeholder="Marie Dupont" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-email">Email</label>
+                                    <input type="email" id="contact-email" name="email" placeholder="marie@exemple.fr" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact-subject">Sujet</label>
+                                <input type="text" id="contact-subject" name="subject" placeholder="Commande cadeau, question sur un modèle…">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact-message">Message</label>
+                                <textarea id="contact-message" name="message" rows="6" placeholder="Décrivez votre projet, posez votre question…" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-full" id="contact-submit">Envoyer le message</button>
+
+                            <p class="contact-form-status" id="contact-status" aria-live="polite"></p>
+
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -56,9 +96,24 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 ZeBest Custom. Un atelier créatif par ZeBestCake.</p>
+            <div class="footer-inner">
+                <span class="footer-logo">ZeBest <em>Custom</em></span>
+                <ul class="footer-links">
+                    <li>
+                        <a href="https://www.instagram.com/zebest_custom" target="_blank" rel="noopener" class="footer-instagram">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                            @zebest_custom
+                        </a>
+                    </li>
+                    <li><a href="https://zebestcake.netlify.app" target="_blank" rel="noopener">ZeBestCake — Gâteaux</a></li>
+                </ul>
+                <p class="footer-legal">&copy; 2026 ZeBest Custom</p>
+            </div>
         </div>
     </footer>
+
+    <script src="js/app.js" type="module"></script>
+    <script src="js/contact.js"></script>
 
 </body>
 </html>

@@ -765,6 +765,12 @@ footer {
 .footer-links a { color: var(--pierre); }
 .footer-links a:hover { color: var(--terracotta); }
 
+.footer-instagram {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 /* ---- UTILITAIRES ---- */
 .hidden { display: none !important; }
 .text-pierre { color: var(--pierre); }
@@ -1556,132 +1562,72 @@ body.modal-open { overflow: hidden; }
 
 .modal-close:hover { background: #f5f5f5; }
 
-/* ---- Modal : carousel ---- */
-.modal-carousel-wrap {
+/* ---- Modal : corps (sidebar + image principale) ---- */
+.modal-body {
     flex: 1;
-    overflow: hidden;
-    position: relative;
-    min-height: 0;
-}
-
-.modal-carousel {
     display: flex;
-    height: 100%;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    min-height: 0;
+    overflow: hidden;
 }
 
-.modal-carousel::-webkit-scrollbar { display: none; }
+/* ---- Sidebar de navigation modèles ---- */
+.modal-sidebar {
+    width: 76px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    border-right: 1px solid var(--ligne);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+    flex-shrink: 0;
+}
 
-.modal-slide {
+.modal-sidebar::-webkit-scrollbar { display: none; }
+
+.modal-sidebar-item {
     flex-shrink: 0;
     width: 100%;
-    height: 100%;
-    scroll-snap-align: center;
+    aspect-ratio: 4/5;
+    border: 2px solid transparent;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 2px;
     background: #f0efee;
+    padding: 0;
+    transition: border-color 0.15s;
 }
 
-.modal-slide-img {
+.modal-sidebar-item.active { border-color: var(--encre); }
+
+.modal-sidebar-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---- Image principale ---- */
+.modal-main {
+    flex: 1;
+    min-width: 0;
+    background: #f0efee;
+    overflow: hidden;
+}
+
+.modal-main-fig {
     width: 100%;
     height: 100%;
     margin: 0;
 }
 
-.modal-slide-img img {
+.modal-main-fig img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     transition: opacity 0.2s;
-}
-
-/* ---- Zones de navigation prev / next ---- */
-.modal-nav {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 38%;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    z-index: 2;
-    padding: 0 1rem;
-    transition: background 0.2s;
-}
-
-.modal-prev { left: 0; justify-content: flex-start; }
-.modal-next { right: 0; justify-content: flex-end; }
-
-.modal-nav:hover:not([disabled]) {
-    background: linear-gradient(
-        to var(--dir, right),
-        rgba(0,0,0,0.18) 0%,
-        transparent 100%
-    );
-}
-
-.modal-prev { --dir: right; }
-.modal-next { --dir: left; }
-
-/* Bouton cercle toujours visible */
-.nav-arrow {
-    width: 48px;
-    height: 48px;
-    background: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--encre);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.22);
-    flex-shrink: 0;
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.modal-nav:hover:not([disabled]) .nav-arrow {
-    transform: scale(1.1);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.28);
-}
-
-.modal-nav[disabled] {
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* ---- Dots ---- */
-.modal-carousel-dots {
-    position: absolute;
-    bottom: 0.75rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 5px;
-}
-
-.modal-dot {
-    height: 6px;
-    width: 6px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.45);
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: background 0.25s, width 0.25s;
-}
-
-.modal-dot.active {
-    background: #fff;
-    width: 22px;
-}
-
-.modal-counter {
-    font-size: 0.72rem;
-    color: var(--pierre);
-    margin-top: 0.1rem;
 }
 
 /* ---- Modal : footer ---- */
@@ -1751,3 +1697,73 @@ body.modal-open { overflow: hidden; }
 
 /* ---- Modèle sélectionné — champ caché (accessible aux scripts) ---- */
 #selected-model { display: none; }
+
+/* ============================================================
+   PAGE CONTACT
+   ============================================================ */
+
+.contact-section {
+    padding: 5rem 0 6rem;
+}
+
+.contact-layout {
+    display: grid;
+    gap: 4rem;
+}
+
+@media (min-width: 768px) {
+    .contact-layout {
+        grid-template-columns: 1fr 1.6fr;
+        gap: 6rem;
+        align-items: start;
+    }
+}
+
+.contact-intro h1 {
+    font-family: var(--font-titre);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0.6rem 0 1.2rem;
+}
+
+.contact-lead {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--pierre);
+    max-width: 36ch;
+}
+
+.contact-info-list {
+    list-style: none;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.contact-info-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--pierre);
+}
+
+.contact-info-list a {
+    color: var(--pierre);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.contact-info-list a:hover { color: var(--encre); }
+
+.contact-form-status {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    min-height: 1.2em;
+}
+
+.contact-form-status[data-type="success"] { color: #2d7a4f; }
+.contact-form-status[data-type="error"]   { color: #c0392b; }

@@ -143,33 +143,26 @@
                 <div class="modal-header">
                     <div>
                         <p class="eyebrow">Porte-clé personnalisé</p>
-                        <p class="modal-hint">Faites défiler pour explorer les modèles</p>
+                        <p class="modal-hint">Sélectionnez un modèle</p>
                     </div>
                     <button class="modal-close" id="modal-close" aria-label="Fermer">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
                     </button>
                 </div>
 
-                <div class="modal-carousel-wrap">
-                    <div class="modal-carousel" id="modal-carousel" role="list"></div>
-                    <div class="modal-carousel-dots" id="modal-dots" aria-hidden="true"></div>
-                    <button class="modal-nav modal-prev" id="modal-prev" aria-label="Modèle précédent">
-                        <span class="nav-arrow">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-                        </span>
-                    </button>
-                    <button class="modal-nav modal-next" id="modal-next" aria-label="Modèle suivant">
-                        <span class="nav-arrow">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-                        </span>
-                    </button>
+                <div class="modal-body">
+                    <nav class="modal-sidebar" id="modal-sidebar" aria-label="Modèles disponibles"></nav>
+                    <div class="modal-main">
+                        <figure class="modal-main-fig">
+                            <img id="modal-main-img" src="" alt="" loading="eager">
+                        </figure>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
                     <div class="modal-model-info">
                         <h3 id="modal-model-name">—</h3>
                         <p id="modal-model-price"></p>
-                        <p class="modal-counter" id="modal-counter"></p>
                     </div>
                     <div class="modal-thumbs" id="modal-thumbs" aria-label="Images du modèle"></div>
                     <input type="hidden" id="selected-model" name="selected-model">
@@ -186,11 +179,15 @@
             <div class="footer-inner">
                 <span class="footer-logo">ZeBest <em>Custom</em></span>
                 <ul class="footer-links">
-                    <li><a href="atelier.html">L'Atelier</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="https://zebestcake.fr" target="_blank" rel="noopener">ZeBestCake</a></li>
+                    <li>
+                        <a href="https://www.instagram.com/zebest_custom" target="_blank" rel="noopener" class="footer-instagram">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                            @zebest_custom
+                        </a>
+                    </li>
+                    <li><a href="https://zebestcake.netlify.app" target="_blank" rel="noopener">ZeBestCake — Gâteaux</a></li>
                 </ul>
-                <p class="footer-legal">&copy; 2026 ZeBest Custom · <a href="contact.html">Mentions légales</a></p>
+                <p class="footer-legal">&copy; 2026 ZeBest Custom</p>
             </div>
         </div>
     </footer>

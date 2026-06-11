@@ -68,7 +68,8 @@ async function loadPlan(id, photoParam) {
         const catalogueRaw = sessionStorage.getItem('zbcustom_catalogue');
         if (catalogueRaw) {
             const { data, ts } = JSON.parse(catalogueRaw);
-            if (Date.now() - ts < PLAN_CACHE_TTL) {
+            const bust = parseInt(localStorage.getItem('zbcustom_cache_bust') || '0', 10);
+            if (Date.now() - ts < PLAN_CACHE_TTL && bust <= ts) {
                 const cached = data.find(p => p.id === id);
                 if (cached) {
                     currentPlan = cached;
