@@ -4,7 +4,7 @@
 
 import { db } from './firebase-config.js';
 import {
-    collection, query, where, limit, getDocs, doc, getDoc
+    collection, query, where, orderBy, limit, getDocs, doc, getDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 const CUSTOM_DOMAIN = 'https://zebestcustom.netlify.app';
@@ -37,7 +37,7 @@ export async function showUpsellModal(cakeOrderId) {
     let plan = null;
     try {
         const snap = await getDocs(
-            query(collection(db, 'custom_plans'), where('isActive', '==', true), limit(1))
+            query(collection(db, 'custom_plans'), where('isActive', '==', true), orderBy('sortOrder', 'asc'), limit(1))
         );
         if (!snap.empty) plan = { id: snap.docs[0].id, ...snap.docs[0].data() };
     } catch (_) {}
