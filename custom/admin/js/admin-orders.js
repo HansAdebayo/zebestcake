@@ -203,6 +203,12 @@ function openDrawer(order) {
             .join('<br>');
         return `
             <div class="drawer-item">
+                ${item.selectedExample ? `
+                    <div class="drawer-example-wrap">
+                        <img src="${item.selectedExample}" alt="Photo exemple" class="drawer-example-img" loading="lazy">
+                        <p class="drawer-example-label">Photo exemple choisie par le client</p>
+                    </div>
+                ` : ''}
                 <p class="drawer-item-name">${item.planName}</p>
                 <p class="drawer-item-opts">${opts || '—'}</p>
                 ${item.notes ? `<p class="drawer-item-opts" style="font-style:italic; margin-top:0.35rem;">"${item.notes}"</p>` : ''}

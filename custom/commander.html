@@ -9,9 +9,14 @@
 </head>
 <body>
 
-    <header>
+    <header id="site-header" class="scrolled">
         <nav class="navbar">
             <a href="index.html" class="logo">ZeBest <em>Custom</em></a>
+            <div class="cart-steps">
+                <span class="cart-step active">Panier</span>
+                <span class="cart-step-sep">→</span>
+                <span class="cart-step">Confirmation</span>
+            </div>
             <a href="commander.html" class="nav-cart" id="nav-cart" aria-label="Voir mon panier">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -29,24 +34,36 @@
 
                 <!-- Panier vide -->
                 <div id="cart-empty" class="hidden">
-                    <p class="text-pierre" style="margin-bottom: 1.5rem;">Votre panier est vide.</p>
-                    <a href="index.html" class="btn">Découvrir la collection</a>
+                    <div class="cart-empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 01-8 0"/>
+                        </svg>
+                        <h2>Votre panier est vide.</h2>
+                        <p>Choisissez un modèle et personnalisez-le selon vos envies.</p>
+                        <a href="index.html#catalogue" class="btn">Voir la collection</a>
+                    </div>
                 </div>
 
                 <!-- Panier rempli -->
                 <div id="cart-filled" class="hidden">
-                    <div class="section-header">
+
+                    <div class="cart-page-header">
                         <h1>Mon panier</h1>
+                        <a href="index.html#catalogue" class="cart-back-link">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M19 12H5M12 5l-7 7 7 7"/>
+                            </svg>
+                            Ajouter un article
+                        </a>
                     </div>
 
                     <div class="cart-layout">
 
-                        <!-- Colonne gauche : items -->
-                        <div>
+                        <!-- Colonne gauche : articles -->
+                        <div class="cart-items-col">
                             <ul id="cart-items-list" aria-label="Articles dans le panier"></ul>
-                            <a href="index.html" class="btn btn-ghost" style="margin-top: 2rem; display: inline-block;">
-                                ← Ajouter un article
-                            </a>
                         </div>
 
                         <!-- Colonne droite : récapitulatif + formulaire -->
@@ -61,32 +78,35 @@
                             </div>
 
                             <form id="checkout-form" class="checkout-form" novalidate>
+
+                                <div class="checkout-section-label">Vos coordonnées</div>
+
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="first-name">Prénom</label>
-                                        <input type="text" id="first-name" required autocomplete="given-name">
+                                        <input type="text" id="first-name" required autocomplete="given-name" placeholder="Marie">
                                     </div>
                                     <div class="form-group">
                                         <label for="last-name">Nom</label>
-                                        <input type="text" id="last-name" required autocomplete="family-name">
+                                        <input type="text" id="last-name" required autocomplete="family-name" placeholder="Dupont">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="email" id="email" required autocomplete="email">
+                                    <input type="email" id="email" required autocomplete="email" placeholder="marie@exemple.fr">
                                 </div>
                                 <div class="form-group">
                                     <label for="phone">Téléphone</label>
-                                    <input type="tel" id="phone" required autocomplete="tel">
+                                    <input type="tel" id="phone" required autocomplete="tel" placeholder="06 12 34 56 78">
                                 </div>
 
-                                <p class="form-hint" style="margin-bottom: 1.25rem;">
-                                    Le paiement et la validation finale se font par téléphone après réception de votre demande.
+                                <p class="checkout-note">
+                                    Le paiement et la validation finale se font par téléphone après réception de votre demande. Délai de fabrication : 3 à 5 jours ouvrés.
                                 </p>
 
                                 <div id="checkout-feedback" class="feedback hidden"></div>
 
-                                <button type="submit" id="submit-btn" class="btn btn-full">
+                                <button type="submit" id="submit-btn" class="btn btn-full btn-cta">
                                     Envoyer ma demande
                                 </button>
                             </form>
@@ -105,9 +125,10 @@
                 <span class="footer-logo">ZeBest <em>Custom</em></span>
                 <ul class="footer-links">
                     <li><a href="index.html">Collection</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                     <li><a href="https://zebestcake.fr" target="_blank" rel="noopener">ZeBestCake</a></li>
                 </ul>
-                <p>&copy; 2026 ZeBest Custom</p>
+                <p class="footer-legal">&copy; 2026 ZeBest Custom</p>
             </div>
         </div>
     </footer>

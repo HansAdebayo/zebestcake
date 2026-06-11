@@ -102,9 +102,11 @@ function renderCart() {
             <div class="cart-item-image">
                 <img src="${item.image || '../assets/images/gateau.jpg'}"
                      alt="${item.planName}" loading="lazy">
+                ${item.selectedExample ? '<span class="cart-example-badge">Exemple</span>' : ''}
             </div>
             <div class="cart-item-info">
                 <p class="cart-item-name">${item.planName}</p>
+                ${item.selectedExample ? `<p class="cart-example-label">Photo exemple sélectionnée</p>` : ''}
                 <p class="cart-item-options">${optionsText}</p>
                 ${item.notes ? `<p class="cart-item-options" style="font-style:italic">${item.notes}</p>` : ''}
                 <p class="cart-item-price">${item.unitPrice.toFixed(2)} €</p>
@@ -194,13 +196,13 @@ async function handleCheckout(e) {
     const cakeOrderId = sessionStorage.getItem('custom_cake_id') || null;
 
     // Nettoyage des items pour correspondre au schéma Firestore
-    // (on retire `image` et `addedAt` qui ne sont utiles que côté client)
     const items = cart.map(item => ({
         planId:          item.planId,
         planName:        item.planName,
         selectedOptions: item.selectedOptions,
         notes:           item.notes || '',
-        unitPrice:       item.unitPrice
+        unitPrice:       item.unitPrice,
+        ...(item.selectedExample ? { selectedExample: item.selectedExample } : {})
     }));
 
     const orderData = {

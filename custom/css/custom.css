@@ -12,7 +12,7 @@
 :root {
     --terracotta:      #C8553D;
     --terracotta-dark: #A4432F;
-    --creme:           #F5EFE6;
+    --creme:           #FFFFFF;
     --encre:           #1F1B18;
     --pierre:          #8B7E72;
     --ligne:           #E0D6C8;
@@ -65,10 +65,10 @@ header {
     position: fixed;
     top: 0;
     width: 100%;
-    background: var(--creme);
-    border-bottom: 1px solid var(--ligne);
+    background: transparent;
+    border-bottom: 1px solid transparent;
     z-index: 100;
-    transition: transform 0.3s ease;
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.3s ease;
     will-change: transform;
 }
 
@@ -209,7 +209,7 @@ header {
     align-items: flex-start;
 }
 
-/* ---- HERO ---- */
+/* ---- HERO (full-screen — see override at bottom of file) ---- */
 #hero {
     padding: 7rem 0 4rem;
     background: var(--creme);
@@ -269,89 +269,6 @@ header {
     border-radius: 2px;
 }
 
-/* ---- YOYO NFC ---- */
-#yoyo {
-    padding: 5rem 0;
-    background: var(--encre);
-    color: #fff;
-}
-
-.yoyo-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
-}
-
-@media (min-width: 900px) {
-    .yoyo-inner {
-        flex-direction: row;
-        align-items: center;
-        gap: 5rem;
-    }
-}
-
-.yoyo-text { flex: 1; }
-
-.yoyo-text .hero-eyebrow { color: var(--pierre); }
-
-.yoyo-text h2 {
-    font-family: var(--font-titre);
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    line-height: 1.15;
-    margin-bottom: 1rem;
-    color: #fff;
-}
-
-.yoyo-text p {
-    font-size: 1rem;
-    color: #aaa;
-    max-width: 420px;
-    margin-bottom: 2rem;
-    line-height: 1.75;
-}
-
-.yoyo-text .btn {
-    background: #fff;
-    color: var(--encre);
-    border-color: #fff;
-}
-
-.yoyo-text .btn:hover {
-    background: var(--creme);
-    border-color: var(--creme);
-}
-
-.yoyo-products {
-    flex: 1;
-}
-
-.yoyo-badge {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--pierre);
-    margin-bottom: 0.75rem;
-}
-
-.yoyo-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.yoyo-chip {
-    font-size: 0.82rem;
-    font-weight: 500;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    color: #fff;
-}
-
-.chip-insta  { background: #E1306C; }
-.chip-snap   { background: #FFFC00; color: #1a1a1a; }
-.chip-connect { background: #555; }
-.chip-contact { background: #25D366; }
-.chip-boost  { background: #EA4335; }
 
 /* ---- EN-TÊTES DE SECTION ---- */
 .section-header {
@@ -384,6 +301,13 @@ header {
     gap: 0.5rem;
     margin-bottom: 2.5rem;
 }
+
+/* Filtres et grille cachés — la sélection se fait via le product-picker modal */
+#catalogue-filters { display: none !important; }
+#plans-grid        { display: none !important; }
+
+/* Yoyo NFC retiré du catalogue */
+.cat-filter[data-cat="Yoyo NFC"] { display: none !important; }
 
 .cat-filter {
     padding: 0.4rem 1rem;
@@ -565,6 +489,17 @@ header {
    pour garantir l'application même en cas de cache navigateur.
    Ce bloc gère uniquement la typographie et les éléments de contenu. */
 
+/* Notice exemple présélectionné depuis la modal */
+.plan-example-notice {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--terracotta);
+    border: 1px solid currentColor;
+    padding: 0.3rem 0.75rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.02em;
+}
+
 .plan-configurator .plan-category {
     margin-bottom: 0.5rem;
 }
@@ -648,6 +583,7 @@ header {
     background: var(--ligne);
     overflow: hidden;
     border-radius: 2px;
+    position: relative;
 }
 
 .cart-item-image img {
@@ -692,6 +628,27 @@ header {
 }
 
 .cart-item-remove:hover { color: var(--terracotta); }
+
+/* Badge "Exemple" sur la photo du panier */
+.cart-example-badge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(31,27,24,0.62);
+    color: #fff;
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding: 0.25rem 0;
+}
+
+.cart-example-label {
+    font-size: 0.72rem;
+    color: var(--terracotta);
+    margin-bottom: 0.2rem;
+}
 
 /* Colonne résumé */
 .cart-summary-box {
@@ -812,3 +769,942 @@ footer {
 .hidden { display: none !important; }
 .text-pierre { color: var(--pierre); }
 .text-terracotta { color: var(--terracotta); }
+
+/* ============================================================
+   REDESIGN 2026 — hero shader · collection clefs · glass nav
+   ============================================================ */
+
+/* ---- HEADER GLASS ON SCROLL ---- */
+header.scrolled {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom-color: var(--ligne);
+}
+
+/* Mobile nav ouverte : fond opaque même si header transparent */
+.nav-links.open {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* ---- HERO FULL-SCREEN (override) ---- */
+#hero {
+    position: relative;
+    height: 100dvh;
+    min-height: 600px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fff;
+}
+
+@media (min-width: 768px) {
+    #hero { padding: 0; }
+}
+
+#shader-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 1.5rem;
+    max-width: 860px;
+    width: 100%;
+}
+
+.hero-title {
+    font-family: var(--font-titre);
+    font-size: clamp(3rem, 9vw, 6.5rem);
+    letter-spacing: -0.025em;
+    line-height: 1.0;
+    margin-bottom: 1.5rem;
+    color: var(--encre);
+    font-weight: 400;
+}
+
+.hero-sub {
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+    color: var(--pierre);
+    margin: 0 auto 2.75rem;
+    line-height: 1.8;
+}
+
+.hero-cta {
+    padding: 1rem 2.75rem;
+    font-size: 0.78rem;
+}
+
+.hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.scroll-line {
+    width: 1px;
+    height: 56px;
+    background: var(--encre);
+    transform: scaleY(0);
+    transform-origin: top center;
+    opacity: 0.4;
+}
+
+/* ---- COLLECTION PORTE-CLEFS ---- */
+#collection {
+    padding: 7rem 0 8rem;
+}
+
+.section-intro {
+    max-width: 560px;
+    margin-bottom: 4rem;
+}
+
+.eyebrow {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--pierre);
+    margin-bottom: 1.25rem;
+}
+
+.section-intro h2 {
+    font-family: var(--font-titre);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.section-sub {
+    font-size: 0.95rem;
+    color: var(--pierre);
+    line-height: 1.75;
+}
+
+/* Grille : 1px de gap = lignes de grille éditoriales */
+.keys-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--ligne);
+    border: 1px solid var(--ligne);
+}
+
+@media (min-width: 540px) {
+    .keys-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 900px) {
+    .keys-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 1120px) {
+    .keys-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+.key-card {
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: background 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.key-card:hover { background: var(--encre); }
+
+.key-visual {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: #f6f6f6;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem 1.25rem;
+    overflow: hidden;
+}
+
+/* Image de fond — remplace la couleur unie */
+.key-visual img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.key-card:hover .key-visual img { transform: scale(1.07); }
+
+/* Overlay sombre au hover — s'applique au-dessus de l'image */
+.key-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--encre);
+    opacity: 0;
+    transition: opacity 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    pointer-events: none;
+}
+
+.key-card:hover .key-visual::after { opacity: 0.68; }
+
+.key-num {
+    position: relative;
+    z-index: 2;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1;
+    mix-blend-mode: overlay;
+    transition: color 0.28s, transform 0.36s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.key-card:hover .key-num {
+    color: rgba(255, 255, 255, 0.2);
+    mix-blend-mode: normal;
+    transform: scale(1.06) translateY(-4px);
+}
+
+.key-info {
+    padding: 0.9rem 1.25rem 1.1rem;
+}
+
+.key-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--pierre);
+    margin-bottom: 0.3rem;
+    transition: color 0.28s;
+}
+
+.key-card:hover .key-label { color: rgba(255, 255, 255, 0.4); }
+
+.key-info h3 {
+    font-family: var(--font-titre);
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--encre);
+    transition: color 0.28s;
+}
+
+.key-card:hover .key-info h3 { color: #fff; }
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+    .key-card,
+    .key-card *,
+    .scroll-line,
+    header {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    [data-reveal],
+    [data-reveal-section],
+    [data-reveal-step] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* ============================================================
+   HERO — ajouts complémentaires
+   ============================================================ */
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+}
+
+.hero-link {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--pierre);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.15s;
+}
+
+.hero-link:hover { color: var(--encre); }
+
+/* ============================================================
+   TRUST STRIP
+   ============================================================ */
+
+#trust {
+    border-top: 1px solid var(--ligne);
+    border-bottom: 1px solid var(--ligne);
+    padding: 1.1rem 0;
+    background: #fff;
+}
+
+.trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem 1.25rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--pierre);
+    padding: 0 1.25rem;
+}
+
+.trust-sep {
+    color: var(--ligne);
+    font-size: 0.8rem;
+}
+
+/* ============================================================
+   PROCESS — 3 étapes
+   ============================================================ */
+
+#process {
+    padding: 7rem 0 6rem;
+    border-bottom: 1px solid var(--ligne);
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+    margin-top: 3.5rem;
+}
+
+@media (min-width: 768px) {
+    .process-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4rem;
+    }
+}
+
+.process-step {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.process-num {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--ligne);
+    line-height: 1;
+    display: block;
+}
+
+.process-step h3 {
+    font-family: var(--font-titre);
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--encre);
+}
+
+.process-step p {
+    font-size: 0.88rem;
+    color: var(--pierre);
+    line-height: 1.75;
+    max-width: 280px;
+}
+
+/* ============================================================
+   CATALOGUE — section header avec filtres en ligne
+   ============================================================ */
+
+#catalogue {
+    padding: 6rem 0 8rem;
+}
+
+.catalogue-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3.5rem;
+}
+
+@media (min-width: 768px) {
+    .catalogue-header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+}
+
+/* ============================================================
+   PLAN-CARD — upgrade hover + CTA slide
+   ============================================================ */
+
+.plan-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-card > a {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.plan-image {
+    position: relative;
+    overflow: hidden;
+    background: #f6f6f6;
+}
+
+.plan-image img {
+    transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.plan-card:hover .plan-image img {
+    transform: scale(1.05);
+}
+
+/* Bandeau CTA glisse depuis le bas au hover */
+.plan-image::after {
+    content: 'Personnaliser →';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--encre);
+    color: #fff;
+    text-align: center;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.plan-card:hover .plan-image::after {
+    transform: translateY(0);
+}
+
+/* ============================================================
+   CART PAGE — upgrades
+   ============================================================ */
+
+.cart-steps {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--pierre);
+}
+
+@media (min-width: 768px) { .cart-steps { display: flex; } }
+
+.cart-step { color: var(--pierre); }
+.cart-step.active { color: var(--encre); font-weight: 500; }
+.cart-step-sep { color: var(--ligne); }
+
+.cart-page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ligne);
+}
+
+.cart-page-header h1 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.cart-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--pierre);
+    transition: color 0.15s;
+}
+
+.cart-back-link:hover { color: var(--encre); }
+
+.cart-items-col { }
+
+.cart-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+    padding: 8rem 1rem;
+}
+
+.cart-empty-state svg { opacity: 0.2; }
+
+.cart-empty-state h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.cart-empty-state p {
+    color: var(--pierre);
+    font-size: 0.9rem;
+    max-width: 320px;
+}
+
+.checkout-section-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--pierre);
+    margin-bottom: 1.25rem;
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--ligne);
+}
+
+.checkout-note {
+    font-size: 0.78rem;
+    color: var(--pierre);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f8f8;
+    border-left: 2px solid var(--ligne);
+}
+
+.btn-cta {
+    padding: 1.1rem 2rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+}
+
+.footer-legal {
+    font-size: 0.75rem;
+    color: var(--pierre);
+}
+
+.footer-legal a {
+    color: var(--pierre);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.footer-legal a:hover { color: var(--encre); }
+
+/* ============================================================
+   PRODUCT PICKER — carte d'entrée + modal carousel
+   ============================================================ */
+
+/* body lock quand modal ouverte */
+body.modal-open { overflow: hidden; }
+
+/* ---- Grille d'entrée ---- */
+/* auto-fill : chaque carte fait min 320px, pas de colonne vide si une seule carte */
+.products-entry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 420px));
+    gap: 1px;
+    background: var(--ligne);
+    border: 1px solid var(--ligne);
+}
+
+/* ---- Carte porte-clé ---- */
+.keychain-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+    font-family: var(--font-body);
+    color: var(--encre);
+}
+
+.keychain-card:focus-visible {
+    outline: 2px solid var(--encre);
+    outline-offset: 2px;
+}
+
+.keychain-card-visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #f0efee;
+}
+
+.keychain-card-visual img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.keychain-card:hover .keychain-card-visual img,
+.keychain-card:focus-visible .keychain-card-visual img {
+    transform: scale(1.05);
+}
+
+.keychain-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.38);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #fff;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.keychain-card:hover .keychain-card-overlay,
+.keychain-card:focus-visible .keychain-card-overlay {
+    opacity: 1;
+}
+
+.keychain-card-info {
+    padding: 1.25rem 1.25rem 1.5rem;
+}
+
+.keychain-card-info h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 0.35rem;
+}
+
+.keychain-count {
+    font-size: 0.8rem;
+    color: var(--pierre);
+}
+
+/* ---- Modal : structure ---- */
+.product-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    pointer-events: none;
+}
+
+@media (min-width: 768px) {
+    .product-modal {
+        align-items: stretch;
+        justify-content: flex-end;
+    }
+}
+
+.product-modal.open {
+    pointer-events: all;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.48);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.product-modal.open .modal-backdrop {
+    opacity: 1;
+}
+
+/* ---- Modal : panneau ---- */
+/* height obligatoire (pas seulement max-height) pour que flex:1 sur
+   .modal-carousel-wrap ait une valeur résolue ≠ 0 */
+.modal-panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 93dvh;
+    max-height: 93dvh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .modal-panel {
+        width: 460px;
+        height: 100dvh;
+        max-height: 100dvh;
+        transform: translateX(100%);
+    }
+}
+
+.product-modal.open .modal-panel {
+    transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+    .product-modal.open .modal-panel {
+        transform: translateX(0);
+    }
+}
+
+/* ---- Modal : header ---- */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--ligne);
+    flex-shrink: 0;
+    gap: 1rem;
+}
+
+.modal-hint {
+    font-size: 0.72rem;
+    color: var(--pierre);
+    margin-top: 0.15rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.35rem;
+    color: var(--encre);
+    display: flex;
+    flex-shrink: 0;
+    border-radius: 2px;
+    transition: background 0.15s;
+}
+
+.modal-close:hover { background: #f5f5f5; }
+
+/* ---- Modal : carousel ---- */
+.modal-carousel-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+}
+
+.modal-carousel {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.modal-carousel::-webkit-scrollbar { display: none; }
+
+.modal-slide {
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: center;
+    background: #f0efee;
+}
+
+.modal-slide-img {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.modal-slide-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.2s;
+}
+
+/* ---- Zones de navigation prev / next ---- */
+.modal-nav {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 38%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+    padding: 0 1rem;
+    transition: background 0.2s;
+}
+
+.modal-prev { left: 0; justify-content: flex-start; }
+.modal-next { right: 0; justify-content: flex-end; }
+
+.modal-nav:hover:not([disabled]) {
+    background: linear-gradient(
+        to var(--dir, right),
+        rgba(0,0,0,0.18) 0%,
+        transparent 100%
+    );
+}
+
+.modal-prev { --dir: right; }
+.modal-next { --dir: left; }
+
+/* Bouton cercle toujours visible */
+.nav-arrow {
+    width: 48px;
+    height: 48px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--encre);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.22);
+    flex-shrink: 0;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.modal-nav:hover:not([disabled]) .nav-arrow {
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+}
+
+.modal-nav[disabled] {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---- Dots ---- */
+.modal-carousel-dots {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+}
+
+.modal-dot {
+    height: 6px;
+    width: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.45);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.25s, width 0.25s;
+}
+
+.modal-dot.active {
+    background: #fff;
+    width: 22px;
+}
+
+.modal-counter {
+    font-size: 0.72rem;
+    color: var(--pierre);
+    margin-top: 0.1rem;
+}
+
+/* ---- Modal : footer ---- */
+.modal-footer {
+    flex-shrink: 0;
+    padding: 1rem 1.25rem 1.75rem;
+    border-top: 1px solid var(--ligne);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.modal-model-info {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.modal-model-info h3 {
+    font-family: var(--font-titre);
+    font-size: 1.15rem;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.modal-model-info p {
+    font-size: 0.82rem;
+    color: var(--pierre);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ---- Miniatures ---- */
+.modal-thumbs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+}
+
+.modal-thumbs::-webkit-scrollbar { display: none; }
+
+.modal-thumb {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border: 2px solid transparent;
+    background: #f0efee;
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 2px;
+    transition: border-color 0.15s;
+}
+
+.modal-thumb.active { border-color: var(--encre); }
+
+.modal-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---- Modèle sélectionné — champ caché (accessible aux scripts) ---- */
+#selected-model { display: none; }

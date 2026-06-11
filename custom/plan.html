@@ -5,56 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personnalisation — ZeBest Custom</title>
     <meta name="description" content="Configurez votre objet personnalisé sur-mesure.">
-    <link rel="stylesheet" href="css/custom.css?v=11">
+    <link rel="stylesheet" href="css/custom.css">
     <style>
-        /* ===== PAGE PLAN — MOBILE FIRST ===== */
+        /* ===== PLAN PAGE LAYOUT — mobile first ===== */
 
-        /* La structure HTML est statique : image + section côte à côte sur desktop,
-           empilées sur mobile. Le JS ne touche QUE le contenu, pas le layout. */
+        body { background: #fff; }
 
         .plan-page {
-            min-height: 100vh;
+            min-height: 100dvh;
         }
 
-        /* --- IMAGE : pleine largeur, hauteur fixe sur mobile --- */
+        /* ---- COLONNE IMAGE ---- */
         .plan-photo-wrap {
             width: 100%;
-            /* Pousse vers le bas de la navbar fixe */
-            padding-top: 56px;
+            padding-top: 56px; /* navbar fixe */
+            background: #f6f6f6;
         }
 
         #cfg-photo {
             display: block;
             width: 100%;
-            height: 60vw;
-            max-height: 380px;
+            height: 65vw;
+            max-height: 420px;
             object-fit: cover;
             object-position: center;
         }
 
-        /* Miniatures */
         .plan-thumbs {
             display: flex;
-            gap: 8px;
-            padding: 8px 0;
+            gap: 6px;
+            padding: 10px 1rem;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            background: #f6f6f6;
         }
 
         .plan-thumb {
             flex-shrink: 0;
-            width: 56px;
-            height: 56px;
+            width: 54px;
+            height: 54px;
             border: 2px solid transparent;
             cursor: pointer;
             background: none;
             padding: 0;
             overflow: hidden;
+            transition: border-color 0.15s;
         }
 
-        .plan-thumb.active {
-            border-color: var(--terracotta, #C8553D);
-        }
+        .plan-thumb.active { border-color: var(--terracotta); }
 
         .plan-thumb img {
             width: 100%;
@@ -63,51 +61,65 @@
             display: block;
         }
 
-        /* --- FORMULAIRE : bloc normal sous l'image --- */
+        /* ---- COLONNE FORMULAIRE ---- */
         .plan-form-wrap {
-            padding: 1.5rem 1.25rem 5rem;
+            padding: 2rem 1.25rem 5rem;
         }
 
-        /* --- DESKTOP ≥ 1024px : 2 colonnes --- */
+        .plan-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--pierre);
+            margin-bottom: 2rem;
+            transition: color 0.15s;
+        }
+
+        .plan-back:hover { color: var(--encre); }
+
+        /* ---- DESKTOP ≥ 1024px : 2 colonnes collées ---- */
         @media (min-width: 1024px) {
             .plan-page {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                min-height: 100vh;
+                min-height: 100dvh;
             }
 
             .plan-photo-wrap {
                 padding-top: 0;
                 position: sticky;
                 top: 0;
-                height: 100vh;
+                height: 100dvh;
                 display: flex;
                 flex-direction: column;
             }
 
             #cfg-photo {
                 flex: 1;
-                height: 0; /* flex enfant : prend tout l'espace dispo */
+                height: 0;
                 max-height: none;
                 object-fit: cover;
             }
 
             .plan-thumbs {
                 flex-shrink: 0;
-                padding: 10px 12px;
-                background: var(--creme, #F5EFE6);
+                padding: 10px 1.25rem;
             }
 
             .plan-form-wrap {
-                padding: 8rem 3rem 6rem;
+                padding: 8rem 3.5rem 6rem;
                 overflow-y: auto;
+                max-height: 100dvh;
             }
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <header id="site-header" class="scrolled">
         <nav class="navbar">
             <a href="index.html" class="logo">ZeBest <em>Custom</em></a>
             <a href="commander.html" class="nav-cart" id="nav-cart" aria-label="Voir mon panier">
@@ -123,14 +135,20 @@
 
     <main class="plan-page">
 
-        <!-- Colonne image — structure statique, JS remplace juste le src -->
+        <!-- Colonne image — JS peuple #cfg-photo et #plan-thumbs -->
         <div class="plan-photo-wrap">
             <img id="cfg-photo" src="" alt="">
             <div class="plan-thumbs" id="plan-thumbs"></div>
         </div>
 
-        <!-- Colonne formulaire — JS peuple le contenu de #plan-content -->
+        <!-- Colonne formulaire — JS peuple #plan-content -->
         <div class="plan-form-wrap">
+            <a href="index.html?picker=1#catalogue" class="plan-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                </svg>
+                Choisir un autre modèle
+            </a>
             <div id="plan-content">
                 <p class="text-pierre">Chargement…</p>
             </div>
@@ -138,20 +156,7 @@
 
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-inner">
-                <span class="footer-logo">ZeBest <em>Custom</em></span>
-                <ul class="footer-links">
-                    <li><a href="index.html">Collection</a></li>
-                    <li><a href="https://zebestcake.fr" target="_blank" rel="noopener">ZeBestCake</a></li>
-                </ul>
-                <p>&copy; 2026 ZeBest Custom</p>
-            </div>
-        </div>
-    </footer>
-
-    <script type="module" src="js/custom-plan.js?v=5"></script>
+    <script type="module" src="js/custom-plan.js"></script>
 
 </body>
 </html>

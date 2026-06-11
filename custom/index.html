@@ -4,84 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZeBest Custom — Objets personnalisés artisanaux</title>
-    <meta name="description" content="Atelier créatif toulousain. Porte-clés 3D, cake toppers et objets personnalisés fabriqués à la main pour vos moments uniques.">
+    <meta name="description" content="Porte-clés personnalisés, Yoyo NFC et objets uniques fabriqués à la main à Toulouse. Choisissez votre modèle, on crée pour vous.">
     <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
 
-    <header>
+    <header id="site-header">
         <nav class="navbar">
             <a href="index.html" class="logo">ZeBest <em>Custom</em></a>
 
-            <a href="commander.html" class="nav-cart" id="nav-cart" aria-label="Voir mon panier">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                    <line x1="3" y1="6" x2="21" y2="6"/>
-                    <path d="M16 10a4 4 0 01-8 0"/>
-                </svg>
-                <span class="cart-count" id="cart-count" data-count="0">0</span>
-            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#catalogue">Collection</a></li>
+                <li><a href="#process">Comment ça marche</a></li>
+<li><a href="contact.html">Contact</a></li>
+            </ul>
+
+            <div class="navbar-actions">
+                <a href="commander.html" class="nav-cart" id="nav-cart" aria-label="Voir mon panier">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 01-8 0"/>
+                    </svg>
+                    <span class="cart-count" id="cart-count" data-count="0">0</span>
+                </a>
+                <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
         </nav>
     </header>
 
     <main>
+
+        <!-- ===== HERO ===== -->
         <section id="hero">
+            <canvas id="shader-canvas" aria-hidden="true"></canvas>
+            <div class="hero-content">
+                <p class="hero-eyebrow" data-reveal>Atelier créatif · Toulouse</p>
+                <h1 class="hero-title" data-reveal>Des cadeaux<br>qui vous ressemblent.</h1>
+                <p class="hero-sub" data-reveal>Porte-clés personnalisés, accessoires NFC et objets uniques.<br>Fabriqués à la main, livrés chez vous.</p>
+                <div class="hero-actions" data-reveal>
+                    <a href="#catalogue" class="btn hero-cta">Créer mon objet →</a>
+                    <a href="#process" class="hero-link">Comment ça marche</a>
+                </div>
+            </div>
+            <div class="hero-scroll">
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- ===== TRUST STRIP ===== -->
+        <section id="trust">
+            <div class="trust-strip">
+                <span>Atelier Toulousain</span>
+                <span class="trust-sep">·</span>
+                <span>Fabrication sur-mesure</span>
+                <span class="trust-sep">·</span>
+                <span>Livraison 5–7 jours</span>
+                <span class="trust-sep">·</span>
+                <span>Satisfaction garantie</span>
+            </div>
+        </section>
+
+        <!-- ===== COMMENT ÇA MARCHE ===== -->
+        <section id="process">
             <div class="container">
-                <div class="hero-inner">
-                    <div class="hero-text">
-                        <p class="hero-eyebrow">Atelier créatif · Toulouse</p>
-                        <h1>Chaque pièce,<br>une histoire.</h1>
-                        <p>Objets personnalisés fabriqués à la main pour accompagner vos plus beaux moments.</p>
-                        <a href="#catalogue" class="btn">Découvrir la collection</a>
+                <div class="section-intro" data-reveal-section>
+                    <p class="eyebrow">Simple comme bonjour</p>
+                    <h2>3 étapes,<br>un cadeau unique.</h2>
+                </div>
+                <div class="process-grid">
+                    <div class="process-step" data-reveal-step>
+                        <span class="process-num">01</span>
+                        <h3>Choisissez votre modèle</h3>
+                        <p>Parcourez notre collection. Chaque modèle est entièrement personnalisable.</p>
                     </div>
-                    <div class="hero-image">
-                        <img src="https://res.cloudinary.com/do5yllup7/image/upload/totebag_vbutpi.jpg" alt="Objets personnalisés ZeBest Custom">
+                    <div class="process-step" data-reveal-step>
+                        <span class="process-num">02</span>
+                        <h3>Configurez à votre image</h3>
+                        <p>Prénom, photo, date, couleur — chaque détail est le vôtre, aucun compromis.</p>
+                    </div>
+                    <div class="process-step" data-reveal-step>
+                        <span class="process-num">03</span>
+                        <h3>Recevez votre création</h3>
+                        <p>Fabriqué à la main dans notre atelier à Toulouse, livré sous 5 à 7 jours.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ---- YOYO NFC ---- -->
-        <section id="yoyo">
-            <div class="container">
-                <div class="yoyo-inner">
-                    <div class="yoyo-text">
-                        <p class="hero-eyebrow">Nouveauté · Technologie NFC</p>
-                        <h2>Partagez votre monde<br>en un contact.</h2>
-                        <p>YoYo est un accessoire NFC qui partage instantanément votre Instagram, WhatsApp, Google ou tout lien — sans appli, sans friction.</p>
-                        <a href="#catalogue?cat=Yoyo+NFC" class="btn" id="yoyo-cta">Découvrir YoYo</a>
-                    </div>
-                    <div class="yoyo-products">
-                        <div class="yoyo-badge">Édition Créateur</div>
-                        <div class="yoyo-chips">
-                            <span class="yoyo-chip chip-insta">YoYo Insta</span>
-                            <span class="yoyo-chip chip-snap">YoYo Snap</span>
-                            <span class="yoyo-chip chip-connect">YoYo Connect</span>
-                        </div>
-                        <div class="yoyo-badge" style="margin-top:1.5rem;">Édition Business</div>
-                        <div class="yoyo-chips">
-                            <span class="yoyo-chip chip-contact">YoYo Contact</span>
-                            <span class="yoyo-chip chip-boost">YoYo Boost</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+        <!-- ===== CATALOGUE ===== -->
         <section id="catalogue">
             <div class="container">
-                <div class="section-header">
-                    <h2>La collection</h2>
-                    <p>Des pièces uniques, configurées selon vos envies.</p>
+                <div class="catalogue-header" data-reveal-section>
+                    <div>
+                        <p class="eyebrow">Nos créations</p>
+                        <h2>Choisissez votre objet unique</h2>
+                    </div>
                 </div>
-                <div class="catalogue-filters" id="catalogue-filters" style="display:none;">
-                    <button class="cat-filter active" data-cat="all">Tout</button>
+
+                <!-- Grille d'entrée — une carte par catégorie de produit -->
+                <div class="products-entry-grid">
+                    <button class="keychain-card" id="keychain-open" aria-haspopup="dialog" aria-label="Voir les modèles de porte-clé personnalisé">
+                        <div class="keychain-card-visual">
+                            <img src="../assets/images/gateau.jpg" alt="Porte-clé personnalisé" id="keychain-preview-img" loading="lazy">
+                            <div class="keychain-card-overlay" aria-hidden="true">
+                                <span>Choisir un modèle</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </div>
+                        <div class="keychain-card-info">
+                            <p class="eyebrow">Personnalisé</p>
+                            <h3>Porte-clé sur-mesure</h3>
+                            <p class="keychain-count" id="keychain-count">Chargement…</p>
+                        </div>
+                    </button>
                 </div>
-                <div class="plans-grid" id="plans-grid">
-                    <p class="text-pierre">Chargement de la collection…</p>
-                </div>
+
+                <!-- Grille Firestore cachée — source de données pour product-picker.js -->
+                <div id="plans-grid" aria-hidden="true" style="display:none;"></div>
+                <div id="catalogue-filters" style="display:none;"></div>
             </div>
         </section>
+
+        <!-- ===== MODAL PRODUCT PICKER ===== -->
+        <div id="product-modal" class="product-modal" role="dialog" aria-modal="true" aria-label="Choisir votre porte-clé" aria-hidden="true">
+            <div class="modal-backdrop" id="modal-backdrop"></div>
+            <div class="modal-panel">
+
+                <div class="modal-header">
+                    <div>
+                        <p class="eyebrow">Porte-clé personnalisé</p>
+                        <p class="modal-hint">Faites défiler pour explorer les modèles</p>
+                    </div>
+                    <button class="modal-close" id="modal-close" aria-label="Fermer">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <div class="modal-carousel-wrap">
+                    <div class="modal-carousel" id="modal-carousel" role="list"></div>
+                    <div class="modal-carousel-dots" id="modal-dots" aria-hidden="true"></div>
+                    <button class="modal-nav modal-prev" id="modal-prev" aria-label="Modèle précédent">
+                        <span class="nav-arrow">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                        </span>
+                    </button>
+                    <button class="modal-nav modal-next" id="modal-next" aria-label="Modèle suivant">
+                        <span class="nav-arrow">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="modal-model-info">
+                        <h3 id="modal-model-name">—</h3>
+                        <p id="modal-model-price"></p>
+                        <p class="modal-counter" id="modal-counter"></p>
+                    </div>
+                    <div class="modal-thumbs" id="modal-thumbs" aria-label="Images du modèle"></div>
+                    <input type="hidden" id="selected-model" name="selected-model">
+                    <a href="#" class="btn btn-full" id="modal-cta">Personnaliser ce modèle →</a>
+                </div>
+
+            </div>
+        </div>
+
     </main>
 
     <footer>
@@ -93,12 +183,18 @@
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="https://zebestcake.fr" target="_blank" rel="noopener">ZeBestCake</a></li>
                 </ul>
-                <p>&copy; 2026 ZeBest Custom</p>
+                <p class="footer-legal">&copy; 2026 ZeBest Custom · <a href="contact.html">Mentions légales</a></p>
             </div>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script src="js/shader.js"></script>
+    <script src="js/animations.js"></script>
     <script type="module" src="js/custom-home.js"></script>
+    <script src="js/product-picker.js"></script>
 
 </body>
 </html>

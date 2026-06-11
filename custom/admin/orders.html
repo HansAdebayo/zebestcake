@@ -9,55 +9,89 @@
 </head>
 <body>
 
-    <header class="admin-header">
-        <nav class="admin-nav">
-            <a href="../index.html" class="logo">ZeBest <em>Custom</em></a>
-            <ul class="admin-nav-links">
-                <li><a href="plans.html">Plans</a></li>
-                <li><a href="orders.html" class="active">Commandes</a></li>
-            </ul>
-            <div style="display:flex; align-items:center; gap:0.75rem;">
-                <button id="upsell-toggle-btn" class="btn btn-sm" style="min-width:160px;">Chargement…</button>
-                <button id="logout-btn" class="btn btn-ghost btn-sm">Déconnexion</button>
-            </div>
-        </nav>
-    </header>
-
-    <main class="admin-main">
-        <div class="container">
-
-            <div class="admin-page-header">
-                <h1>Commandes custom</h1>
-                <div class="admin-filters">
-                    <button class="filter-pill active" data-filter="all">Toutes</button>
-                    <button class="filter-pill" data-filter="non-traitée">Non traitées</button>
-                    <button class="filter-pill" data-filter="en-cours">En cours</button>
-                    <button class="filter-pill" data-filter="terminée">Terminées</button>
-                    <button class="filter-pill" data-filter="annulée">Annulées</button>
-                </div>
-            </div>
-
-            <div class="table-wrap">
-                <table class="admin-table" id="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Client</th>
-                            <th>Articles</th>
-                            <th>Total</th>
-                            <th>Source</th>
-                            <th>Statut</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-list">
-                        <tr><td colspan="7" class="table-empty">Chargement…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+        <div class="sidebar-logo">
+            <a href="../index.html">ZeBest <em>Custom</em></a>
+            <span class="sidebar-brand-sub">Administration</span>
         </div>
-    </main>
+
+        <nav class="sidebar-nav" aria-label="Navigation admin">
+            <ul>
+                <li>
+                    <a href="plans.html">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                        Plans
+                    </a>
+                </li>
+                <li>
+                    <a href="orders.html" class="active">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                        Commandes
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="../index.html" class="sidebar-site-link" target="_blank" rel="noopener">↗ Voir le site</a>
+            <button id="logout-btn" class="sidebar-logout">Déconnexion</button>
+        </div>
+    </aside>
+
+    <!-- Overlay mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ===== SHELL ===== -->
+    <div class="admin-shell">
+
+        <!-- Topbar visible uniquement sur mobile -->
+        <div class="admin-topbar">
+            <button class="sidebar-burger" id="sidebar-burger" aria-label="Ouvrir le menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <span class="topbar-logo">ZeBest <em>Custom</em></span>
+        </div>
+
+        <main class="admin-main">
+            <div class="container">
+
+                <div class="admin-page-header">
+                    <div>
+                        <h1>Commandes custom</h1>
+                    </div>
+                    <div class="admin-filters">
+                        <button class="filter-pill active" data-filter="all">Toutes</button>
+                        <button class="filter-pill" data-filter="non-traitée">Non traitées</button>
+                        <button class="filter-pill" data-filter="en-cours">En cours</button>
+                        <button class="filter-pill" data-filter="terminée">Terminées</button>
+                        <button class="filter-pill" data-filter="annulée">Annulées</button>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="admin-table" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Client</th>
+                                <th>Articles</th>
+                                <th>Total</th>
+                                <th>Source</th>
+                                <th>Statut</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-list">
+                            <tr><td colspan="7" class="table-empty">Chargement…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
 
     <!-- Drawer détail commande -->
     <div id="order-drawer" class="drawer" aria-hidden="true">
@@ -69,6 +103,18 @@
     <div id="drawer-overlay" class="drawer-overlay hidden"></div>
 
     <script type="module" src="js/admin-orders.js"></script>
+    <script>
+    (function () {
+        var burger  = document.getElementById('sidebar-burger');
+        var sidebar = document.getElementById('admin-sidebar');
+        var overlay = document.getElementById('sidebar-overlay');
+        function open()  { sidebar.classList.add('open');    overlay.classList.add('visible');    burger.setAttribute('aria-expanded', 'true');  }
+        function close() { sidebar.classList.remove('open'); overlay.classList.remove('visible'); burger.setAttribute('aria-expanded', 'false'); }
+        burger.addEventListener('click', function () { sidebar.classList.contains('open') ? close() : open(); });
+        overlay.addEventListener('click', close);
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    })();
+    </script>
 
 </body>
 </html>

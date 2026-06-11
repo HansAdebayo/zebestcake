@@ -11,9 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initNav();
     initCartCount();
 
-    const planId = new URLSearchParams(window.location.search).get('id');
+    const params     = new URLSearchParams(window.location.search);
+    const planId     = params.get('id');
+    const photoParam = params.get('photo');
+
     if (planId) {
-        loadPlan(planId);
+        loadPlan(planId, photoParam);
     } else {
         showError('Aucun produit sélectionné.');
     }
@@ -59,7 +62,7 @@ function showError(msg) {
 
 const PLAN_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
-async function loadPlan(id) {
+async function loadPlan(id, photoParam) {
     try {
         // Chercher d'abord dans le cache catalogue (évite une lecture Firestore)
         const catalogueRaw = sessionStorage.getItem('zbcustom_catalogue');
@@ -70,7 +73,7 @@ async function loadPlan(id) {
                 if (cached) {
                     currentPlan = cached;
                     document.title = `${cached.title} — ZeBest Custom`;
-                    renderPlan(cached);
+                    renderPlan(cached, photoParam);
                     return;
                 }
             }
@@ -87,7 +90,7 @@ async function loadPlan(id) {
 
         currentPlan = plan;
         document.title = `${plan.title} — ZeBest Custom`;
-        renderPlan(plan);
+        renderPlan(plan, photoParam);
 
     } catch (err) {
         console.error('Erreur chargement plan :', err);
@@ -97,15 +100,19 @@ async function loadPlan(id) {
 
 // ---- RENDU ----
 
-function renderPlan(plan) {
+function renderPlan(plan, photoParam) {
     const images = Array.isArray(plan.images) && plan.images.length > 0
         ? plan.images
         : (plan.image ? [plan.image] : []);
 
+    // Photo de départ : paramètre URL si valide, sinon images[0]
+    const preselected = photoParam && images.includes(photoParam) ? photoParam : null;
+    let currentDisplayedImage = preselected || images[0] || '';
+
     // Image principale
     const photo = document.getElementById('cfg-photo');
-    if (photo && images[0]) {
-        photo.src = images[0];
+    if (photo && currentDisplayedImage) {
+        photo.src = currentDisplayedImage;
         photo.alt = plan.title;
     }
 
@@ -114,11 +121,12 @@ function renderPlan(plan) {
     if (thumbsWrap && images.length > 1) {
         images.forEach((url, i) => {
             const btn = document.createElement('button');
-            btn.className = 'plan-thumb' + (i === 0 ? ' active' : '');
+            btn.className = 'plan-thumb' + (currentDisplayedImage === url ? ' active' : '');
             btn.type = 'button';
             btn.setAttribute('aria-label', `Image ${i + 1}`);
             btn.innerHTML = `<img src="${url}" alt="">`;
             btn.addEventListener('click', () => {
+                currentDisplayedImage = url;
                 photo.src = url;
                 thumbsWrap.querySelectorAll('.plan-thumb').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
@@ -130,6 +138,7 @@ function renderPlan(plan) {
     // Contenu formulaire
     const content = document.getElementById('plan-content');
     content.innerHTML = `
+        ${preselected ? `<p class="plan-example-notice">Photo exemple présélectionnée — modifiez-la via les miniatures si besoin.</p>` : ''}
         <p class="plan-category">${plan.category || ''}</p>
         <h1>${plan.title}</h1>
         <p class="plan-price-display" id="price-display">${plan.basePrice.toFixed(2)} €</p>
@@ -156,7 +165,7 @@ function renderPlan(plan) {
 
     document.getElementById('configurator-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        addToCart(plan, images[0] || '');
+        addToCart(plan, images[0] || '', currentDisplayedImage);
     });
 }
 
@@ -247,7 +256,7 @@ function computeUnitPrice(plan) {
 
 // ---- PANIER ----
 
-function addToCart(plan, mainImage) {
+function addToCart(plan, mainImage, displayedImage) {
     const form     = document.getElementById('configurator-form');
     const feedback = document.getElementById('form-feedback');
 
@@ -270,9 +279,14 @@ function addToCart(plan, mainImage) {
         selectedOptions,
         notes:           document.getElementById('custom-notes').value.trim(),
         unitPrice:       computeUnitPrice(plan),
-        image:           mainImage,
+        image:           displayedImage || mainImage,
         addedAt:         Date.now()
     };
+
+    // Enregistre la photo exemple si différente de la photo principale du modèle
+    if (displayedImage && displayedImage !== mainImage) {
+        cartItem.selectedExample = displayedImage;
+    }
 
     const cart = JSON.parse(localStorage.getItem('zebest_custom_cart') || '[]');
     cart.push(cartItem);
